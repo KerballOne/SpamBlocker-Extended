@@ -1,7 +1,7 @@
 <resources>
     <string name="help_sms_content_filter">
         <![CDATA[
-        These rules apply to the SMS content.<br>
+        These rules apply to the text content of SMS, MMS, or notifications.<br>
         <br>
         <title><b> - Some typical patterns</b></title>:<br>
         &ensp; - Contains \"verification\": <highlight><b>.*verification.*</b></highlight><br>
@@ -23,8 +23,8 @@
     </string>
     <string name="help_apply_to_call_sms">
         <![CDATA[
-        Enable this rule for Call, SMS, or both.<br>
-        Uncheck these checkboxes to disable the rule without deleting it.
+        Choose which of Calls, SMS, MMS, Notification Title, and Notification Body this rule applies to.<br>
+        Uncheck all of them to disable the rule without deleting it.
         ]]>
     </string>
     <string name="help_apply_to_number_and_message">

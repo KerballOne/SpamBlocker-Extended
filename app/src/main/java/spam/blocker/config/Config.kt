@@ -59,7 +59,6 @@ class Global : IConfig {
     var collapsed = false
     var callEnabled = false
     var smsEnabled = false
-    var mmsEnabled = false
 
     // misc
     var isTestingIconClicked = false
@@ -70,7 +69,6 @@ class Global : IConfig {
         collapsed = spf.isCollapsed
         callEnabled = spf.isCallEnabled
         smsEnabled = spf.isSmsEnabled
-        mmsEnabled = spf.isMmsEnabled
 
         isTestingIconClicked = spf.isTestIconClicked
     }
@@ -81,7 +79,6 @@ class Global : IConfig {
             isCollapsed = collapsed
             isCallEnabled = callEnabled
             isSmsEnabled = smsEnabled
-            isMmsEnabled = mmsEnabled
 
             isTestIconClicked = isTestingIconClicked
         }

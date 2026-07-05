@@ -38,9 +38,10 @@ class RegexState(
     val priority: MutableIntState,
     val priorityError: MutableState<Boolean>,
 
-    // Apply to Call/SMS
+    // Apply to Call/SMS/MMS
     val applyToCall: MutableState<Boolean>,
     val applyToSms: MutableState<Boolean>,
+    val applyToMms: MutableState<Boolean>,
 
     // Apply to Notification Title/Body
     val applyToNotifTitle: MutableState<Boolean>,
@@ -68,6 +69,10 @@ class RegexState(
     // NotificationType
     val channelId: MutableState<String>,
 
+    // Custom alert (ringtone/vibration/flashlight/wake-screen) for when this rule allows a
+    // screened notification. Empty means fall back to the app-level default.
+    val alertConfigJson: MutableState<String>,
+
     // SIM card
     val simSlot: MutableState<Int?>,
 
@@ -83,6 +88,7 @@ class RegexState(
         val flags = 0
             .setFlag(Def.FLAG_FOR_CALL, applyToCall.value)
             .setFlag(Def.FLAG_FOR_SMS, applyToSms.value)
+            .setFlag(Def.FLAG_FOR_MMS, applyToMms.value)
             .setFlag(Def.FLAG_FOR_NOTIF_TITLE, applyToNotifTitle.value)
             .setFlag(Def.FLAG_FOR_NOTIF_BODY, applyToNotifBody.value)
             .setFlag(Def.FLAG_FOR_NUMBER, applyToNumber.value)
@@ -113,6 +119,7 @@ class RegexState(
             isBlacklist = whiteOrBlack.intValue == 1,
             flags = flags,
             channel = channelId.value,
+            alertConfigJson = alertConfigJson.value,
             schedule = schedule,
             blockType = blockType.intValue,
             blockTypeConfig = blockTypeConfig.value,
@@ -151,9 +158,10 @@ fun RegexRule.toState(): RegexState {
         priority = mutableIntStateOf(initRule.priority),
         priorityError = mutableStateOf(false),
 
-        // Apply to Call/SMS
+        // Apply to Call/SMS/MMS
         applyToCall = mutableStateOf(initRule.isForCall()),
         applyToSms = mutableStateOf(initRule.isForSms()),
+        applyToMms = mutableStateOf(initRule.isForMms()),
 
         // Apply to Notification Title/Body
         applyToNotifTitle = mutableStateOf(initRule.isForNotifTitle()),
@@ -180,6 +188,9 @@ fun RegexRule.toState(): RegexState {
 
         // NotificationType
         channelId = mutableStateOf(initRule.channel),
+
+        // Alert
+        alertConfigJson = mutableStateOf(initRule.alertConfigJson),
 
         // SIM card
         simSlot = mutableStateOf(initRule.simSlot),

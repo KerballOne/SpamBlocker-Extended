@@ -2,7 +2,9 @@
     <string name="app_name">SpamBlocker</string>
     <string name="setting">Settings</string>
     <string name="call">Call</string>
+    <string name="calls">Calls</string>
     <string name="sms">SMS</string>
+    <string name="sms_mms">SMS/MMS</string>
     <string name="enable">Enable</string>
     <string name="sms_content_pattern">SMS Content</string>
     <string name="invalid_regex_pattern">Invalid regex</string>
@@ -30,7 +32,11 @@
     <string name="ok">OK</string>
     <string name="miscellaneous">Miscellaneous</string>
     <string name="quick_settings">Quick Settings</string>
+    <string name="basic_rules">Basic Rules</string>
     <string name="regex_settings">Regex Settings</string>
+    <string name="advanced_rules">Advanced Rules</string>
+    <string name="actions">Actions</string>
+    <string name="integrations">Integrations</string>
     <string name="backup">Backup</string>
     <string name="import_">Import</string>
     <string name="export">Export</string>
@@ -50,8 +56,8 @@
     <string name="emergency_call">Emergency Call</string>
     <string name="label_number_rules">Number Rules</string>
     <string name="number_rule">Number Rule</string>
-    <string name="label_content_rules">Message Rules</string>
-    <string name="content_rule">Message Rule</string>
+    <string name="label_content_rules">Text Rules</string>
+    <string name="content_rule">Text Rule</string>
     <string name="recent_apps"><short>Recent Apps</short></string>
     <string name="contacts">Contacts</string>
     <string name="non_contacts">Non-Contacts</string>

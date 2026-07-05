@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import spam.blocker.G
 import spam.blocker.R
+import spam.blocker.def.Def
 import spam.blocker.ui.M
 import spam.blocker.ui.setting.LabeledRow
 import spam.blocker.ui.widgets.AnimatedVisibleV
@@ -77,6 +78,10 @@ fun SmsAlert() {
                 regexFlags.intValue = it
                 spf.regexFlags = it
             },
+            availableFlags = setOf(
+                Def.FLAG_REGEX_CASE_SENSITIVE,
+                Def.FLAG_REGEX_IMPLIED_CONTAINS,
+            ),
             testable = true,
             leadingIcon = { GreyIcon18(R.drawable.ic_open_msg) }
         )

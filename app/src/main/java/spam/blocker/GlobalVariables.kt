@@ -11,6 +11,7 @@ import spam.blocker.db.Notification.ChannelTable
 import spam.blocker.ui.history.CallViewModel
 import spam.blocker.ui.history.HistoryOptions.showHistoryBlocked
 import spam.blocker.ui.history.HistoryOptions.showHistoryPassed
+import spam.blocker.ui.history.NotificationViewModel
 import spam.blocker.ui.history.SmsViewModel
 import spam.blocker.ui.setting.TestingViewModel
 import spam.blocker.ui.setting.api.ApiQueryViewModel
@@ -40,6 +41,7 @@ object G {
 
     val callVM : CallViewModel = CallViewModel()
     val smsVM : SmsViewModel = SmsViewModel()
+    val notifVM : NotificationViewModel = NotificationViewModel()
 
     val NumberRuleVM : NumberRegexViewModel = NumberRegexViewModel()
     val ContentRuleVM : ContentRegexViewModel = ContentRegexViewModel()

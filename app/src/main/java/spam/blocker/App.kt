@@ -100,10 +100,11 @@ class App : Application() {
                     G.callVM.records.add(0, record)
         }
         Events.onNewSMS.listen { recordId ->
-            val record = SmsTable().findRecordById(this, recordId as Long)
-            if (G.smsVM.isVisible(ctx, record!!))
-                if (G.smsVM.records.firstOrNull()?.id != record.id) // ugly workaround to prevent double inserting
-                    G.smsVM.records.add(0, record)
+            val record = SmsTable().findRecordById(this, recordId as Long)!!
+            val vm = if (record.isFromNotification()) G.notifVM else G.smsVM
+            if (vm.isVisible(ctx, record))
+                if (vm.records.firstOrNull()?.id != record.id) // ugly workaround to prevent double inserting
+                    vm.records.add(0, record)
         }
     }
 
@@ -111,6 +112,7 @@ class App : Application() {
         Events.historyUpdated.listen {
             G.callVM.reload(this)
             G.smsVM.reload(this)
+            G.notifVM.reload(this)
         }
     }
 }

@@ -47,6 +47,15 @@
     <!-- for reporting bugs(dump adb log) -->
     <uses-permission android:name="android.permission.READ_LOGS" />
 
+    <!-- for the custom "Notification Allowed Alert" (ringtone/vibration/flashlight/wake-screen) -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-feature
+        android:name="android.hardware.camera.flash"
+        android:required="false" />
+
     <application
         android:name=".App"
         android:requestLegacyExternalStorage="true"

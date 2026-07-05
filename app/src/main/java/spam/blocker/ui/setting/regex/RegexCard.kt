@@ -1,8 +1,11 @@
 package spam.blocker.ui.setting.regex
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,6 +23,7 @@ import spam.blocker.R
 import spam.blocker.db.RegexRule
 import spam.blocker.def.Def
 import spam.blocker.def.Def.ForNumber
+import spam.blocker.def.Def.ForQuickCopy
 import spam.blocker.def.Def.ForSms
 import spam.blocker.ui.M
 import spam.blocker.ui.setting.quick.ChannelIcons
@@ -31,8 +35,29 @@ import spam.blocker.ui.widgets.OutlineCard
 import spam.blocker.ui.widgets.ResIcon
 import spam.blocker.ui.widgets.RowVCenterSpaced
 import spam.blocker.ui.widgets.SimCardIcon
+import spam.blocker.util.enabledRegexFlagsStr
 import spam.blocker.util.hasFlag
 import spam.blocker.util.spf
+
+// Compact "Call, SMS, MMS, Title, Body" readout for the consolidated Apply-to dropdown.
+fun RegexRule.applyToSummary(ctx: Context, forType: Int): String {
+    val forCNAP = forType == ForNumber && patternModeType == ModeType.CallerName
+
+    val parts = buildList {
+        if (forType != ForSms && !forCNAP) {
+            if (isForCall()) add(ctx.getString(R.string.calls))
+        }
+        if (!forCNAP) {
+            if (isForSms()) add(ctx.getString(R.string.sms))
+            if (isForMms()) add(ctx.getString(R.string.mms))
+        }
+        if (forType != ForQuickCopy) {
+            if (isForNotifTitle()) add(ctx.getString(R.string.title_short))
+            if (isForNotifBody()) add(ctx.getString(R.string.body_short))
+        }
+    }
+    return parts.joinToString(", ")
+}
 
 @Composable
 fun RegexCard(
@@ -45,50 +70,76 @@ fun RegexCard(
     val spf = spf.RegexOptions(ctx)
 
     OutlineCard {
-        Row(
+        Box(
             modifier = modifier.padding(horizontal = 10.dp, vertical = 8.dp)
         ) {
-            // Regex and Description
-            Column(
-                M.weight(1f).padding(end = 4.dp),
-                verticalArrangement = Arrangement.Center
+            Row(
+                modifier = M.fillMaxWidth().padding(end = 60.dp),
             ) {
-                RowVCenterSpaced(2) {
-                    if (rule.simSlot != null) {
-                        SimCardIcon(rule.simSlot!!)
+                // Regex and Description
+                Column(
+                    M.weight(1f).padding(end = 4.dp),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    RowVCenterSpaced(2) {
+                        if (rule.simSlot != null) {
+                            SimCardIcon(rule.simSlot!!)
+                        }
+                        // Regex
+                        Text(
+                            text = rule.colorfulRegexStr(
+                                ctx = LocalContext.current,
+                                forType = forType,
+                            ),
+                            inlineContent = regexModeInlineMap(),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp,
+                            modifier = M.padding(top = 2.dp),
+                            maxLines = spf.maxRegexRows,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
-                    // Regex
-                    Text(
-                        text = rule.colorfulRegexStr(
-                            ctx = LocalContext.current,
-                            forType = forType,
-                        ),
-                        inlineContent = regexModeInlineMap(),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
-                        modifier = M.padding(top = 2.dp),
-                        maxLines = spf.maxRegexRows,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
 
-                // Description
-                if (rule.description.isNotEmpty()) {
+                    // Description
+                    if (rule.description.isNotEmpty()) {
+                        Text(
+                            text = rule.description,
+                            fontSize = 18.sp,
+                            maxLines = spf.maxDescRows,
+                            overflow = TextOverflow.Ellipsis,
+                            color = C.textGrey,
+                            modifier = M.padding(start = 10.dp),
+                        )
+                    }
+
+                    // Apply-to summary
                     Text(
-                        text = rule.description,
-                        fontSize = 18.sp,
-                        maxLines = spf.maxDescRows,
-                        overflow = TextOverflow.Ellipsis,
+                        text = rule.applyToSummary(ctx, forType),
                         color = C.textGrey,
-                        modifier = M.padding(start = 10.dp),
+                        fontSize = 11.sp,
+                        modifier = M.padding(start = 10.dp, top = 2.dp),
                     )
                 }
             }
 
-            // Icons
-            Column(horizontalAlignment = Alignment.End) {
-                // [Number, Message]  [BlockType]  [Call, SMS]
-                RowVCenterSpaced(space = 6, modifier = M.padding(top = 6.dp)) {
+            // [Regex flags]  [Number, Message]  [BlockType] -- top right
+            val flagsStr = rule.patternFlags.enabledRegexFlagsStr()
+            val showTopRow = flagsStr.isNotEmpty() ||
+                    (forType == Def.ForQuickCopy && (rule.flags.hasFlag(Def.FLAG_FOR_NUMBER) || rule.flags.hasFlag(Def.FLAG_FOR_CONTENT))) ||
+                    (forType == Def.ForNumber && rule.isBlacklist && rule.isForCall())
+            if (showTopRow) {
+                RowVCenterSpaced(
+                    space = 6,
+                    modifier = M.align(Alignment.TopEnd),
+                ) {
+                    // [Regex flags]
+                    if (flagsStr.isNotEmpty()) {
+                        Text(
+                            text = flagsStr,
+                            fontSize = 12.sp,
+                            color = C.regexFlags,
+                        )
+                    }
                     if (forType == Def.ForQuickCopy) {
                         // [Number, Message]
                         RowVCenterSpaced(space = 4) {
@@ -106,49 +157,38 @@ fun RegexCard(
                             2 -> GreyIcon20(iconId = R.drawable.ic_hang)
                         }
                     }
-                    // [Call, SMS]
-                    RowVCenterSpaced(space = 2, M.padding(start = 4.dp)) {
-                        if (forType != Def.ForSms)
-                            ResIcon(
-                                iconId = R.drawable.ic_call,
-                                modifier = M.size(20.dp),
-                                color = if (rule.isForCall()) C.teal200 else C.disabled
-                            )
-                        ResIcon(
-                            iconId = R.drawable.ic_sms,
-                            modifier = M.size(20.dp),
-                            color = if (rule.isForSms()) C.teal200 else C.disabled
-                        )
-                    }
+                }
+            }
+
+            // [NotifyType]  [Priority] -- bottom right
+            RowVCenterSpaced(
+                space = 8,
+                modifier = M.align(Alignment.BottomEnd),
+            ) {
+
+                // [NotifyType]
+                val forCNAP = forType == ForNumber && rule.patternModeType == ModeType.CallerName
+                val applyToSms = rule.isForSms()
+
+                val visible = when (forType) {
+                    ForNumber -> rule.isBlacklist || (!forCNAP && applyToSms)
+                    ForSms   -> true
+                    else     -> false
                 }
 
-                // [NotifyType]  [Priority]
-                RowVCenterSpaced(space = 8) {
-
-                    // [NotifyType]
-                    val forCNAP = forType == ForNumber && rule.patternModeType == ModeType.CallerName
-                    val applyToSms = rule.isForSms()
-
-                    val visible = when (forType) {
-                        ForNumber -> rule.isBlacklist || (!forCNAP && applyToSms)
-                        ForSms   -> true
-                        else     -> false
-                    }
-
-                    if (visible) {
-                        val ch = G.notificationChannels.find { it.channelId == rule.channel }
-                        ChannelIcons(ch?.importance, ch?.mute)
-                    }
-
-                    // [Priority]
-                    ResIcon(R.drawable.ic_priority, color = C.priority, modifier = M.size(18.dp).offset(6.dp))
-                    Text(
-                        text = "${rule.priority}",
-                        color = C.priority,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp,
-                    )
+                if (visible) {
+                    val ch = G.notificationChannels.find { it.channelId == rule.channel }
+                    ChannelIcons(ch?.importance, ch?.mute)
                 }
+
+                // [Priority]
+                ResIcon(R.drawable.ic_priority, color = C.priority, modifier = M.size(18.dp).offset(6.dp))
+                Text(
+                    text = "${rule.priority}",
+                    color = C.priority,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                )
             }
         }
     }

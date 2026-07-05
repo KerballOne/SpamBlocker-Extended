@@ -7,7 +7,12 @@ object Def {
     // tabs route
     const val CALL_TAB_ROUTE = "call"
     const val SMS_TAB_ROUTE = "sms"
+    const val NOTIFICATION_TAB_ROUTE = "notification"
     const val SETTING_TAB_ROUTE = "setting"
+
+    // HistoryRecord.source, only meaningful for the `sms` table
+    const val SOURCE_SMS = 0
+    const val SOURCE_NOTIFICATION = 1
 
     // for block mode: answer + hang-up
     const val DEFAULT_HANG_UP_DELAY = 1 // second
@@ -18,7 +23,6 @@ object Def {
     const val BLOCK_TYPE_SILENCE = 1
     const val BLOCK_TYPE_ANSWER_AND_HANGUP = 2
 
-//    const val DEF_SPAM_IMPORTANCE = NotificationManager.IMPORTANCE_LOW
     const val DEF_SPAM_CHANNEL = CHANNEL_LOW
 
     const val DEF_BLOCK_TYPE = BLOCK_TYPE_REJECT
@@ -86,6 +90,7 @@ object Def {
     const val FLAG_AUTO_COPY = 1 shl 6
     const val FLAG_FOR_NOTIF_TITLE = 1 shl 7
     const val FLAG_FOR_NOTIF_BODY = 1 shl 8
+    const val FLAG_FOR_MMS = 1 shl 9
 
 
     // regexFlags, max: 1 shl 30
@@ -96,14 +101,18 @@ object Def {
     const val FLAG_REGEX_CASE_SENSITIVE = 1 shl 4
     const val FLAG_REGEX_RAW_NUMBER = 1 shl 10 // 0x400
     const val FLAG_REGEX_IGNORE_CC = 1 shl 13 // 0x2000
+    const val FLAG_REGEX_IMPLIED_CONTAINS = 1 shl 14 // 0x4000, Text Rules only: wrap pattern as `.*pattern.*`
 
     const val DefaultRegexFlags = 0
+    // Default flags for a brand new Text Rule (SMS content), "Contains" is on by default
+    const val DefaultTextRuleRegexFlags = FLAG_REGEX_IMPLIED_CONTAINS
 
     // Regex Flags, saved in RegexRule.patternFlags
     val MAP_REGEX_FLAGS = mapOf(
-        FLAG_REGEX_CASE_SENSITIVE to "I",
+        FLAG_REGEX_CASE_SENSITIVE to "Aa",
         FLAG_REGEX_RAW_NUMBER to "®", // r
         FLAG_REGEX_IGNORE_CC to "🌐",
+        FLAG_REGEX_IMPLIED_CONTAINS to "…",
     )
 
 

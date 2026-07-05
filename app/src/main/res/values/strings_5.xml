@@ -3,6 +3,9 @@
     <string name="find_apps">Find Apps</string>
     <string name="confirm_delete_all_rule">Delete all rules?</string>
     <string name="notification">Notification</string>
+    <string name="action_notification">Basic Rules Notification</string>
+    <string name="basic_rules_notifications">Basic Rules Notifications</string>
+    <string name="basic_rules_alerts">Basic Rules Alerts</string>
     <string name="type">Type</string>
     <string name="times">Times</string>
     <plurals name="days">
@@ -18,6 +21,7 @@
     <string name="phone_number">Phone Number</string>
     <string name="phone_number_abbrev">Number</string>
     <string name="sms_content">SMS Content</string>
+    <string name="text_content">Text Content</string>
     <string name="regex_flags">Regex Flags</string>
     <string name="off_time"><short>Off Time</short></string>
     <string name="schedule">Schedule</string>
@@ -25,6 +29,7 @@
     <string name="weekend">Weekend</string>
     <string name="entire_day">Entire Day</string>
     <string name="block_type">Block Type</string>
+    <string name="call_block_type">Call Block Type</string>
     <string name="for_particular_number">For number</string>
     <string name="help_for_particular_number">When enabled, the rule only applies when both number and content match.</string>
     <string name="help_hang_up_delay">The delay before the call is hung up (in seconds).</string>

@@ -31,7 +31,7 @@ class Db private constructor(
 ) : SQLiteOpenHelper(ctx, DB_NAME, null, DB_VERSION) {
 
     companion object {
-        const val DB_VERSION = 50
+        const val DB_VERSION = 52
         const val DB_NAME = "spam_blocker.db"
 
         // ---- regex rule table ----
@@ -56,6 +56,9 @@ class Db private constructor(
         const val COLUMN_BLOCK_TYPE_CONFIG = "block_type_config"
         const val COLUMN_ENABLED = "enabled"
         const val COLUMN_SIM_SLOT = "sim_slot"
+        // Per-rule custom alert (ringtone/vibration/flashlight/wake-screen), JSON, only used by
+        // Number/Text/QuickCopy rule tables.
+        const val COLUMN_ALERT_CONFIG = "alert_config"
 
         // ---- notification channel table ----
         const val TABLE_NOTIFICATION_CHANNEL = "notification_channel"
@@ -113,6 +116,8 @@ class Db private constructor(
         const val COLUMN_AUTO_REPORTING_LOG = "auto_reporting_log" // text
         const val COLUMN_ANYTHING_WRONG_SCREENING = "anything_wrong" // Boolean
         const val COLUMN_ANYTHING_WRONG_REPORTING = "anything_wrong_reporting" // Boolean
+        // Only meaningful for the `sms` table: 0 = real SMS, 1 = screened notification.
+        const val COLUMN_SOURCE = "source" // Int
 
         @Volatile
         private var instance: Db? = null
@@ -144,7 +149,8 @@ class Db private constructor(
                         "$COLUMN_SCHEDULE TEXT DEFAULT '', " +
                         "$COLUMN_BLOCK_TYPE INTEGER DEFAULT ${Def.DEF_BLOCK_TYPE}, " +
                         "$COLUMN_BLOCK_TYPE_CONFIG TEXT DEFAULT '', " +
-                        "$COLUMN_SIM_SLOT INTEGER" +
+                        "$COLUMN_SIM_SLOT INTEGER, " +
+                        "$COLUMN_ALERT_CONFIG TEXT DEFAULT ''" +
                         ")"
             )
         }
@@ -249,7 +255,8 @@ class Db private constructor(
                         "$COLUMN_FULL_SCREENING_LOG TEXT, " +
                         "$COLUMN_AUTO_REPORTING_LOG TEXT, " +
                         "$COLUMN_ANYTHING_WRONG_SCREENING INTEGER, " +
-                        "$COLUMN_ANYTHING_WRONG_REPORTING INTEGER " +
+                        "$COLUMN_ANYTHING_WRONG_REPORTING INTEGER, " +
+                        "$COLUMN_SOURCE INTEGER " +
                         ")"
             )
         }
@@ -581,6 +588,19 @@ class Db private constructor(
             addColumnIfNotExist(db, TABLE_CALL, COLUMN_ANYTHING_WRONG_REPORTING, "INTEGER")
             addColumnIfNotExist(db, TABLE_SMS, COLUMN_AUTO_REPORTING_LOG, "TEXT")
             addColumnIfNotExist(db, TABLE_SMS, COLUMN_ANYTHING_WRONG_REPORTING, "INTEGER")
+        }
+
+        // added History.source, to distinguish real SMS from screened notifications
+        if ((newVersion >= 51) && (oldVersion < 51)) {
+            addColumnIfNotExist(db, TABLE_CALL, COLUMN_SOURCE, "INTEGER")
+            addColumnIfNotExist(db, TABLE_SMS, COLUMN_SOURCE, "INTEGER")
+        }
+
+        // added RegexRule.alertConfigJson, per-rule custom alert for allowed screened notifications
+        if ((newVersion >= 52) && (oldVersion < 52)) {
+            addColumnIfNotExist(db, TABLE_NUMBER_RULE, COLUMN_ALERT_CONFIG, "TEXT")
+            addColumnIfNotExist(db, TABLE_CONTENT_RULE, COLUMN_ALERT_CONFIG, "TEXT")
+            addColumnIfNotExist(db, TABLE_QUICK_COPY_RULE, COLUMN_ALERT_CONFIG, "TEXT")
         }
     }
 }

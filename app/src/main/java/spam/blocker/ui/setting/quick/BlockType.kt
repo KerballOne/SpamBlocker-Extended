@@ -101,7 +101,7 @@ fun BlockType() {
 
 
     LabeledRow(
-        R.string.block_type,
+        R.string.call_block_type,
         helpTooltip = Str(R.string.help_block_type),
         content = {
             val C = G.palette

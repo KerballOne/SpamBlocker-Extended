@@ -10,6 +10,7 @@ import spam.blocker.G
 import spam.blocker.db.HistoryRecord
 import spam.blocker.db.Notification.ChannelTable
 import spam.blocker.db.SmsTable
+import spam.blocker.def.Def
 import spam.blocker.service.checker.Checker
 import spam.blocker.service.checker.ICheckResult
 import spam.blocker.service.reporting.autoReportSMS
@@ -107,11 +108,13 @@ open class SmsReceiver : BroadcastReceiver() {
             logger: ILogger? = null,
 
             showNotification: Boolean = true, // no notification for sms-screening-provider mode
+            isMms: Boolean = false,
+            source: Int = Def.SOURCE_SMS,
         ): ICheckResult {
             logi("process Sms")
 
             val (r, fullScreeningLog, anythingWrong) = Checker.checkSms(
-                ctx, rawNumber = rawNumber, messageBody = messageBody, simSlot = simSlot, logger = logger)
+                ctx, rawNumber = rawNumber, messageBody = messageBody, simSlot = simSlot, logger = logger, isMms = isMms)
 
             // 1. log to history db
             val spfHistory = spf.HistoryOptions(ctx)
@@ -128,7 +131,8 @@ open class SmsReceiver : BroadcastReceiver() {
                         extraInfo = if (spfHistory.isLogSmsContentEnabled) messageBody else null,
                         isTest = isTest,
                         fullScreeningLog = fullScreeningLog,
-                        anythingWrongScreening = anythingWrong
+                        anythingWrongScreening = anythingWrong,
+                        source = source,
                     )
                 )
             } else {

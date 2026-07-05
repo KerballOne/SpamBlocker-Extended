@@ -8,7 +8,11 @@ import spam.blocker.db.ContentRegexTable
 import spam.blocker.db.PushAlertRecord
 import spam.blocker.db.PushAlertTable
 import spam.blocker.db.RegexRule
+import spam.blocker.def.Def
+import spam.blocker.service.checker.ByRegexRule
 import spam.blocker.util.Permission
+import spam.blocker.util.PermissiveJson
+import spam.blocker.util.spf.AppAlertConfig
 import spam.blocker.util.regexFind
 import spam.blocker.util.regexMatches
 import spam.blocker.util.regexMatchesNumber
@@ -186,9 +190,21 @@ class NotificationListenerService : NotificationListenerService() {
                     simSlot = null,
                     isTest = false,
                     showNotification = false,
+                    source = Def.SOURCE_NOTIFICATION,
                 )
                 if (result.shouldBlock()) {
                     cancelNotification(sbn.key)
+                } else {
+                    // Prefer the matched rule's own alert config, if it set one;
+                    // otherwise fall back to the app-level default.
+                    val ruleAlertJson = (result as? ByRegexRule)
+                        ?.rule?.alertConfigJson?.takeIf { it.isNotEmpty() }
+
+                    val config = ruleAlertJson
+                        ?.let { runCatching { PermissiveJson.decodeFromString<AppAlertConfig>(it) }.getOrNull() }
+                        ?: spf.AllowedNotificationAlerts(this).find(pkgName)
+
+                    config?.let { fireAllowedNotificationAlert(this, it) }
                 }
             }
         }

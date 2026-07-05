@@ -2,6 +2,7 @@ package spam.blocker.ui.setting
 
 import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -21,7 +22,6 @@ import spam.blocker.R
 import spam.blocker.def.Def
 import spam.blocker.ui.M
 import spam.blocker.ui.widgets.AnimatedVisibleV
-import spam.blocker.ui.widgets.Button
 import spam.blocker.ui.widgets.HtmlText
 import spam.blocker.ui.widgets.PopupDialog
 import spam.blocker.ui.widgets.ResIcon
@@ -42,29 +42,18 @@ import spam.blocker.util.spf
 fun GloballyEnabled() {
     val ctx = LocalContext.current
     val C = G.palette
+    val sectionSpf = spf.SectionCollapse(ctx)
     val spf = spf.Global(ctx)
 
-    var collapsed by remember { mutableStateOf(spf.isCollapsed) }
-    fun expand() {
-        collapsed = false
-        spf.isCollapsed = false
+    var sectionCollapsed by remember { mutableStateOf(sectionSpf.isScreeningCollapsed) }
+    fun expandSection() {
+        sectionCollapsed = false
+        sectionSpf.isScreeningCollapsed = false
     }
-    fun collapse() {
-        collapsed = true
-        spf.isCollapsed = true
+    fun collapseSection() {
+        sectionCollapsed = true
+        sectionSpf.isScreeningCollapsed = true
     }
-    fun toggleCollapse() {
-        collapsed = !collapsed
-        spf.isCollapsed = collapsed
-    }
-    fun checkMmsState(): Boolean {
-        return G.smsEnabled.value
-                && spf.isMmsEnabled
-                && Permission.receiveMMS.isGranted
-                && Permission.readSMS.isGranted
-    }
-
-    var mmsEnabled by remember { mutableStateOf(checkMmsState()) }
 
     val doubleSmsWarningTrigger = remember { mutableStateOf(false) }
 
@@ -104,171 +93,135 @@ fun GloballyEnabled() {
 
     Section(
         title = Str(R.string.screening),
-        horizontalPadding = 8
+        horizontalPadding = 8,
+        collapsed = sectionCollapsed,
+        onToggleCollapse = {
+            sectionCollapsed = !sectionCollapsed
+            sectionSpf.isScreeningCollapsed = sectionCollapsed
+        },
+        headerTrailing = {
+            RowVCenterSpaced(4) {
+                ResImage(
+                    R.drawable.ic_call,
+                    if (G.globallyEnabled.value && G.callEnabled.value) C.teal200 else C.disabled,
+                    M.size(20.dp)
+                )
+                ResImage(
+                    R.drawable.ic_sms,
+                    if (G.globallyEnabled.value && G.smsEnabled.value) C.teal200 else C.disabled,
+                    M.size(20.dp)
+                )
+                ResImage(
+                    R.drawable.ic_notification,
+                    if (G.globallyEnabled.value && G.notificationScreeningEnabled.value) C.teal200 else C.disabled,
+                    M.size(20.dp)
+                )
+            }
+            Box(modifier = M.padding(start = 10.dp))
+            SwitchBox(G.globallyEnabled.value) { enabled ->
+                spf.isGloballyEnabled = enabled
+                G.globallyEnabled.value = enabled
+                if (enabled) {
+                    if (!G.callEnabled.value && !G.smsEnabled.value) {
+                        expandSection()
+                    }
+                } else {
+                    collapseSection()
+                }
+            }
+        },
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(0.dp),
         ) {
             LabeledRow(
-                R.string.enable,
-                helpTooltip = Str(R.string.help_screening),
-                isCollapsed = collapsed,
-                toggleCollapse = {
-                    toggleCollapse()
-                },
-                content = {
-                    if (G.globallyEnabled.value) {
-                        Button(
-                            content = {
-                                RowVCenterSpaced(4) {
-                                    ResImage(
-                                        R.drawable.ic_call,
-                                        if (G.callEnabled.value) C.teal200 else C.disabled,
-                                        M.size(20.dp)
-                                    )
-                                    ResImage(
-                                        R.drawable.ic_sms,
-                                        if (G.smsEnabled.value) C.teal200 else C.disabled,
-                                        M.size(20.dp)
-                                    )
-                                    if (G.smsEnabled.value) {
-                                        ResImage(
-                                            R.drawable.ic_mms,
-                                            if (mmsEnabled) C.teal200 else C.disabled,
-                                            M.size(20.dp)
-                                        )
-                                    }
-                                }
+                labelId = R.string.calls,
+            ) {
+                SwitchBox(checked = G.callEnabled.value, onCheckedChange = { isTurningOn ->
+                    if (isTurningOn) {
+                        G.permissionChain.ask(
+                            ctx,
+                            listOf(
+                                PermissionWrapper(Permission.callScreening),
+                            )
+                        ) { granted ->
+                            if (granted) {
+                                spf.isCallEnabled = true
+                                G.callEnabled.value = true
                             }
-                        ) {
-                            toggleCollapse()
                         }
+                    } else {
+                        spf.isCallEnabled = false
+                        G.callEnabled.value = false
                     }
-                    SwitchBox(G.globallyEnabled.value) { enabled ->
-                        spf.isGloballyEnabled = enabled
-                        G.globallyEnabled.value = enabled
-                        if (enabled) {
-                            if (!G.callEnabled.value && !G.smsEnabled.value) {
-                                expand()
-                            }
-                        } else {
-                            collapse()
-                        }
-                    }
-                }
-            )
-            AnimatedVisibleV (!collapsed) {
-                Column(modifier = M.padding(start = 16.dp)) {
-                    LabeledRow(
-                        labelId = R.string.call,
-                    ) {
-                        SwitchBox(checked = G.callEnabled.value, onCheckedChange = { isTurningOn ->
-                            if (isTurningOn) {
-                                G.permissionChain.ask(
-                                    ctx,
-                                    listOf(
-                                        PermissionWrapper(Permission.callScreening),
-                                    )
-                                ) { granted ->
-                                    if (granted) {
-                                        spf.isCallEnabled = true
-                                        G.callEnabled.value = true
-                                    }
-                                }
-                            } else {
-                                spf.isCallEnabled = false
-                                G.callEnabled.value = false
-                            }
-                        })
-                    }
-
-                    LabeledRow(
-                        labelId = R.string.sms,
-                        helpTooltip = Str(R.string.help_enable_for_sms).format(Str(R.string.warning_double_sms))
-                    ) {
-                        SwitchBox(checked = G.smsEnabled.value, onCheckedChange = { isTurningOn ->
-                            if (isTurningOn) {
-                                G.permissionChain.ask(
-                                    ctx,
-                                    listOf(
-                                        PermissionWrapper(Permission.receiveSMS),
-                                        // isOptional because some might prefer "Optimized" than "Unrestricted"
-                                        PermissionWrapper(Permission.batteryUnRestricted, isOptional = true),
-                                    )
-                                ) { granted ->
-                                    if (granted) {
-                                        spf.isSmsEnabled = true
-                                        G.smsEnabled.value = true
-                                    }
-                                }
-                            } else {
-                                spf.isSmsEnabled = false
-                                G.smsEnabled.value = false
-                            }
-                        })
-                    }
-
-                    LabeledRow(
-                        labelId = R.string.notifications,
-                        helpTooltip = Str(R.string.help_notification_screening),
-                    ) {
-                        if (G.notificationScreeningEnabled.value) {
-                            AppNotificationsPicker(modifier = M.padding(end = 8.dp))
-                        }
-                        SwitchBox(checked = G.notificationScreeningEnabled.value, onCheckedChange = { isTurningOn ->
-                            if (isTurningOn) {
-                                G.permissionChain.ask(
-                                    ctx,
-                                    listOf(
-                                        PermissionWrapper(Permission.notificationAccess),
-                                    )
-                                ) { granted ->
-                                    if (granted) {
-                                        spf.isNotificationScreeningEnabled = true
-                                        G.notificationScreeningEnabled.value = true
-                                    }
-                                }
-                            } else {
-                                spf.isNotificationScreeningEnabled = false
-                                G.notificationScreeningEnabled.value = false
-                            }
-                        })
-                    }
-
-                    AnimatedVisibleV(G.smsEnabled.value) {
-                        LabeledRow(
-                            labelId = R.string.mms,
-                            helpTooltip = Str(R.string.help_enable_for_mms),
-                        ) {
-                            SwitchBox(checked = mmsEnabled, onCheckedChange = { isTurningOn ->
-                                if (isTurningOn) {
-                                    G.permissionChain.ask(
-                                        ctx,
-                                        listOf(
-                                            PermissionWrapper(Permission.receiveMMS),
-                                            PermissionWrapper(Permission.readSMS),
-                                            PermissionWrapper(Permission.batteryUnRestricted, isOptional = true),
-                                        )
-                                    ) { granted ->
-                                        if (granted) {
-                                            spf.isMmsEnabled = true
-                                            mmsEnabled = checkMmsState()
-                                        }
-                                    }
-                                } else {
-                                    spf.isMmsEnabled = false
-                                    mmsEnabled = checkMmsState()
-                                }
-                            })
-                        }
-                    }
-                    LabeledRow(
-                        labelId = R.string.rcs,
-                        helpTooltip = Str(R.string.help_rcs_message),
-                        color = C.disabled,
-                    ) {}
-                }
+                })
             }
+
+            LabeledRow(
+                labelId = R.string.sms_mms,
+                helpTooltip = Str(R.string.help_enable_for_sms).format(Str(R.string.warning_double_sms))
+            ) {
+                SwitchBox(checked = G.smsEnabled.value, onCheckedChange = { isTurningOn ->
+                    if (isTurningOn) {
+                        G.permissionChain.ask(
+                            ctx,
+                            listOf(
+                                PermissionWrapper(Permission.receiveSMS),
+                                // isOptional because some might prefer "Optimized" than "Unrestricted"
+                                PermissionWrapper(Permission.batteryUnRestricted, isOptional = true),
+                                // MMS screening rides along with SMS, no separate toggle;
+                                // isOptional so declining it doesn't block enabling SMS screening.
+                                PermissionWrapper(Permission.receiveMMS, isOptional = true),
+                                PermissionWrapper(Permission.readSMS, isOptional = true),
+                            )
+                        ) { granted ->
+                            if (granted) {
+                                spf.isSmsEnabled = true
+                                G.smsEnabled.value = true
+                            }
+                        }
+                    } else {
+                        spf.isSmsEnabled = false
+                        G.smsEnabled.value = false
+                    }
+                })
+            }
+
+            LabeledRow(
+                labelId = R.string.notifications,
+                helpTooltip = Str(R.string.help_notification_screening),
+            ) {
+                if (G.notificationScreeningEnabled.value) {
+                    AppNotificationsPicker(modifier = M.padding(end = 8.dp))
+                }
+                SwitchBox(checked = G.notificationScreeningEnabled.value, onCheckedChange = { isTurningOn ->
+                    if (isTurningOn) {
+                        G.permissionChain.ask(
+                            ctx,
+                            listOf(
+                                PermissionWrapper(Permission.notificationAccess),
+                            )
+                        ) { granted ->
+                            if (granted) {
+                                spf.isNotificationScreeningEnabled = true
+                                G.notificationScreeningEnabled.value = true
+                            }
+                        }
+                    } else {
+                        spf.isNotificationScreeningEnabled = false
+                        G.notificationScreeningEnabled.value = false
+                    }
+                })
+            }
+
+            // MMS and RCS toggles removed from Screening:
+            // - MMS reception is always on whenever SMS screening is (see WapPushReceiver,
+            //   gated only on isSmsEnabled), there's no separate master switch for it.
+            //   Whether a given rule actually applies to MMS content is now controlled
+            //   per-rule via the "Apply to" section on Number/Text Rules instead.
+            // - RCS was a permanently-disabled placeholder row that instructed users to
+            //   downgrade to an unencrypted messaging app in order to enable it, which is
+            //   actively harmful security advice; it never had a working implementation.
         }
     }
 

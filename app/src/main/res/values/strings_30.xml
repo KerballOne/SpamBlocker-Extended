@@ -4,7 +4,7 @@
         <![CDATA[
         Screens notifications from the apps chosen with the icon picker on the right. <br>
         <br>
-        Number Rules and Message Rules with <b>Title</b> / <b>Body</b> enabled under <b>Apply to Notifications</b> are checked against the notification, the same way as a real incoming SMS. <br>
+        Number Rules and Text Rules with <b>Title</b> / <b>Body</b> enabled under <b>Apply to Notifications</b> are checked against the notification, the same way as a real incoming SMS. <br>
         If the result is <b>Block</b>, the notification is dismissed. <br>
         <br>
         This works independently of the <b>SMS</b> switch above, and requires <b>Notification Access</b> permission.

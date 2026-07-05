@@ -49,6 +49,7 @@ import spam.blocker.R
 import spam.blocker.def.Def
 import spam.blocker.def.Def.FLAG_REGEX_CASE_SENSITIVE
 import spam.blocker.def.Def.FLAG_REGEX_IGNORE_CC
+import spam.blocker.def.Def.FLAG_REGEX_IMPLIED_CONTAINS
 import spam.blocker.def.Def.FLAG_REGEX_RAW_NUMBER
 import spam.blocker.def.Def.MAP_REGEX_FLAGS
 import spam.blocker.ui.M
@@ -534,7 +535,9 @@ fun RegexInputBox(
     label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null, // it can be a clickable icon
-    enableNumberFlags: Boolean = false, // enable 2 more flags
+    availableFlags: Set<Int> = setOf(
+        FLAG_REGEX_RAW_NUMBER, FLAG_REGEX_IGNORE_CC, FLAG_REGEX_CASE_SENSITIVE
+    ), // which regex flags are selectable for this rule type
     helpTooltipId: Int? = null,
     maxTextLength: Int? = null,
     testable: Boolean = false,
@@ -625,16 +628,34 @@ fun RegexInputBox(
         singleLine = false,
         maxLines = 10,
         trailingIcon = {
-            val hasI =
-                remember { mutableStateOf(regexFlags.intValue.hasFlag(FLAG_REGEX_CASE_SENSITIVE)) }
-            val hasR =
-                remember { mutableStateOf(regexFlags.intValue.hasFlag(FLAG_REGEX_RAW_NUMBER)) }
-            val hasCC =
-                remember { mutableStateOf(regexFlags.intValue.hasFlag(FLAG_REGEX_IGNORE_CC)) }
-
             // Validate the regex on flags change, it should disappear for `+123` when RawMode is turned on.
             LaunchedEffect(regexFlags.intValue) {
                 errorStr = validateError()
+            }
+
+            val flagLabels = remember {
+                mapOf(
+                    FLAG_REGEX_RAW_NUMBER to ctx.getString(R.string.label_regex_flag_raw_number),
+                    FLAG_REGEX_IGNORE_CC to ctx.getString(R.string.label_regex_flag_ignore_cc),
+                    FLAG_REGEX_CASE_SENSITIVE to ctx.getString(R.string.label_regex_flag_case_sensitive),
+                    FLAG_REGEX_IMPLIED_CONTAINS to ctx.getString(R.string.label_regex_flag_contains),
+                )
+            }
+
+            // Ordered list of flag bits to show, filtered down to what's relevant for this rule type
+            val orderedFlags = remember(availableFlags) {
+                listOf(
+                    FLAG_REGEX_RAW_NUMBER,
+                    FLAG_REGEX_IGNORE_CC,
+                    FLAG_REGEX_CASE_SENSITIVE,
+                    FLAG_REGEX_IMPLIED_CONTAINS,
+                ).filter { it in availableFlags }
+            }
+
+            val flagStates = remember {
+                orderedFlags.associateWith { flag ->
+                    mutableStateOf(regexFlags.intValue.hasFlag(flag))
+                }
             }
 
             val dropdownItems = remember {
@@ -650,53 +671,26 @@ fun RegexInputBox(
                     DividerItem(thickness = 1),
                 )
 
-                val ret = list + ctx.resources.getStringArray(R.array.regex_flags_list)
-                    .mapIndexed { idx, label ->
-                        CheckItem(
-                            label = label,
-                            enabled = when(idx) {
-                                0 -> enableNumberFlags
-                                1 -> enableNumberFlags
-                                else -> true
-                            },
-                            trailingIcon = {
-                                Text(
-                                    text = when (idx) {
-                                        0 -> MAP_REGEX_FLAGS[FLAG_REGEX_RAW_NUMBER]!!
-                                        1 -> MAP_REGEX_FLAGS[FLAG_REGEX_IGNORE_CC]!!
-                                        else -> MAP_REGEX_FLAGS[FLAG_REGEX_CASE_SENSITIVE]!!
-                                    },
-                                    color = C.regexFlags,
-                                    modifier = M
-                                        .defaultMinSize(minWidth = 24.dp)
-                                        .wrapContentWidth(Alignment.CenterHorizontally),
-                                )
-
-                            },
-                            state = when (idx) {
-                                0 -> hasR
-                                1 -> hasCC
-                                else -> hasI // 2
-                            },
-                            onCheckChange = { checked ->
-                                when (idx) {
-                                    0 -> hasR.value = checked
-                                    1 -> hasCC.value = checked
-                                    2 -> hasI.value = checked
-                                }
-                                val newVal = regexFlags.intValue.setFlag(
-                                    when (idx) {
-                                        0 -> FLAG_REGEX_RAW_NUMBER
-                                        1 -> FLAG_REGEX_IGNORE_CC
-                                        else -> FLAG_REGEX_CASE_SENSITIVE // 2
-                                    },
-                                    checked
-                                )
-
-                                onFlagsChange(newVal)
-                            },
-                        )
-                    }
+                val ret = list + orderedFlags.map { flag ->
+                    CheckItem(
+                        label = flagLabels[flag]!!,
+                        trailingIcon = {
+                            Text(
+                                text = MAP_REGEX_FLAGS[flag]!!,
+                                color = C.regexFlags,
+                                modifier = M
+                                    .defaultMinSize(minWidth = 24.dp)
+                                    .wrapContentWidth(Alignment.CenterHorizontally),
+                            )
+                        },
+                        state = flagStates[flag]!!,
+                        onCheckChange = { checked ->
+                            flagStates[flag]!!.value = checked
+                            val newVal = regexFlags.intValue.setFlag(flag, checked)
+                            onFlagsChange(newVal)
+                        },
+                    )
+                }
                 ret
             }
 

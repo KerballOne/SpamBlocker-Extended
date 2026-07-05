@@ -21,6 +21,9 @@ import spam.blocker.util.regexMatches
 open class HistoryViewModel(
     val forType: Int,
     val table: HistoryTable,
+    // Only meaningful for the `sms` table, which is shared between real SMS and
+    // screened-notification records: null shows both, otherwise filters to one source.
+    val sourceFilter: Int? = null,
 ) : ViewModel() {
     val records = mutableStateListOf<HistoryRecord>()
     val searchEnabled = mutableStateOf(false)
@@ -33,7 +36,7 @@ open class HistoryViewModel(
         val filterRegex = fuzzifyFilter()
 
         records.addAll(table.listRecords(ctx).filter {
-            isVisible(ctx, it, filterRegex)
+            (sourceFilter == null || it.source == sourceFilter) && isVisible(ctx, it, filterRegex)
         })
     }
 
@@ -81,4 +84,6 @@ open class HistoryViewModel(
 
 class CallViewModel : HistoryViewModel(Def.ForNumber, CallTable())
 
-class SmsViewModel : HistoryViewModel(Def.ForSms, SmsTable())
+class SmsViewModel : HistoryViewModel(Def.ForSms, SmsTable(), sourceFilter = Def.SOURCE_SMS)
+
+class NotificationViewModel : HistoryViewModel(Def.ForSms, SmsTable(), sourceFilter = Def.SOURCE_NOTIFICATION)

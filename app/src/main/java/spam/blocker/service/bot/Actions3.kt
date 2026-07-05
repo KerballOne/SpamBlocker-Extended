@@ -1204,7 +1204,6 @@ class ModifyNumber(
             regexStr = from,
             label = { Text(Str(R.string.replace_from)) },
             regexFlags = fromFlagsState,
-            enableNumberFlags = true,
             onRegexStrChange = { newVal, hasError ->
                 if (!hasError) {
                     from = newVal

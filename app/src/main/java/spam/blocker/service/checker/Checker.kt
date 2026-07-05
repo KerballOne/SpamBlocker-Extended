@@ -70,6 +70,7 @@ class CheckContext(
     val callDetails: Call.Details? = null,
     val simSlot: Int?, // on which SIM slot is the call ringing on
     val smsContent: String? = null,
+    val isMms: Boolean = false,
     val logger: ILogger? = null,
     val startTimeMillis: Long = System.currentTimeMillis(),
     val checkers: List<IChecker>,
@@ -1017,9 +1018,12 @@ class Checker { // for namespace only
         }
 
         open fun isEnabled(cCtx: CheckContext): Boolean {
-            // 0. check if the rule is enabled for call/sms
+            // 0. check if the rule is enabled for call/sms/mms
             val isForSMS = cCtx.smsContent != null
-            if (isForSMS && !isConfigEnabledForSms()) // for sms
+            if (isForSMS && cCtx.isMms && !rule.isForMms()) // for mms
+                return false
+
+            if (isForSMS && !cCtx.isMms && !isConfigEnabledForSms()) // for sms
                 return false
 
             if (!isForSMS && !isConfigEnabledForCall()) // for call
@@ -1761,10 +1765,12 @@ class Checker { // for namespace only
             simSlot: Int? = null,
             logger: ILogger? = null,
             checkers: List<IChecker> = defaultSmsCheckers(ctx),
+            isMms: Boolean = false,
         ): Triple<ICheckResult, String?, Boolean> {
             val cCtx = CheckContext(
                 rawNumber = rawNumber,
                 smsContent = messageBody,
+                isMms = isMms,
                 logger = logger,
                 checkers = checkers,
                 simSlot = simSlot,

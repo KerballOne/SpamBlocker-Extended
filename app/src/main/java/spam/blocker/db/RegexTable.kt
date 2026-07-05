@@ -99,10 +99,16 @@ data class RegexRule(
     var priority: Int = 0,
     var isBlacklist: Boolean = true,
 
-    var flags: Int = Def.FLAG_FOR_SMS or Def.FLAG_FOR_CALL, // applies to SMS or Call or both
+    var flags: Int = Def.FLAG_FOR_SMS or Def.FLAG_FOR_CALL or Def.FLAG_FOR_MMS, // applies to SMS/MMS/Call
 
     @Serializable(with = CompatibleChannelSerializer::class)
     var channel: String = if(isBlacklist) Def.DEF_SPAM_CHANNEL else CHANNEL_HIGH, // notification channel
+
+    // Custom alert (ringtone/vibration/flashlight/wake-screen) fired when THIS rule allows a
+    // screened notification. Null/empty means fall back to the app-level default alert config
+    // under Basic Rules Notification > "Notification Allowed Alert". Only meaningful for
+    // Allow-type rules; irrelevant for Block-type rules.
+    var alertConfigJson: String = "",
 
     var schedule: String = "",
     var blockType: Int = Def.DEF_BLOCK_TYPE,
@@ -135,6 +141,10 @@ data class RegexRule(
 
     fun isForSms(): Boolean {
         return flags.hasFlag(Def.FLAG_FOR_SMS)
+    }
+
+    fun isForMms(): Boolean {
+        return flags.hasFlag(Def.FLAG_FOR_MMS)
     }
 
     fun isForNotifTitle(): Boolean {
@@ -192,20 +202,7 @@ data class RegexRule(
             }
 
 
-            // 3. Regex flags
-            // format:
-            //   imdl .*   <-   imdl particular.*
-            val imdlc = patternFlags.enabledRegexFlagsStr()
-            withStyle(
-                style = SpanStyle(
-                    fontSize = 12.sp,
-                    color = C.regexFlags
-                )
-            ) {
-                append(if (imdlc.isEmpty()) "" else "$imdlc ")
-            }
-
-            // 4. regex
+            // 3. regex
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = regexColor)) {
                 append(
                     // For old xml layout, when the TextView has maxLines=10, it will truncate the
@@ -262,6 +259,10 @@ fun defaultRegexRuleByType(forType: Int): RegexRule {
             flags = flags.setFlag(Def.FLAG_FOR_CONTENT, true)
             isBlacklist = false
         }
+        if (forType == Def.ForSms) { // Text Rules default to "Contains" matching
+            patternModeType = ModeType.SmsContent
+            patternFlags = Def.DefaultTextRuleRegexFlags
+        }
     }
 }
 
@@ -309,6 +310,7 @@ abstract class RegexTable {
             blockTypeConfig = it.getStringOrNull(it.getColumnIndex(Db.COLUMN_BLOCK_TYPE_CONFIG))
                 ?: "",
             simSlot = it.getIntOrNull(it.getColumnIndex(Db.COLUMN_SIM_SLOT)),
+            alertConfigJson = it.getStringOrNull(it.getColumnIndex(Db.COLUMN_ALERT_CONFIG)) ?: "",
         )
     }
 
@@ -424,6 +426,7 @@ abstract class RegexTable {
         cv.put(Db.COLUMN_BLOCK_TYPE, f.blockType)
         cv.put(Db.COLUMN_BLOCK_TYPE_CONFIG, f.blockTypeConfig)
         cv.put(Db.COLUMN_SIM_SLOT, f.simSlot)
+        cv.put(Db.COLUMN_ALERT_CONFIG, f.alertConfigJson)
 
         resetNotificationScreeningCache()
         return db.insert(tableName(), null, cv)
@@ -448,6 +451,7 @@ abstract class RegexTable {
         cv.put(Db.COLUMN_BLOCK_TYPE, f.blockType)
         cv.put(Db.COLUMN_BLOCK_TYPE_CONFIG, f.blockTypeConfig)
         cv.put(Db.COLUMN_SIM_SLOT, f.simSlot)
+        cv.put(Db.COLUMN_ALERT_CONFIG, f.alertConfigJson)
 
         resetNotificationScreeningCache()
         db.insert(tableName(), null, cv)
@@ -471,6 +475,7 @@ abstract class RegexTable {
         cv.put(Db.COLUMN_BLOCK_TYPE, f.blockType)
         cv.put(Db.COLUMN_BLOCK_TYPE_CONFIG, f.blockTypeConfig)
         cv.put(Db.COLUMN_SIM_SLOT, f.simSlot)
+        cv.put(Db.COLUMN_ALERT_CONFIG, f.alertConfigJson)
 
         resetNotificationScreeningCache()
         return db.update(tableName(), cv, "${Db.COLUMN_ID} = $id", null) >= 0

@@ -138,6 +138,37 @@ class CheckItem(
     }
 }
 
+// A button showing a comma-separated readout of the currently-checked options
+// (or a placeholder color when none are checked), that opens a multi-select
+// checkbox dropdown when tapped. Used e.g. for "Apply to: Call/SMS/MMS".
+@Composable
+fun MultiSelectDropdownButton(
+    options: List<Pair<String, MutableState<Boolean>>>, // label to checked-state
+    modifier: Modifier = Modifier,
+) {
+    val C = G.palette
+
+    val summary = options.filter { it.second.value }.joinToString(", ") { it.first }
+
+    val items = remember(options) {
+        options.map { (label, state) ->
+            CheckItem(
+                state = state,
+                label = label,
+                onCheckChange = { state.value = it },
+            )
+        }
+    }
+
+    DropdownWrapper(items = items, modifier = modifier) { expanded ->
+        StrokeButton(
+            label = summary.ifEmpty { "-" },
+            color = if (summary.isEmpty()) C.disabled else C.textGrey,
+            onClick = { expanded.value = true },
+        )
+    }
+}
+
 @Composable
 fun DropdownWrapper(
     items: List<IMenuItem>,

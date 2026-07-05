@@ -177,7 +177,6 @@ class spf { // for namespace only
         var isCollapsed by bool("global_enable_collapsed", true)
         var isCallEnabled by bool("call_enable")
         var isSmsEnabled by bool("sms_enable")
-        var isMmsEnabled by bool("mms_enable")
         var isNotificationScreeningEnabled by bool("notification_screening_enable")
 
         var language by str("language")
@@ -207,6 +206,18 @@ class spf { // for namespace only
         }
 
         var timestamp by long("emergency_last_timestamp")
+    }
+
+    // Collapse state of the top-level Section cards on the Settings screen, default collapsed.
+    class SectionCollapse(ctx: Context) : SharedPref(ctx) {
+        var isScreeningCollapsed by bool("section_screening_collapsed", true)
+        var isQuickSettingsCollapsed by bool("section_quick_settings_collapsed", true)
+        var isNumberRulesCollapsed by bool("section_number_rules_collapsed", true)
+        var isTextRulesCollapsed by bool("section_text_rules_collapsed", true)
+        var isAdvancedRulesCollapsed by bool("section_advanced_rules_collapsed", true)
+        var isActionsCollapsed by bool("section_actions_collapsed", true)
+        var isIntegrationsCollapsed by bool("section_integrations_collapsed", true)
+        var isMiscellaneousCollapsed by bool("section_miscellaneous_collapsed", true)
     }
 
     class RegexOptions(ctx: Context) : SharedPref(ctx) {
@@ -240,6 +251,12 @@ class spf { // for namespace only
     }
     class ApiReportOptions(ctx: Context) : SharedPref(ctx) {
         var isListCollapsed by bool("api_report_list_collapsed")
+    }
+
+    // Third-party apps querying PublicSMSScreeningService to decide whether to
+    // hide/block a message or number internally, independent of SMS screening.
+    class ThirdPartyApps(ctx: Context) : SharedPref(ctx) {
+        var isEnabled by bool("third_party_apps_enabled")
     }
 
     class HistoryOptions(ctx: Context) : SharedPref(ctx) {
@@ -429,6 +446,43 @@ class spf { // for namespace only
             val l = getList().toMutableList()
             l.remove(pkgToRemove)
             setList(l)
+        }
+    }
+
+    // Per-app custom alert (ringtone/vibration/flashlight/wake-screen) fired by SpamBlocker
+    // itself for a notification that Notification Screening explicitly ALLOWED. Independent
+    // from `AppNotifications` above (which only controls which apps are screened at all).
+    @Serializable
+    data class AppAlertConfig(
+        var pkgName: String,
+        var ringtone: String = "", // Uri.toString(), empty = no sound
+        var vibrate: Boolean = false,
+        var flashlight: Boolean = false,
+        var wakeScreen: Boolean = false,
+    )
+    class AllowedNotificationAlerts(ctx: Context) : SharedPref(ctx) {
+        var configListJson by str("allowed_notification_alerts", "[]")
+
+        fun getList(): List<AppAlertConfig> {
+            return try {
+                Json.decodeFromString<List<AppAlertConfig>>(configListJson)
+            } catch (_: Exception) {
+                listOf()
+            }
+        }
+        fun setList(list: List<AppAlertConfig>) {
+            configListJson = Json.encodeToString(list)
+        }
+        fun find(pkgName: String): AppAlertConfig? {
+            return getList().find { it.pkgName == pkgName }
+        }
+        fun save(config: AppAlertConfig) {
+            val l = getList().filter { it.pkgName != config.pkgName }.toMutableList()
+            l.add(config)
+            setList(l)
+        }
+        fun remove(pkgName: String) {
+            setList(getList().filter { it.pkgName != pkgName })
         }
     }
 

@@ -40,7 +40,13 @@ data class HistoryRecord(
     val anythingWrongScreening: Boolean = false,
     // if anything went wrong when reporting, e.g. timed out
     val anythingWrongReporting: Boolean = false,
+
+    // Only meaningful for the `sms` table.
+    val source: Int = Def.SOURCE_SMS,
 ) {
+    fun isFromNotification(): Boolean {
+        return source == Def.SOURCE_NOTIFICATION
+    }
     fun isBlocked(): Boolean {
         return Def.isBlocked(result)
     }
@@ -85,7 +91,8 @@ abstract class HistoryTable {
                         fullScreeningLog = it.getStringOrNull(it.getColumnIndex(Db.COLUMN_FULL_SCREENING_LOG)),
                         autoReportingLog = it.getStringOrNull(it.getColumnIndex(Db.COLUMN_AUTO_REPORTING_LOG)),
                         anythingWrongScreening = it.getIntOrNull(it.getColumnIndex(Db.COLUMN_ANYTHING_WRONG_SCREENING)) == 1,
-                        anythingWrongReporting = it.getIntOrNull(it.getColumnIndex(Db.COLUMN_ANYTHING_WRONG_REPORTING)) == 1
+                        anythingWrongReporting = it.getIntOrNull(it.getColumnIndex(Db.COLUMN_ANYTHING_WRONG_REPORTING)) == 1,
+                        source = it.getIntOrNull(it.getColumnIndex(Db.COLUMN_SOURCE)) ?: Def.SOURCE_SMS,
                     )
 
                     ret += rec
@@ -118,6 +125,7 @@ abstract class HistoryTable {
         cv.put(Db.COLUMN_AUTO_REPORTING_LOG, r.autoReportingLog)
         cv.put(Db.COLUMN_ANYTHING_WRONG_SCREENING, if(r.anythingWrongScreening) 1 else 0)
         cv.put(Db.COLUMN_ANYTHING_WRONG_REPORTING, if(r.anythingWrongReporting) 1 else 0)
+        cv.put(Db.COLUMN_SOURCE, r.source)
 
         return db.insert(tableName(), null, cv)
     }
@@ -140,6 +148,7 @@ abstract class HistoryTable {
         cv.put(Db.COLUMN_AUTO_REPORTING_LOG, r.autoReportingLog)
         cv.put(Db.COLUMN_ANYTHING_WRONG_SCREENING, if(r.anythingWrongScreening) 1 else 0)
         cv.put(Db.COLUMN_ANYTHING_WRONG_REPORTING, if(r.anythingWrongReporting) 1 else 0)
+        cv.put(Db.COLUMN_SOURCE, r.source)
 
         db.insert(tableName(), null, cv)
     }

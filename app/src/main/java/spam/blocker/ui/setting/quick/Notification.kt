@@ -6,8 +6,13 @@ import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.NotificationManager.IMPORTANCE_NONE
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -25,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.LifecycleResumeEffect
+import kotlinx.serialization.json.Json
 import spam.blocker.G
 import spam.blocker.R
 import spam.blocker.db.ContentRegexTable
@@ -33,6 +39,7 @@ import spam.blocker.db.Notification.ChannelTable
 import spam.blocker.db.NumberRegexTable
 import spam.blocker.ui.M
 import spam.blocker.ui.setting.LabeledRow
+import spam.blocker.ui.slightDiff
 import spam.blocker.ui.widgets.AnimatedVisibleV
 import spam.blocker.ui.widgets.ColorPickerButton
 import spam.blocker.ui.widgets.ComboBox
@@ -49,12 +56,14 @@ import spam.blocker.ui.widgets.MIME_ICON
 import spam.blocker.ui.widgets.PopupDialog
 import spam.blocker.ui.widgets.ResIcon
 import spam.blocker.ui.widgets.RingtonePicker
+import spam.blocker.ui.widgets.RowVCenter
 import spam.blocker.ui.widgets.RowVCenterSpaced
-import spam.blocker.ui.widgets.Section
 import spam.blocker.ui.widgets.Str
 import spam.blocker.ui.widgets.StrInputBox
 import spam.blocker.ui.widgets.StrokeButton
 import spam.blocker.ui.widgets.SwitchBox
+import spam.blocker.util.AppIcon
+import spam.blocker.util.AppInfo
 import spam.blocker.util.FileUtils.readDataFromUri
 import spam.blocker.util.Lambda2
 import spam.blocker.util.Notification
@@ -65,6 +74,8 @@ import spam.blocker.util.Notification.openChannelSettings
 import spam.blocker.util.Notification.reloadChannels
 import spam.blocker.util.RingtoneUtil
 import spam.blocker.util.spf
+import spam.blocker.util.spf.AppAlertConfig
+import androidx.compose.material3.Text
 import androidx.compose.foundation.Image as ComposeImage
 
 
@@ -529,73 +540,63 @@ fun Notification() {
         trigger = configTrigger,
         content = {
             Column {
+                // 1. Calls Blocked
                 if (G.callEnabled.value) {
-                    Section(
-                        title = Str(R.string.call_channel),
-                        bgColor = C.dialogBg
+                    LabeledRow(
+                        R.string.calls_blocked,
                     ) {
-                        // 1. Blocked Call
-                        LabeledRow(
-                            R.string.blocked,
-                        ) {
-                            ChannelPicker(
-                                spamCallChannelId,
-                            ) { _, newCh ->
-                                spf.spamCallChannelId = newCh.channelId
-                                spamCallChannelId = newCh.channelId
-                            }
+                        ChannelPicker(
+                            spamCallChannelId,
+                        ) { _, newCh ->
+                            spf.spamCallChannelId = newCh.channelId
+                            spamCallChannelId = newCh.channelId
                         }
                     }
                 }
 
-                if (G.smsEnabled.value) {
-                    Section(
-                        title = Str(R.string.sms_channel),
-                        bgColor = C.dialogBg
+                if (G.smsEnabled.value || G.notificationScreeningEnabled.value) {
+                    // 2. SMS/MMS Allowed
+                    LabeledRow(
+                        R.string.sms_mms_allowed,
                     ) {
-                        Column {
-                            // 1. Allowed SMS
-                            LabeledRow(
-                                R.string.allowed,
-                            ) {
-                                ChannelPicker(
-                                    validSmsChannelId,
-                                ) { _, ch ->
-                                    spf.validSmsChannelId = ch.channelId
-                                    validSmsChannelId = ch.channelId
-                                }
-                            }
-                            // 2. Blocked SMS
-                            LabeledRow(
-                                R.string.blocked,
-                            ) {
-                                ChannelPicker(
-                                    spamSmsChannelId,
-                                ) { _, ch ->
-                                    spf.spamSmsChannelId = ch.channelId
-                                    spamSmsChannelId = ch.channelId
-                                }
-                            }
-                            // 3. Active SMS Chat
-                            LabeledRow(
-                                R.string.sms_chat,
-                            ) {
-                                ChannelPicker(
-                                    activeSmsChatChannelId,
-                                ) { _, ch ->
-                                    spf.smsChatChannelId = ch.channelId
-                                    activeSmsChatChannelId = ch.channelId
-                                }
-                            }
+                        ChannelPicker(
+                            validSmsChannelId,
+                        ) { _, ch ->
+                            spf.validSmsChannelId = ch.channelId
+                            validSmsChannelId = ch.channelId
+                        }
+                    }
+                    // 3. SMS/MMS Blocked
+                    LabeledRow(
+                        R.string.sms_mms_blocked,
+                    ) {
+                        ChannelPicker(
+                            spamSmsChannelId,
+                        ) { _, ch ->
+                            spf.spamSmsChannelId = ch.channelId
+                            spamSmsChannelId = ch.channelId
+                        }
+                    }
+                    // 4. Active Chat
+                    LabeledRow(
+                        R.string.active_chat,
+                        helpTooltip = Str(R.string.help_active_chat),
+                    ) {
+                        ChannelPicker(
+                            activeSmsChatChannelId,
+                        ) { _, ch ->
+                            spf.smsChatChannelId = ch.channelId
+                            activeSmsChatChannelId = ch.channelId
                         }
                     }
                 }
+
             }
         }
     )
 
     LabeledRow(
-        R.string.notification,
+        R.string.basic_rules_notifications,
         helpTooltip = Str(R.string.help_notification),
         content = {
             RowVCenterSpaced(4) {
@@ -617,7 +618,7 @@ fun Notification() {
                 }
 
                 // SMS Button
-                if (G.smsEnabled.value) {
+                if (G.smsEnabled.value || G.notificationScreeningEnabled.value) {
                     val chValid = G.notificationChannels.find {
                         it.channelId == validSmsChannelId
                     }
@@ -644,6 +645,197 @@ fun Notification() {
                     }
                 }
             }
+        }
+    )
+}
+
+// "Basic Rules Alerts": collapsible section, one row per app currently selected for
+// Notification Screening, each with its own Vibration/Flashlight/Wake-Screen toggle icons
+// and a ringtone button. Independent from Notification() ("Basic Rules Notifications")
+// above, since notifications and alerts serve different purposes (see help text).
+@Composable
+fun Alerts() {
+    val ctx = LocalContext.current
+    val C = G.palette
+
+    if (!G.notificationScreeningEnabled.value) {
+        return
+    }
+
+    var collapsed by rememberSaveable { mutableStateOf(true) }
+
+    val screenedPkgs = remember { spf.AppNotifications(ctx).getList() }
+
+    LabeledRow(
+        R.string.basic_rules_alerts,
+        helpTooltip = Str(R.string.help_notification_allowed_alert),
+        isCollapsed = collapsed,
+        toggleCollapse = { collapsed = !collapsed },
+        content = {}
+    )
+    AnimatedVisibleV(!collapsed) {
+        if (screenedPkgs.isEmpty()) {
+            GreyText(Str(R.string.no_screened_apps))
+        } else {
+            Column(modifier = M.padding(start = 16.dp)) {
+                screenedPkgs.forEachIndexed { index, pkgName ->
+                    AppAlertConfigRow(pkgName)
+
+                    if (index < screenedPkgs.lastIndex) {
+                        HorizontalDivider(thickness = 1.dp, color = C.dialogBg.slightDiff())
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Reusable Vibration/Flashlight/Wake-Screen toggle icons + ringtone button row.
+// Used both for the per-app config (Basic Rules Notification > Notification Allowed Alert)
+// and the per-rule config (Number/Text Rule edit dialog > Alert).
+@Composable
+fun AlertConfigControls(
+    initConfig: AppAlertConfig,
+    onSave: (AppAlertConfig) -> Unit,
+) {
+    val ctx = LocalContext.current
+    val C = G.palette
+
+    var ringtone by remember { mutableStateOf(initConfig.ringtone) }
+    var ringtoneName by remember(ringtone) {
+        mutableStateOf(
+            if (ringtone.isEmpty()) "" else RingtoneUtil.getName(ctx, ringtone.toUri())
+        )
+    }
+    var vibrate by remember { mutableStateOf(initConfig.vibrate) }
+    var flashlight by remember { mutableStateOf(initConfig.flashlight) }
+    var wakeScreen by remember { mutableStateOf(initConfig.wakeScreen) }
+
+    fun save() {
+        onSave(
+            initConfig.copy(
+                ringtone = ringtone,
+                vibrate = vibrate,
+                flashlight = flashlight,
+                wakeScreen = wakeScreen,
+            )
+        )
+    }
+
+    val soundTrigger = remember { mutableStateOf(false) }
+    RingtonePicker(soundTrigger) { uri, name ->
+        if (uri != null) {
+            ringtone = uri
+            ringtoneName = name ?: ""
+            save()
+        }
+    }
+
+    RowVCenterSpaced(10) {
+        // Vibration
+        ResIcon(
+            R.drawable.ic_vibration,
+            modifier = M
+                .size(20.dp)
+                .clickable { vibrate = !vibrate; save() },
+            color = if (vibrate) C.teal200 else C.disabled,
+        )
+        // Flashlight
+        ResIcon(
+            R.drawable.ic_flashlight,
+            modifier = M
+                .size(20.dp)
+                .clickable { flashlight = !flashlight; save() },
+            color = if (flashlight) C.teal200 else C.disabled,
+        )
+        // Wake Screen
+        ResIcon(
+            R.drawable.ic_wake_screen,
+            modifier = M
+                .size(20.dp)
+                .clickable { wakeScreen = !wakeScreen; save() },
+            color = if (wakeScreen) C.teal200 else C.disabled,
+        )
+
+        RowVCenter(modifier = M.weight(1f), horizontalArrangement = Arrangement.End) {
+            ResIcon(
+                R.drawable.ic_music,
+                modifier = M.size(20.dp),
+                color = C.disabled,
+            )
+            Spacer(modifier = M.width(4.dp))
+            GreyButton(
+                if (ringtone.isEmpty()) Str(R.string.none) else ringtoneName,
+            ) {
+                soundTrigger.value = true
+            }
+        }
+    }
+}
+
+// A single app's row: label + AlertConfigControls, backed by the per-app AllowedNotificationAlerts store.
+@Composable
+fun AppAlertConfigRow(
+    pkgName: String,
+) {
+    val ctx = LocalContext.current
+    val C = G.palette
+    val spf = spf.AllowedNotificationAlerts(ctx)
+
+    val initConfig = remember { spf.find(pkgName) ?: AppAlertConfig(pkgName = pkgName) }
+
+    Column(modifier = M.padding(vertical = 4.dp)) {
+        RowVCenterSpaced(10) {
+            AppIcon(pkgName)
+            Text(
+                AppInfo.fromPackage(ctx, pkgName).label,
+                color = C.infoBlue,
+                modifier = M.weight(1f),
+            )
+        }
+        Column(modifier = M.padding(start = 30.dp, top = 4.dp)) {
+            AlertConfigControls(initConfig = initConfig, onSave = { spf.save(it) })
+        }
+    }
+}
+
+// Per-rule Alert config popup: same controls as the per-app one, but backed by a single
+// RegexRule's own `alertConfigJson` field instead of the app-level store. Empty JSON means
+// "use the app-level default", so a "Reset to Default" option is offered.
+@Composable
+fun RuleAlertConfigDialog(
+    trigger: MutableState<Boolean>,
+    alertConfigJson: MutableState<String>,
+) {
+    if (!trigger.value) {
+        return
+    }
+
+    val C = G.palette
+
+    val initConfig = remember {
+        alertConfigJson.value
+            .takeIf { it.isNotEmpty() }
+            ?.let { runCatching { Json.decodeFromString<AppAlertConfig>(it) }.getOrNull() }
+            ?: AppAlertConfig(pkgName = "")
+    }
+
+    PopupDialog(
+        trigger = trigger,
+        buttons = {
+            StrokeButton(
+                label = Str(R.string.reset_to_default),
+                color = C.textGrey,
+            ) {
+                alertConfigJson.value = ""
+                trigger.value = false
+            }
+        },
+        content = {
+            AlertConfigControls(
+                initConfig = initConfig,
+                onSave = { alertConfigJson.value = Json.encodeToString(it) },
+            )
         }
     )
 }

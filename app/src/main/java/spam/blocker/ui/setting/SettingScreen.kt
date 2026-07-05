@@ -1,6 +1,7 @@
 package spam.blocker.ui.setting
 
 import android.view.ViewTreeObserver
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -45,6 +46,7 @@ import spam.blocker.ui.setting.misc.BackupRestore
 import spam.blocker.ui.setting.misc.FAQ
 import spam.blocker.ui.setting.misc.Language
 import spam.blocker.ui.setting.misc.Theme
+import spam.blocker.ui.setting.quick.Alerts
 import spam.blocker.ui.setting.quick.Answered
 import spam.blocker.ui.setting.quick.BlockType
 import spam.blocker.ui.setting.quick.CallerID
@@ -62,11 +64,11 @@ import spam.blocker.ui.setting.regex.PushAlertHeader
 import spam.blocker.ui.setting.regex.PushAlertList
 import spam.blocker.ui.setting.regex.PushAlertViewModel
 import spam.blocker.ui.setting.regex.RegexHeader
+import spam.blocker.ui.setting.regex.RegexHeaderMenuButton
 import spam.blocker.ui.setting.regex.RegexList
 import spam.blocker.ui.setting.regex.RegexViewModel
 import spam.blocker.ui.setting.regex.SmsAlert
 import spam.blocker.ui.setting.regex.SmsBomb
-import spam.blocker.ui.slightDiff
 import spam.blocker.ui.theme.White
 import spam.blocker.ui.widgets.AnimatedVisibleV
 import spam.blocker.ui.widgets.BalloonQuestionMark
@@ -77,6 +79,7 @@ import spam.blocker.ui.widgets.NormalColumnScrollbar
 import spam.blocker.ui.widgets.RowVCenter
 import spam.blocker.ui.widgets.RowVCenterSpaced
 import spam.blocker.ui.widgets.SearchBox
+import spam.blocker.ui.widgets.AllowBlockCountBadge
 import spam.blocker.ui.widgets.Section
 import spam.blocker.ui.widgets.Str
 import spam.blocker.util.Lambda
@@ -137,6 +140,8 @@ fun SettingScreen() {
     val conflictTrigger = remember { mutableStateOf(false) }
     PriorityConflictDialog(trigger = conflictTrigger, conflicts = priorityConflicts)
 
+    val sectionSpf = spf.SectionCollapse(ctx)
+
     // Show text "Testing" on the testing tube icon, and hide this text once it's clicked.
     val spf = spf.Global(ctx)
     var alsoShowTestButtonLabel by remember {
@@ -176,10 +181,16 @@ fun SettingScreen() {
                 // global
                 GloballyEnabled()
 
-                // quick settings
+                // basic rules
+                var quickSettingsCollapsed by remember { mutableStateOf(sectionSpf.isQuickSettingsCollapsed) }
                 Section(
-                    title = Str(R.string.quick_settings),
-                    horizontalPadding = 8
+                    title = Str(R.string.basic_rules),
+                    horizontalPadding = 8,
+                    collapsed = quickSettingsCollapsed,
+                    onToggleCollapse = {
+                        quickSettingsCollapsed = !quickSettingsCollapsed
+                        sectionSpf.isQuickSettingsCollapsed = quickSettingsCollapsed
+                    },
                 ) {
                     Column {
                         Contacts()
@@ -192,39 +203,88 @@ fun SettingScreen() {
                         EmergencySituation()
                         RecentApps()
                         MeetingMode()
-
-                        HorizontalDivider(
-                            thickness = 1.dp,
-                            color = G.palette.background.slightDiff()
-                        )
-
-                        BlockType()
-                        Notification()
-                        CallerID()
                     }
                 }
 
+                // Number Rules
+                var numberRulesCollapsed by remember { mutableStateOf(sectionSpf.isNumberRulesCollapsed) }
+                LaunchedEffect(true) { G.NumberRuleVM.reloadDbAndOptions(ctx) }
                 Section(
-                    title = Str(R.string.regex_settings),
-                    horizontalPadding = 8
+                    title = Str(R.string.label_number_rules),
+                    horizontalPadding = 8,
+                    collapsed = numberRulesCollapsed,
+                    onToggleCollapse = {
+                        numberRulesCollapsed = !numberRulesCollapsed
+                        sectionSpf.isNumberRulesCollapsed = numberRulesCollapsed
+                    },
+                    badge = {
+                        AllowBlockCountBadge(
+                            allowCount = G.NumberRuleVM.rules.count { !it.isBlacklist },
+                            blockCount = G.NumberRuleVM.rules.count { it.isBlacklist },
+                        )
+                    },
+                    headerTrailing = if (numberRulesCollapsed) null else {
+                        { RegexHeaderMenuButton(G.NumberRuleVM) }
+                    },
                 ) {
                     Column {
-                        // NumberRule / ContentRule / QuickCopy
-                        listOf<RegexViewModel>(
-                            G.NumberRuleVM,
-                            G.ContentRuleVM,
-                            G.QuickCopyRuleVM,
-                        ).forEach { vm ->
-                            LaunchedEffect(true) { vm.reloadDbAndOptions(ctx) }
+                        SearchBox(G.NumberRuleVM.searchEnabled, G.NumberRuleVM.filter) {
+                            G.NumberRuleVM.reloadDb(ctx)
+                        }
+                        RegexList(G.NumberRuleVM)
+                    }
+                }
 
-                            RegexHeader(vm)
-                            AnimatedVisibleV(!vm.listCollapsed.value) {
-                                Column {
-                                    SearchBox(vm.searchEnabled, vm.filter) {
-                                        vm.reloadDb(ctx)
-                                    }
-                                    RegexList(vm)
+                // Text Rules
+                var textRulesCollapsed by remember { mutableStateOf(sectionSpf.isTextRulesCollapsed) }
+                LaunchedEffect(true) { G.ContentRuleVM.reloadDbAndOptions(ctx) }
+                Section(
+                    title = Str(R.string.label_content_rules),
+                    horizontalPadding = 8,
+                    collapsed = textRulesCollapsed,
+                    onToggleCollapse = {
+                        textRulesCollapsed = !textRulesCollapsed
+                        sectionSpf.isTextRulesCollapsed = textRulesCollapsed
+                    },
+                    badge = {
+                        AllowBlockCountBadge(
+                            allowCount = G.ContentRuleVM.rules.count { !it.isBlacklist },
+                            blockCount = G.ContentRuleVM.rules.count { it.isBlacklist },
+                        )
+                    },
+                    headerTrailing = if (textRulesCollapsed) null else {
+                        { RegexHeaderMenuButton(G.ContentRuleVM) }
+                    },
+                ) {
+                    Column {
+                        SearchBox(G.ContentRuleVM.searchEnabled, G.ContentRuleVM.filter) {
+                            G.ContentRuleVM.reloadDb(ctx)
+                        }
+                        RegexList(G.ContentRuleVM)
+                    }
+                }
+
+                // Advanced Rules: QuickCopy, Push Alert, SMS Alert, SMS Bomb
+                var advancedRulesCollapsed by remember { mutableStateOf(sectionSpf.isAdvancedRulesCollapsed) }
+                Section(
+                    title = Str(R.string.advanced_rules),
+                    horizontalPadding = 8,
+                    collapsed = advancedRulesCollapsed,
+                    onToggleCollapse = {
+                        advancedRulesCollapsed = !advancedRulesCollapsed
+                        sectionSpf.isAdvancedRulesCollapsed = advancedRulesCollapsed
+                    },
+                ) {
+                    Column {
+                        // QuickCopy
+                        LaunchedEffect(true) { G.QuickCopyRuleVM.reloadDbAndOptions(ctx) }
+                        RegexHeader(G.QuickCopyRuleVM)
+                        AnimatedVisibleV(!G.QuickCopyRuleVM.listCollapsed.value) {
+                            Column {
+                                SearchBox(G.QuickCopyRuleVM.searchEnabled, G.QuickCopyRuleVM.filter) {
+                                    G.QuickCopyRuleVM.reloadDb(ctx)
                                 }
+                                RegexList(G.QuickCopyRuleVM)
                             }
                         }
 
@@ -243,50 +303,57 @@ fun SettingScreen() {
                     }
                 }
 
-                // Instant Query
+                // Actions: Block Type, Action Notification, Caller ID
+                var actionsCollapsed by remember { mutableStateOf(sectionSpf.isActionsCollapsed) }
                 Section(
-                    title = Str(R.string.instant_query),
-                    horizontalPadding = 8
+                    title = Str(R.string.actions),
+                    horizontalPadding = 8,
+                    collapsed = actionsCollapsed,
+                    onToggleCollapse = {
+                        actionsCollapsed = !actionsCollapsed
+                        sectionSpf.isActionsCollapsed = actionsCollapsed
+                    },
+                ) {
+                    Column {
+                        BlockType()
+                        CallerID()
+                        Notification()
+                        Alerts()
+                    }
+                }
+
+                // Integrations: Instant Query, Report Number, Automation
+                var integrationsCollapsed by remember { mutableStateOf(sectionSpf.isIntegrationsCollapsed) }
+                LaunchedEffect(true) {
+                    G.apiQueryVM.reloadDb(ctx)
+                    G.apiReportVM.reloadDb(ctx)
+                    G.botVM.reload(ctx)
+                }
+                Section(
+                    title = Str(R.string.integrations),
+                    horizontalPadding = 8,
+                    collapsed = integrationsCollapsed,
+                    onToggleCollapse = {
+                        integrationsCollapsed = !integrationsCollapsed
+                        sectionSpf.isIntegrationsCollapsed = integrationsCollapsed
+                    },
                 ) {
                     Column(
                         verticalArrangement = Arrangement.spacedBy(0.dp),
                     ) {
-                        // Api Query list
-                        LaunchedEffect(true) { G.apiQueryVM.reloadDb(ctx) }
+                        // Instant Query
                         ApiHeader(G.apiQueryVM, ApiQueryPresets)
                         AnimatedVisibleV(!G.apiQueryVM.listCollapsed.value) {
                             ApiList(G.apiQueryVM)
                         }
-                    }
-                }
 
-                // Report Number
-                Section(
-                    title = Str(R.string.report_number),
-                    horizontalPadding = 8
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(0.dp),
-                    ) {
-                        // Api Report list
-                        LaunchedEffect(true) { G.apiReportVM.reloadDb(ctx) }
+                        // Report Number
                         ApiHeader(G.apiReportVM, ApiReportPresets)
                         AnimatedVisibleV(!G.apiReportVM.listCollapsed.value) {
                             ApiList(G.apiReportVM)
                         }
-                    }
-                }
 
-                // Automation
-                Section(
-                    title = Str(R.string.automation),
-                    horizontalPadding = 8
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(0.dp),
-                    ) {
-                        // Bot list
-                        LaunchedEffect(true) { G.botVM.reload(ctx) }
+                        // Automation
                         BotHeader(G.botVM)
                         AnimatedVisibleV(!G.botVM.listCollapsed.value) {
                             BotList()
@@ -295,9 +362,15 @@ fun SettingScreen() {
                 }
 
                 // Miscellaneous
+                var miscellaneousCollapsed by remember { mutableStateOf(sectionSpf.isMiscellaneousCollapsed) }
                 Section(
                     title = Str(R.string.miscellaneous),
-                    horizontalPadding = 8
+                    horizontalPadding = 8,
+                    collapsed = miscellaneousCollapsed,
+                    onToggleCollapse = {
+                        miscellaneousCollapsed = !miscellaneousCollapsed
+                        sectionSpf.isMiscellaneousCollapsed = miscellaneousCollapsed
+                    },
                 ) {
                     Column(
                         verticalArrangement = Arrangement.spacedBy(0.dp),
@@ -371,6 +444,8 @@ fun LabeledRow(
     // Items on the right side, e.g.: "New" button
     content: @Composable RowScope.() -> Unit,
 ) {
+    // Rotating chevron: points right when collapsed, down when expanded (standard convention).
+    val arrowRotation by animateFloatAsState(if (isCollapsed == true) -90f else 0f)
 
     SettingRow(
         modifier = modifier
@@ -393,10 +468,11 @@ fun LabeledRow(
                 )
             }
 
-            // collapsed indicator
-            if (isCollapsed == true) {
+            // collapsed/expanded indicator
+            if (isCollapsed != null) {
                 GreyIcon16(
                     iconId = R.drawable.ic_dropdown_arrow,
+                    modifier = M.rotate(arrowRotation),
                 )
             }
 

@@ -27,22 +27,16 @@ import spam.blocker.ui.widgets.Str
 import spam.blocker.util.Lambda
 import spam.blocker.util.Lambda1
 
+// Just the "New" menu button (with its dialogs/presets/csv-import logic), with no
+// label/tooltip/collapse row of its own. Meant to be placed in an outer Section's
+// header row (see SettingScreen.kt), or standalone via RegexHeader below.
 @Composable
-fun RegexHeader(
+fun RegexHeaderMenuButton(
     vm: RegexViewModel,
 ) {
     val C = G.palette
     val ctx = LocalContext.current
     val forType = vm.forType
-
-    val labelId = remember {
-        when (forType) {
-            Def.ForNumber -> R.string.label_number_rules
-            Def.ForSms -> R.string.label_content_rules
-            else -> R.string.quick_copy
-        }
-    }
-
 
     var initRule by remember { mutableStateOf<RegexRule?>(null) }
     val addRuleTrigger = rememberSaveable { mutableStateOf(false) }
@@ -120,6 +114,40 @@ fun RegexHeader(
         importCsvItems(ctx, vm, warningTrigger)
     }
 
+    if (forType == Def.ForNumber || forType == Def.ForSms) {
+        MenuButton(
+            label = Str(R.string.new_),
+            color = C.infoBlue,
+            items = shortClickItems,
+            longTapItems = longClickItems,
+        )
+    } else {
+        MenuButton(
+            label = Str(R.string.new_),
+            color = C.infoBlue,
+            items = shortClickItems,
+        )
+    }
+}
+
+// Full header row: label + tooltip + collapse-chevron + the "New" menu button.
+// Used where there's no outer Section already providing the title row (e.g. QuickCopy
+// nested inside the "Advanced Rules" card).
+@Composable
+fun RegexHeader(
+    vm: RegexViewModel,
+) {
+    val ctx = LocalContext.current
+    val forType = vm.forType
+
+    val labelId = remember {
+        when (forType) {
+            Def.ForNumber -> R.string.label_number_rules
+            Def.ForSms -> R.string.label_content_rules
+            else -> R.string.quick_copy
+        }
+    }
+
     val helpTooltip = remember {
         when (forType) {
             Def.ForNumber -> ctx.getString(R.string.help_number_rules) + ctx.getString(R.string.import_csv_columns)
@@ -135,19 +163,6 @@ fun RegexHeader(
         toggleCollapse = { vm.toggleCollapse(ctx) },
         helpTooltip = helpTooltip,
     ) {
-        if (forType == Def.ForNumber || forType == Def.ForSms) {
-            MenuButton(
-                label = Str(R.string.new_),
-                color = C.infoBlue,
-                items = shortClickItems,
-                longTapItems = longClickItems,
-            )
-        } else {
-            MenuButton(
-                label = Str(R.string.new_),
-                color = C.infoBlue,
-                items = shortClickItems,
-            )
-        }
+        RegexHeaderMenuButton(vm)
     }
 }

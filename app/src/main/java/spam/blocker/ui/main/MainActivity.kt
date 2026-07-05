@@ -87,12 +87,13 @@ class MainActivity : ComponentActivity() {
                 when (it) {
                     Def.CALL_TAB_ROUTE -> G.callVM.markAllAsRead(this)
                     Def.SMS_TAB_ROUTE -> G.smsVM.markAllAsRead(this)
+                    Def.NOTIFICATION_TAB_ROUTE -> G.notifVM.markAllAsRead(this)
                 }
             },
             tabItems = listOf(
                 TabItem(
                     route = Def.CALL_TAB_ROUTE,
-                    label = ctx.resources.getString(R.string.call),
+                    label = ctx.resources.getString(R.string.calls),
                     icon = R.drawable.ic_call,
                     isSelected = mutableStateOf(lastTab == Def.CALL_TAB_ROUTE),
                     badgeText = {
@@ -104,7 +105,7 @@ class MainActivity : ComponentActivity() {
                 },
                 TabItem(
                     route = Def.SMS_TAB_ROUTE,
-                    label = ctx.resources.getString(R.string.sms),
+                    label = ctx.resources.getString(R.string.sms_mms),
                     icon = R.drawable.ic_sms,
                     isSelected = mutableStateOf(lastTab == Def.SMS_TAB_ROUTE),
                     badgeText = {
@@ -113,6 +114,18 @@ class MainActivity : ComponentActivity() {
                     },
                 ) {
                     HistoryScreen(G.smsVM)
+                },
+                TabItem(
+                    route = Def.NOTIFICATION_TAB_ROUTE,
+                    label = ctx.resources.getString(R.string.notifications),
+                    icon = R.drawable.ic_notification,
+                    isSelected = mutableStateOf(lastTab == Def.NOTIFICATION_TAB_ROUTE),
+                    badgeText = {
+                        val unreadCount = G.notifVM.records.count { !it.read }
+                        if (unreadCount == 0) null else "$unreadCount"
+                    },
+                ) {
+                    HistoryScreen(G.notifVM)
                 },
                 TabItem(
                     route = Def.SETTING_TAB_ROUTE,
@@ -155,6 +168,7 @@ class MainActivity : ComponentActivity() {
         LaunchedEffect(showHistoryPassed.value, showHistoryBlocked.value) {
             G.callVM.reload(ctx)
             G.smsVM.reload(ctx)
+            G.notifVM.reload(ctx)
         }
 
         // An extra surface to make the top-status-bar and bottom-system-bar

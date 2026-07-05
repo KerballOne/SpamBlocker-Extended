@@ -1,7 +1,7 @@
 package spam.blocker.ui.setting.regex
 
 import android.os.Build
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +26,7 @@ import spam.blocker.ui.setting.LabeledRow
 import spam.blocker.ui.setting.SettingRow
 import spam.blocker.ui.setting.quick.ChannelPicker
 import spam.blocker.ui.setting.quick.ConfigHangUp
+import spam.blocker.ui.setting.quick.RuleAlertConfigDialog
 import spam.blocker.ui.widgets.AnimatedVisibleV
 import spam.blocker.ui.widgets.CheckBox
 import spam.blocker.ui.widgets.ComboBox
@@ -34,6 +35,7 @@ import spam.blocker.ui.widgets.GreyButton
 import spam.blocker.ui.widgets.GreyIcon20
 import spam.blocker.ui.widgets.GreyLabel
 import spam.blocker.ui.widgets.LabelItem
+import spam.blocker.ui.widgets.MultiSelectDropdownButton
 import spam.blocker.ui.widgets.Placeholder
 import spam.blocker.ui.widgets.PriorityBox
 import spam.blocker.ui.widgets.RadioGroup
@@ -136,6 +138,30 @@ object RegexMode {
         return this == ModeType.QuickCopy
     }
 
+    // Which regex flags are selectable for a given rule mode:
+    //  - Number Rules: Raw Number / Ignore Country Code (Case Sensitive doesn't apply to numbers)
+    //  - Text Rules (SMS content): Case Sensitive / Contains (full-match text matching)
+    //  - QuickCopy: Raw Number / Ignore Country Code / Case Sensitive (unchanged legacy behavior;
+    //    it's a find-based extraction that can target either a number or message content,
+    //    so it keeps its original flag set rather than the Contains model)
+    fun Int.availableRegexFlags(): Set<Int> {
+        return when {
+            isForSmsContentRegexMode() -> setOf(
+                Def.FLAG_REGEX_CASE_SENSITIVE,
+                Def.FLAG_REGEX_IMPLIED_CONTAINS,
+            )
+            isForNumberRegexMode() -> setOf(
+                Def.FLAG_REGEX_RAW_NUMBER,
+                Def.FLAG_REGEX_IGNORE_CC,
+            )
+            else -> setOf( // QuickCopy
+                Def.FLAG_REGEX_RAW_NUMBER,
+                Def.FLAG_REGEX_IGNORE_CC,
+                Def.FLAG_REGEX_CASE_SENSITIVE,
+            )
+        }
+    }
+
 
     abstract class Base {
         abstract val modeType: Int
@@ -178,7 +204,7 @@ object RegexMode {
                 onFlagsChange = {
                     state.patternFlags.intValue = it
                 },
-                enableNumberFlags = true,
+                availableFlags = modeType.availableRegexFlags(),
                 testable = true,
                 leadingIcon = {
                     if (modeSwitchable) {
@@ -217,7 +243,7 @@ object RegexMode {
                         onFlagsChange = {
                             state.patternExtraFlags.intValue = it
                         },
-                        enableNumberFlags = true,
+                        availableFlags = state.patternExtraModeType.intValue.availableRegexFlags(),
                         testable = true,
                         leadingIcon = { RegexLeadingDropdownIcon(this, state.patternExtraModeType) },
                     )
@@ -258,44 +284,27 @@ object RegexMode {
 
             val forCNAP = modeType.isForNumberRegexMode() && state.patternModeType.intValue == ModeType.CallerName
 
-            // For Call/SMS
+            // For Call/SMS/MMS/Title/Body
             LabeledRow(
                 labelId = R.string.apply_to,
                 helpTooltip = Str(R.string.help_apply_to_call_sms),
             ) {
-                FlowRowSpaced(10) {
-                    if (modeType != ModeType.SmsContent) { // not editing SMS Content Rule
-                        CheckBox(
-                            checked = state.applyToCall.value,
-                            label = { GreyLabel(Str(R.string.call)) },
-                            onCheckChange = { state.applyToCall.value = it },
-                        )
-                    }
-                    AnimatedVisibility(!forCNAP) {
-                        CheckBox(checked = state.applyToSms.value,
-                            label = { GreyLabel(Str(R.string.sms)) },
-                            onCheckChange = { state.applyToSms.value = it })
-                    }
-                }
-            }
-
-            // For Notification Title/Body
-            if (!modeType.isForQuickCopyRegexMode()) {
-                LabeledRow(
-                    labelId = R.string.apply_to_notifications,
-                    helpTooltip = Str(R.string.help_apply_to_notification),
-                ) {
-                    FlowRowSpaced(10) {
-                        CheckBox(
-                            checked = state.applyToNotifTitle.value,
-                            label = { GreyLabel(Str(R.string.title_short)) },
-                            onCheckChange = { state.applyToNotifTitle.value = it })
-                        CheckBox(
-                            checked = state.applyToNotifBody.value,
-                            label = { GreyLabel(Str(R.string.body_short)) },
-                            onCheckChange = { state.applyToNotifBody.value = it })
+                val applyToOptions = remember {
+                    buildList {
+                        if (modeType != ModeType.SmsContent) { // not editing SMS Content Rule
+                            add(ctx.getString(R.string.calls) to state.applyToCall)
+                        }
+                        if (!forCNAP) {
+                            add(ctx.getString(R.string.sms) to state.applyToSms)
+                            add(ctx.getString(R.string.mms) to state.applyToMms)
+                        }
+                        if (!modeType.isForQuickCopyRegexMode()) {
+                            add(ctx.getString(R.string.title_short) to state.applyToNotifTitle)
+                            add(ctx.getString(R.string.body_short) to state.applyToNotifBody)
+                        }
                     }
                 }
+                MultiSelectDropdownButton(options = applyToOptions)
             }
 
 
@@ -434,26 +443,51 @@ object RegexMode {
                 visible = when (modeType) {
                     ModeType.SmsContent -> true
                     ModeType.QuickCopy     -> false
-                    else -> state.whiteOrBlack.intValue != 0 || (!forCNAP && state.applyToSms.value)
+                    else -> state.whiteOrBlack.intValue != 0 || (!forCNAP && (state.applyToSms.value || state.applyToMms.value))
                 }
             ) {
-                // Auto change the current channelId to "Allow" or "Block" when user select `whitelist/blacklist`
-                // Do not change if it's a custom channel.
-                LaunchedEffectOnlyOnChange(state.whiteOrBlack.intValue) {
-                    if (state.whiteOrBlack.intValue == 0 && state.channelId.value == CHANNEL_LOW) {
-                        state.channelId.value = CHANNEL_HIGH
+                Column {
+                    // Auto change the current channelId to "Allow" or "Block" when user select `whitelist/blacklist`
+                    // Do not change if it's a custom channel.
+                    LaunchedEffectOnlyOnChange(state.whiteOrBlack.intValue) {
+                        if (state.whiteOrBlack.intValue == 0 && state.channelId.value == CHANNEL_LOW) {
+                            state.channelId.value = CHANNEL_HIGH
+                        }
+                        if (state.whiteOrBlack.intValue == 1 && state.channelId.value == CHANNEL_HIGH) {
+                            state.channelId.value = CHANNEL_LOW
+                        }
                     }
-                    if (state.whiteOrBlack.intValue == 1 && state.channelId.value == CHANNEL_HIGH) {
-                        state.channelId.value = CHANNEL_LOW
-                    }
-                }
 
-                LabeledRow(
-                    labelId = R.string.notification,
+                    LabeledRow(
+                        labelId = R.string.notification,
 //                        helpTooltip = Str(R.string.help_notification),
-                ) {
-                    ChannelPicker(state.channelId.value) { index, ch ->
-                        state.channelId.value = ch.channelId
+                    ) {
+                        ChannelPicker(state.channelId.value) { index, ch ->
+                            state.channelId.value = ch.channelId
+                        }
+                    }
+
+                    // Alert: only meaningful for an Allow rule that can fire on a screened
+                    // notification (Notification Screening enabled, applies to Title/Body).
+                    AnimatedVisibleV(
+                        visible = G.notificationScreeningEnabled.value &&
+                                state.whiteOrBlack.intValue == 0 &&
+                                (state.applyToNotifTitle.value || state.applyToNotifBody.value)
+                    ) {
+                        LabeledRow(
+                            labelId = R.string.alert,
+                            helpTooltip = Str(R.string.help_rule_alert),
+                        ) {
+                            val alertPopupTrigger = remember { mutableStateOf(false) }
+                            RuleAlertConfigDialog(alertPopupTrigger, state.alertConfigJson)
+
+                            val hasCustomAlert = state.alertConfigJson.value.isNotEmpty()
+                            GreyButton(
+                                if (hasCustomAlert) Str(R.string.custom) else Str(R.string.default_),
+                            ) {
+                                alertPopupTrigger.value = true
+                            }
+                        }
                     }
                 }
             }
@@ -606,7 +640,7 @@ object RegexMode {
     }
     class SmsContent : Base() {
         override val modeType = ModeType.SmsContent
-        override val labelId = R.string.sms_content
+        override val labelId = R.string.text_content
         @Composable
         override fun Icon(color: Color) {
             ResIcon16(R.drawable.ic_open_msg)

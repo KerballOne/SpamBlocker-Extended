@@ -132,9 +132,16 @@ fun String.regexMatchesNumber(rawNumber: String, regexFlags: Int): Boolean {
     }
 }
 // For matching anything other than phone number, it won't raise exception.
+// Honors FLAG_REGEX_IMPLIED_CONTAINS: when set, the pattern doesn't need to match the
+// whole string, it's wrapped as `.*(pattern).*` and matches anywhere within targetStr.
 fun String.regexMatches(targetStr: String, regexFlags: Int = Def.DefaultRegexFlags): Boolean {
     val opts = Util.flagsToRegexOptions(regexFlags)
-    return this.toRegex(opts).matches(targetStr)
+    val effectivePattern = if (regexFlags.hasFlag(Def.FLAG_REGEX_IMPLIED_CONTAINS)) {
+        ".*($this).*"
+    } else {
+        this
+    }
+    return effectivePattern.toRegex(opts).matches(targetStr)
 }
 
 // Unlike `regexMatches`, this doesn't require the whole `targetStr` to match,
@@ -482,22 +489,24 @@ object Util {
             if (cacheAppList == null) {
                 val pm = ctx.packageManager
 
-                val packageInfos = getPackagesHoldingPermissions(
-                    pm,
-                    arrayOf(Manifest.permission.INTERNET)
-                )
+                // Note: `pm.getPackagesHoldingPermissions` is subject to package-visibility
+                //  restrictions (API 30+) and would only see this app itself plus launcher
+                //  apps declared in <queries>. `getInstalledApplications` instead benefits
+                //  from the full package-visibility grant this app already holds for having
+                //  a NotificationListenerService (see `listAllApps` below), so query
+                //  permissions via `getPackageInfo(GET_PERMISSIONS)` per package instead.
+                val packageInfos = pm.getInstalledPackages(PackageManager.GET_PERMISSIONS)
 
                 cacheAppList = packageInfos.filter {
-                    if (it.applicationInfo == null)
-                        false
-                    else
-                        (it.applicationInfo!!.flags and ApplicationInfo.FLAG_SYSTEM) == 0
-                }.map {
                     val appInfo = it.applicationInfo
+                    val hasInternet = it.requestedPermissions?.contains(Manifest.permission.INTERNET) == true
+                    appInfo != null && hasInternet && (appInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0
+                }.map {
+                    val appInfo = it.applicationInfo!!
 
                     AppInfo().apply {
                         pkgName = it.packageName
-                        label = appInfo!!.loadLabel(pm).toString()
+                        label = appInfo.loadLabel(pm).toString()
                         icon = appInfo.loadIcon(pm)
                     }
                 }

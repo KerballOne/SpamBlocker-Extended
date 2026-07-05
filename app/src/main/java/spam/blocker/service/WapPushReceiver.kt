@@ -34,7 +34,8 @@ class WapPushReceiver : SmsReceiver() {
         logi("Received WapPush")
 
         val spf = spf.Global(ctx)
-        if (!spf.isGloballyEnabled || !spf.isSmsEnabled || !spf.isMmsEnabled) {
+        // MMS screening is tied to SMS screening, there's no separate toggle for it.
+        if (!spf.isGloballyEnabled || !spf.isSmsEnabled) {
             return
         }
 
@@ -94,7 +95,8 @@ class WapPushReceiver : SmsReceiver() {
 
                 processSms(
                     ctx, rawNumber = rawNumber, messageBody = messageBody,
-                    simSlot = simSlot, isTest = false, logger = SaveableLogger()
+                    simSlot = simSlot, isTest = false, logger = SaveableLogger(),
+                    isMms = true,
                 )
 
                 break

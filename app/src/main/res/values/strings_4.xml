@@ -32,6 +32,13 @@
             &ensp; By default, the regex matching is case-insensitive, <highlight><b>a</b></highlight>
               would match both <highlight><b>a</b></highlight> and <highlight><b>A</b></highlight>. <br>
             &ensp; Enable this to make it case-sensitive. <br>
+            <br>
+
+            <title><b>Contains</b></title>:<br>
+            &ensp; Enabled by default. The pattern does not need to match the entire text,
+              it is automatically wrapped as <highlight><b>.*pattern.*</b></highlight> and matches
+              if it is found anywhere within the text. <br>
+            &ensp; Disable this to require the pattern to match the whole text exactly. <br>
         ]]>
     </string>
     <string-array name="regex_flags_list">
@@ -39,5 +46,9 @@
         <item>Ignore Country Code</item>
         <item>Case Sensitive</item>
     </string-array>
+    <string name="label_regex_flag_raw_number">Raw Number</string>
+    <string name="label_regex_flag_ignore_cc">Ignore Country Code</string>
+    <string name="label_regex_flag_case_sensitive">Case Sensitive</string>
+    <string name="label_regex_flag_contains">Contains</string>
     <string name="disable_number_optimization">This optimization can be disabled using the regex flag \"Raw Number\", tap the flag icon on the right to enable it.</string>
 </resources>

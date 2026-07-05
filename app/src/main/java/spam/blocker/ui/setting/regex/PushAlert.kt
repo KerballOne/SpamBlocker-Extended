@@ -31,6 +31,7 @@ import spam.blocker.G
 import spam.blocker.R
 import spam.blocker.db.PushAlertRecord
 import spam.blocker.db.PushAlertTable
+import spam.blocker.def.Def
 import spam.blocker.service.resetPushAlertCache
 import spam.blocker.ui.M
 import spam.blocker.ui.setting.LabeledRow
@@ -207,6 +208,10 @@ fun PushAlertEditDialog(
                     onFlagsChange = {
                         bodyFlags.intValue = it
                     },
+                    availableFlags = setOf(
+                        Def.FLAG_REGEX_CASE_SENSITIVE,
+                        Def.FLAG_REGEX_IMPLIED_CONTAINS,
+                    ),
                     testable = true,
                     leadingIcon = {
                         ResIcon(iconId = R.drawable.ic_notification)

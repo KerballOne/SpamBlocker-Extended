@@ -596,7 +596,6 @@ class CallEvent(
             leadingIcon = { GreyIcon18(R.drawable.ic_filter) },
             regexFlags = flagsNumber,
             placeholder = { Placeholder(".*") },
-            enableNumberFlags = true,
             onRegexStrChange = { newVal, hasError ->
                 if (!hasError) {
                     number = newVal

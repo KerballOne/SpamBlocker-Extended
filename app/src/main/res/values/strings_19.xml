@@ -38,6 +38,9 @@
     </string>
     <string name="help_notification">
         <![CDATA[
+        These settings only apply to <highlight><b>Calls</b></highlight> and <highlight><b>SMS/MMS</b></highlight>, not to Notification Screening.<br>
+        For allowed screened notifications, use <b>Basic Rules Alerts</b> instead.<br>
+        <br>
         The built-in notification channels: <br>
         <br>
         <title><b>None</b></title> &ensp; <img src=\'ic_bell_mute\'/> <br>
@@ -54,8 +57,8 @@
         <br>
         <title><b>High Muted</b></title> &ensp; <img src=\'ic_statusbar_shade\'/><img src=\'ic_heads_up\'/> <br>
         &ensp; It\'s similar to <b>High</b> but mutes the sound. <br>
-        &ensp; It\'s ideal for active <highlight><b>SMS Chat</b></highlight> where continuous sounds might be annoying. <br>
-          It\'s considered active <highlight><b>SMS Chat</b></highlight> when the screen is unlocked and the SMS app is open in the foreground. <br>
+        &ensp; It\'s ideal for <highlight><b>Active Chat</b></highlight> where continuous sounds might be annoying. <br>
+          It\'s considered an <highlight><b>Active Chat</b></highlight> when the screen is unlocked and the SMS app is open in the foreground. <br>
         ]]>
     </string>
     <string name="none">None</string>
@@ -64,10 +67,47 @@
     <string name="high">High</string>
     <string name="high_muted">High Muted</string>
     <string name="sms_chat">SMS Chat</string>
+    <string name="active_chat">Active Chat</string>
+    <string name="help_active_chat">Used instead of the normal SMS channels while you have the SMS app open and the screen unlocked, so incoming messages do not interrupt with a loud sound or heads-up popup.</string>
     <string name="blocked">Blocked</string>
     <string name="allowed">Allowed</string>
+    <string name="calls_blocked">Calls Blocked</string>
+    <string name="sms_mms_allowed">SMS/MMS Allowed</string>
+    <string name="sms_mms_blocked">SMS/MMS Blocked</string>
     <string name="call_channel">Call Channel</string>
     <string name="sms_channel">SMS Channel</string>
+    <string name="notification_allowed_alert">Notification Allowed Alert</string>
+    <string name="help_notification_allowed_alert">
+        <![CDATA[
+        These settings only apply to <highlight><b>allowed</b></highlight> Notification Screening detections, not to Calls or SMS/MMS.<br>
+        <br>
+        Choose a custom ringtone, vibration, flashlight, and screen-wake alert that SpamBlocker itself will play when an allowed notification arrives from one of the apps being screened.<br>
+        <br>
+        This is useful if you have muted the app\'s own notification channel to avoid noise from blocked notifications, since that would otherwise silence allowed ones too.<br>
+        <br>
+        Each app has its own alert settings, tap the icons to toggle them on/off:<br>
+        &ensp; <img src=\'ic_vibration\'/> &ensp; Vibration<br>
+        &ensp; <img src=\'ic_flashlight\'/> &ensp; Flashlight<br>
+        &ensp; <img src=\'ic_wake_screen\'/> &ensp; Wake Screen<br>
+        <br>
+        Tap the button on the right to choose a ringtone.
+        ]]>
+    </string>
+    <string name="vibration">Vibration</string>
+    <string name="flashlight">Flashlight</string>
+    <string name="wake_screen">Wake Screen</string>
+    <string name="no_screened_apps">No apps are currently selected for Notification Screening.</string>
+    <string name="alert">Alert</string>
+    <string name="reset_to_default">Reset to Default</string>
+    <string name="help_rule_alert">
+        <![CDATA[
+        Choose a custom ringtone, vibration, flashlight, and screen-wake alert for when THIS rule allows a screened notification.<br>
+        <br>
+        This is different from the regular Notification setting above: since the original notification is already visible on screen, allowing it again does not need a duplicate SpamBlocker notification, just a short alert to draw attention.<br>
+        <br>
+        Leave this as Default to use the app-level alert configured under Basic Rules Notification.
+        ]]>
+    </string>
     <string name="channel_id">Channel ID</string>
     <string name="help_channel_id">
         <![CDATA[
