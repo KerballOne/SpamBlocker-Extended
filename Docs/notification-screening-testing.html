@@ -1,0 +1,661 @@
+<title>Notification Screening — Setup &amp; Test Guide</title>
+<style>
+  :root {
+    --bg: #f4f2ed;
+    --bg-raised: #ffffff;
+    --ink: #201c16;
+    --ink-soft: #56503f;
+    --ink-faint: #8b8578;
+    --line: #ddd8cc;
+    --accent: #3d7a6e;
+    --accent-soft: #e4ede9;
+    --block: #b0553a;
+    --block-soft: #f7e9e2;
+    --allow: #4a7d4a;
+    --allow-soft: #e9f1e6;
+    --code-bg: #eae6da;
+    --code-ink: #2c2820;
+    --shadow: 0 1px 2px rgba(32, 28, 22, 0.06), 0 8px 24px rgba(32, 28, 22, 0.05);
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #15130f;
+    --bg-raised: #1d1a15;
+    --ink: #ece7da;
+    --ink-soft: #b7b0a0;
+    --ink-faint: #7d7666;
+    --line: #35311f;
+    --accent: #6fb8a8;
+    --accent-soft: #1e2e29;
+    --block: #d98567;
+    --block-soft: #2e1f19;
+    --allow: #83c184;
+    --allow-soft: #1c2a1c;
+    --code-bg: #100e0b;
+    --code-ink: #ddd6c4;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15130f;
+      --bg-raised: #1d1a15;
+      --ink: #ece7da;
+      --ink-soft: #b7b0a0;
+      --ink-faint: #7d7666;
+      --line: #35311f;
+      --accent: #6fb8a8;
+      --accent-soft: #1e2e29;
+      --block: #d98567;
+      --block-soft: #2e1f19;
+      --allow: #83c184;
+      --allow-soft: #1c2a1c;
+      --code-bg: #100e0b;
+      --code-ink: #ddd6c4;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 3.5rem 1.75rem 6rem;
+  }
+
+  header.top {
+    margin-bottom: 3rem;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 2rem;
+  }
+
+  .eyebrow {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 0.75rem;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    margin: 0 0 0.6rem;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  .lede {
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    max-width: 62ch;
+    margin: 0;
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    margin: 3rem 0 1rem;
+    letter-spacing: -0.005em;
+    scroll-margin-top: 1.5rem;
+  }
+
+  h2 .num {
+    display: inline-block;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    margin-right: 0.5rem;
+  }
+
+  h3 {
+    font-size: 1.02rem;
+    margin: 1.75rem 0 0.6rem;
+    color: var(--ink);
+  }
+
+  p { color: var(--ink-soft); max-width: 68ch; }
+  strong { color: var(--ink); }
+
+  code {
+    font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+    background: var(--code-bg);
+    color: var(--code-ink);
+    padding: 0.12em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    padding: 1rem 1.1rem;
+    border-radius: 10px;
+    overflow-x: auto;
+    font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    box-shadow: var(--shadow);
+    margin: 0.9rem 0 1.4rem;
+  }
+  pre code { background: none; padding: 0; }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.22em 0.65em;
+    border-radius: 100px;
+  }
+  .pill.block { background: var(--block-soft); color: var(--block); }
+  .pill.allow { background: var(--allow-soft); color: var(--allow); }
+
+  ol, ul { color: var(--ink-soft); max-width: 68ch; padding-left: 1.3rem; }
+  li { margin: 0.35rem 0; }
+  li::marker { color: var(--accent); font-weight: 600; }
+
+  .card {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 1.3rem 1.5rem;
+    box-shadow: var(--shadow);
+    margin: 1rem 0 1.6rem;
+  }
+
+  .card h3 { margin-top: 0; }
+
+  .rule-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0 1.6rem;
+  }
+
+  .rule-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 1.1rem 1.3rem;
+    box-shadow: var(--shadow);
+  }
+  .rule-card .label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.5rem;
+  }
+  .rule-card .pattern {
+    font-family: "SF Mono", "Cascadia Code", Consolas, monospace;
+    font-size: 1rem;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+    word-break: break-word;
+  }
+  .rule-card ul { margin: 0; padding-left: 1.1rem; font-size: 0.9rem; }
+
+  .table-wrap { overflow-x: auto; margin: 1rem 0 2rem; border-radius: 12px; box-shadow: var(--shadow); }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    background: var(--bg-raised);
+    font-size: 0.88rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 0.65rem 0.85rem;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+
+  td.wrap-cell, th.wrap-cell { white-space: normal; }
+
+  th {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    background: var(--accent-soft);
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--accent-soft); }
+
+  td.num { font-variant-numeric: tabular-nums; color: var(--ink-faint); }
+
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 0.9rem 1.1rem;
+    border-radius: 0 10px 10px 0;
+    margin: 1.2rem 0 1.6rem;
+    font-size: 0.93rem;
+  }
+  .callout strong { color: var(--accent); }
+
+  .callout.warn {
+    border-left-color: var(--block);
+    background: var(--block-soft);
+  }
+  .callout.warn strong { color: var(--block); }
+
+  footer {
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+  }
+
+  a { color: var(--accent); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .card, .rule-card { transition: box-shadow 0.15s ease; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="top">
+    <p class="eyebrow">SpamBlocker &middot; internal test guide</p>
+    <h1>Notification Screening — setup &amp; test guide</h1>
+    <p class="lede">
+      How to configure and manually verify the feature that screens third-party apps'
+      notifications (SMS, voicemail, etc.) against SpamBlocker's own Number and Message rules,
+      and dismisses the notification when the verdict is <strong>Block</strong>.
+    </p>
+  </header>
+
+  <h2><span class="num">1</span>What this feature does</h2>
+  <p>
+    SpamBlocker normally only screens calls and texts it receives directly. Many phones run a
+    separate default Messages or Phone app that SpamBlocker never intercepts — this feature
+    reads that other app's <em>notifications</em> instead, using the same Notification Access
+    permission already granted for the older Push Alert feature. No new Android permission is
+    required.
+  </p>
+  <p>
+    When an app in the <strong>App Notifications</strong> list posts a notification, its title
+    and body are checked against every Number Rule and Message Rule that has
+    <strong>Notification Title</strong> and/or <strong>Notification Body</strong> enabled under
+    <em>Apply to</em>. If any rule's verdict is <span class="pill block">Block</span>, the
+    notification is dismissed immediately.
+  </p>
+
+  <h2><span class="num">2</span>One-time setup</h2>
+
+  <div class="card">
+    <h3>Enable the feature</h3>
+    <ol>
+      <li>Settings → <strong>Screening</strong> section → toggle <strong>Notifications</strong> on
+        (sits directly below the SMS toggle — it works even if SMS screening is off).</li>
+      <li>Grant Notification Access if prompted.</li>
+      <li>Quick Settings → <strong>App Notifications</strong> → choose which apps to screen.
+        The default Phone and SMS apps are pinned to the top of the picker.</li>
+    </ol>
+  </div>
+
+  <div class="callout warn">
+    <strong>Testing on an emulator:</strong> test notifications sent via
+    <code>adb shell cmd notification post</code> are posted under the
+    <code>com.android.shell</code> package identity, not a real app. Add
+    <strong>com.android.shell</strong> to App Notifications so simulated test notifications
+    actually get screened.
+  </div>
+
+  <h3>Create the five test rules</h3>
+  <p>
+    Two rules (Number <code>5551234567</code>, Message <code>.*test.*</code>) cover the field-matching
+    matrix in section 5. The remaining three, together with the first Number Rule, cover the
+    priority/precedence matrix in section 6 — create all five up front.
+  </p>
+  <div class="rule-grid">
+    <div class="rule-card">
+      <div class="label">Number Rule</div>
+      <div class="pattern">8887771212</div>
+      <ul>
+        <li>Type: Allow</li>
+        <li>Priority: 2</li>
+        <li>Apply to Notifications → Title, Body</li>
+      </ul>
+    </div>
+    <div class="rule-card">
+      <div class="label">Number Rule</div>
+      <div class="pattern">5551234567</div>
+      <ul>
+        <li>Type: Block</li>
+        <li>Priority: 0</li>
+        <li>Apply to Notifications → Title, Body</li>
+      </ul>
+    </div>
+    <div class="rule-card">
+      <div class="label">Message Rule</div>
+      <div class="pattern">.*blockfirst.*</div>
+      <ul>
+        <li>Type: Block</li>
+        <li>Priority: 6</li>
+        <li>Apply to Notifications → Title, Body</li>
+      </ul>
+    </div>
+    <div class="rule-card">
+      <div class="label">Message Rule</div>
+      <div class="pattern">.*allowme.*</div>
+      <ul>
+        <li>Type: Allow</li>
+        <li>Priority: 3</li>
+        <li>Apply to Notifications → Title, Body</li>
+      </ul>
+    </div>
+    <div class="rule-card">
+      <div class="label">Message Rule</div>
+      <div class="pattern">.*blocklast.*</div>
+      <ul>
+        <li>Type: Block</li>
+        <li>Priority: 0</li>
+        <li>Apply to Notifications → Title, Body</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Regex, not a literal word.</strong> Message Rules require the pattern to match the
+    <em>entire</em> body/title. A bare <code>test</code> only matches a notification whose text
+    is exactly <code>"test"</code> — write <code>.*test.*</code> to match anywhere in a sentence.
+  </div>
+
+  <div class="callout">
+    <strong>Priority.</strong> Higher priority number evaluates first; the first matching rule
+    wins regardless of rule type or which field matched. Set priorities exactly as listed above —
+    they're what the section 6 matrix exercises.
+  </div>
+
+  <h2><span class="num">3</span>Sending a test notification</h2>
+  <p>Run from a PowerShell session with adb on <code>PATH</code> and the emulator connected:</p>
+  <pre><code>$adb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
+&amp; $adb shell "cmd notification post -t 'TITLE TEXT' 'unique_tag' 'BODY TEXT'"</code></pre>
+
+  <div class="callout warn">
+    <strong>Quote the whole command as one string.</strong>
+    <code>adb shell cmd notification post -t 'a' 'b' 'multi word body'</code> passed as separate
+    PowerShell arguments gets parsed twice — once by PowerShell, once by the remote shell — and
+    silently truncates a multi-word body down to its first word. Always wrap the entire
+    <code>cmd notification post …</code> invocation as a single quoted string handed to
+    <code>adb shell</code>, exactly as shown above. Avoid parentheses in title/body text unless
+    using this wrapped form.
+  </div>
+
+  <h2><span class="num">4</span>How to verify a test</h2>
+  <p>
+    Don't rely on shell tooling to check the result — inspect the emulator directly:
+  </p>
+  <ul>
+    <li>Pull down the notification shade — a <span class="pill block">Block</span> verdict means
+      the notification is gone or never appears.</li>
+    <li>Open SpamBlocker's <strong>SMS</strong> history tab — every screened notification appears
+      as a row with its match reason (e.g. <code>RegEx: 5551234567</code>) or
+      <code>Passed by default</code> if nothing matched.</li>
+  </ul>
+
+  <h2><span class="num">5</span>Full test matrix</h2>
+  <p>The sequence below covers formatting variety, both rule types, both fields, mixed matches, dedup, and the app filter itself. Send one at a time and confirm each before moving to the next.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th class="wrap-cell">Title</th>
+          <th class="wrap-cell">Body</th>
+          <th class="wrap-cell">Exercises</th>
+          <th>Expected</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="num">1</td>
+          <td><code>555-123-4567</code></td>
+          <td>unrelated text</td>
+          <td class="wrap-cell">Number Rule via title, dash formatting</td>
+          <td><span class="pill block">Block</span></td>
+        </tr>
+        <tr>
+          <td class="num">2</td>
+          <td><code>999-555-1212</code></td>
+          <td>This is a TEST message</td>
+          <td class="wrap-cell">Message Rule via body, case-insensitivity</td>
+          <td><span class="pill block">Block</span></td>
+        </tr>
+        <tr>
+          <td class="num">3</td>
+          <td><code>5551234567</code></td>
+          <td>this is a test</td>
+          <td class="wrap-cell">Both rules match at once</td>
+          <td><span class="pill block">Block</span></td>
+        </tr>
+        <tr>
+          <td class="num">4</td>
+          <td><code>888-222-9999</code></td>
+          <td>just checking in</td>
+          <td class="wrap-cell">Negative control — neither rule matches</td>
+          <td><span class="pill allow">Allow</span></td>
+        </tr>
+        <tr>
+          <td class="num">5</td>
+          <td colspan="2" class="wrap-cell">exact repeat of test 4</td>
+          <td class="wrap-cell">Dedup — no duplicate processing</td>
+          <td><span class="pill allow">Allow</span>, once</td>
+        </tr>
+        <tr>
+          <td class="num">6</td>
+          <td><code>(999)5551212</code></td>
+          <td>please test this out</td>
+          <td class="wrap-cell">Message Rule via body, paren formatting on title</td>
+          <td><span class="pill block">Block</span></td>
+        </tr>
+        <tr>
+          <td class="num">7</td>
+          <td><code>+1 555-123-4567</code></td>
+          <td>unrelated</td>
+          <td class="wrap-cell">Number Rule, country code + dash normalization</td>
+          <td><span class="pill block">Block</span></td>
+        </tr>
+        <tr>
+          <td class="num">8</td>
+          <td>New Voicemail</td>
+          <td>New voicemail from: 5551234567</td>
+          <td class="wrap-cell">Number Rule matching in the <strong>body</strong> — realistic voicemail shape</td>
+          <td><span class="pill block">Block</span></td>
+        </tr>
+        <tr>
+          <td class="num">9</td>
+          <td>This is a test alert</td>
+          <td>888-222-9999 unrelated body text</td>
+          <td class="wrap-cell">Message Rule matching in the <strong>title</strong></td>
+          <td><span class="pill block">Block</span></td>
+        </tr>
+        <tr>
+          <td class="num">10</td>
+          <td><code>5551234567</code></td>
+          <td>unrelated text with the word test in it</td>
+          <td class="wrap-cell">Number Rule (title) + Message Rule (body), different fields at once</td>
+          <td><span class="pill block">Block</span></td>
+        </tr>
+        <tr>
+          <td class="num">11</td>
+          <td><code>5551234567</code></td>
+          <td>this is a test</td>
+          <td class="wrap-cell">App filter — <code>com.android.shell</code> temporarily removed from App Notifications</td>
+          <td><span class="pill allow">Allow</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2><span class="num">6</span>Priority / precedence test matrix</h2>
+  <p>
+    Rules evaluate in descending <strong>priority</strong> order (higher number first); the
+    first match wins regardless of whether it's a different rule type or field. This round
+    validates that ordering specifically through the notification-screening path, using:
+  </p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Rule</th>
+          <th>Pattern</th>
+          <th>Type</th>
+          <th>Priority</th>
+          <th class="wrap-cell">Applies to</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Number</td>
+          <td><code>8887771212</code></td>
+          <td><span class="pill allow">Allow</span></td>
+          <td class="num">2</td>
+          <td class="wrap-cell">Call + SMS, Title</td>
+        </tr>
+        <tr>
+          <td>Number</td>
+          <td><code>5551234567</code></td>
+          <td><span class="pill block">Block</span></td>
+          <td class="num">0</td>
+          <td class="wrap-cell">SMS only, Title</td>
+        </tr>
+        <tr>
+          <td>Message</td>
+          <td><code>.*blockfirst.*</code></td>
+          <td><span class="pill block">Block</span></td>
+          <td class="num">6</td>
+          <td class="wrap-cell">Body</td>
+        </tr>
+        <tr>
+          <td>Message</td>
+          <td><code>.*allowme.*</code></td>
+          <td><span class="pill allow">Allow</span></td>
+          <td class="num">3</td>
+          <td class="wrap-cell">Body</td>
+        </tr>
+        <tr>
+          <td>Message</td>
+          <td><code>.*blocklast.*</code></td>
+          <td><span class="pill block">Block</span></td>
+          <td class="num">0</td>
+          <td class="wrap-cell">Body</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th class="wrap-cell">Title</th>
+          <th class="wrap-cell">Body</th>
+          <th class="wrap-cell">Rules matching</th>
+          <th>Expected</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="num">1</td>
+          <td><code>8887771212</code></td>
+          <td>unrelated text</td>
+          <td class="wrap-cell">Number Allow(p2) only</td>
+          <td><span class="pill allow">Allow</span></td>
+        </tr>
+        <tr>
+          <td class="num">2</td>
+          <td><code>5551234567</code></td>
+          <td>unrelated text</td>
+          <td class="wrap-cell">Number Block(p0) only</td>
+          <td><span class="pill block">Block</span></td>
+        </tr>
+        <tr>
+          <td class="num">3</td>
+          <td>unrelated</td>
+          <td>this is a blockfirst message</td>
+          <td class="wrap-cell">Message Block(p6) only</td>
+          <td><span class="pill block">Block</span></td>
+        </tr>
+        <tr>
+          <td class="num">4</td>
+          <td>unrelated</td>
+          <td>please allowme now</td>
+          <td class="wrap-cell">Message Allow(p3) only</td>
+          <td><span class="pill allow">Allow</span></td>
+        </tr>
+        <tr>
+          <td class="num">5</td>
+          <td>unrelated</td>
+          <td>this should blocklast now</td>
+          <td class="wrap-cell">Message Block(p0) only</td>
+          <td><span class="pill block">Block</span></td>
+        </tr>
+        <tr>
+          <td class="num">6</td>
+          <td>unrelated</td>
+          <td>blockfirst and allowme both here</td>
+          <td class="wrap-cell">blockfirst Block(p6) <strong>and</strong> allowme Allow(p3) both match</td>
+          <td><span class="pill block">Block</span> (higher priority wins)</td>
+        </tr>
+        <tr>
+          <td class="num">7</td>
+          <td>unrelated</td>
+          <td>allowme also has blocklast in it</td>
+          <td class="wrap-cell">allowme Allow(p3) <strong>and</strong> blocklast Block(p0) both match</td>
+          <td><span class="pill allow">Allow</span> (higher priority wins, even though it's the Allow verdict)</td>
+        </tr>
+        <tr>
+          <td class="num">8</td>
+          <td><code>8887771212</code></td>
+          <td>this should blocklast now</td>
+          <td class="wrap-cell">Number Allow(p2, title) <strong>and</strong> Message Block(p0, body) — cross rule-type</td>
+          <td><span class="pill allow">Allow</span> (2 &gt; 0)</td>
+        </tr>
+        <tr>
+          <td class="num">9</td>
+          <td>unrelated</td>
+          <td>unrelated</td>
+          <td class="wrap-cell">Negative control — fully unrelated title and body, no rule matches</td>
+          <td><span class="pill allow">Allow</span> (will not show on log)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <strong>All 9 passed with no bugs found.</strong> Confirms priority ordering, cross-verdict
+    tie-breaking (an Allow beating a lower-priority Block, and vice versa), and cross-rule-type
+    precedence (Number vs. Message rule, title vs. body) all work correctly through the
+    notification-screening path.
+  </div>
+
+  <footer>
+    Covers the Notification Screening feature added to SpamBlocker. See
+    <code>NotificationListenerService.kt</code>, <code>AppNotifications.kt</code>, and
+    <code>RegexMode.kt</code> for the implementation.
+  </footer>
+
+</div>
