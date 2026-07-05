@@ -28,6 +28,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import spam.blocker.Events
 import spam.blocker.G
 import spam.blocker.R
 import spam.blocker.ui.M
@@ -207,6 +208,7 @@ fun MeetingMode() {
                     enabledAppInfos.indexOfFirst { it.pkgName == pkgName }
                 )
             }
+            Events.basicRuleUpdated.fire()
         }
     )
     PopupMeetingConfig(popupTrigger = buttonPopupTrigger, priority = priority)

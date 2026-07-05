@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import spam.blocker.Events
 import spam.blocker.G
 import spam.blocker.R
 import spam.blocker.service.CallScreeningService
@@ -206,6 +207,7 @@ fun EmergencySituation() {
             SwitchBox(isEnabled) { isTurningOn ->
                 spf.isEnabled = isTurningOn
                 isEnabled = isTurningOn
+                Events.basicRuleUpdated.fire()
             }
         }
     )

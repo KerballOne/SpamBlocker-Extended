@@ -8,6 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import spam.blocker.Events
 import spam.blocker.R
 import spam.blocker.ui.setting.LabeledRow
 import spam.blocker.ui.widgets.GreyButton
@@ -62,6 +63,7 @@ fun OffTime() {
             SwitchBox(isEnabled) { isTurningOn ->
                 spf.isEnabled = isTurningOn
                 isEnabled = isTurningOn
+                Events.basicRuleUpdated.fire()
             }
         }
     )

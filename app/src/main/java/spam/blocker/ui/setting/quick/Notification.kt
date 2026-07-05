@@ -596,7 +596,7 @@ fun Notification() {
     )
 
     LabeledRow(
-        R.string.basic_rules_notifications,
+        R.string.notifications,
         helpTooltip = Str(R.string.help_notification),
         content = {
             RowVCenterSpaced(4) {
@@ -667,7 +667,7 @@ fun Alerts() {
     val screenedPkgs = remember { spf.AppNotifications(ctx).getList() }
 
     LabeledRow(
-        R.string.basic_rules_alerts,
+        R.string.alerts,
         helpTooltip = Str(R.string.help_notification_allowed_alert),
         isCollapsed = collapsed,
         toggleCollapse = { collapsed = !collapsed },
@@ -761,7 +761,7 @@ fun AlertConfigControls(
             ResIcon(
                 R.drawable.ic_music,
                 modifier = M.size(20.dp),
-                color = C.disabled,
+                color = if (ringtone.isEmpty()) C.disabled else C.teal200,
             )
             Spacer(modifier = M.width(4.dp))
             GreyButton(

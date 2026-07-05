@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import spam.blocker.Events
 import spam.blocker.G
 import spam.blocker.R
 import spam.blocker.ui.setting.LabeledRow
@@ -81,6 +82,7 @@ fun Answered() {
             if (granted) {
                 spf.isEnabled = true
                 isEnabled = true
+                Events.basicRuleUpdated.fire()
             }
         }
     }
@@ -147,6 +149,7 @@ fun Answered() {
                 } else {
                     spf.isEnabled = false
                     isEnabled = false
+                    Events.basicRuleUpdated.fire()
                 }
             }
         }

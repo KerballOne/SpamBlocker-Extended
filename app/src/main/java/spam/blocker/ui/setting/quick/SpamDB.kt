@@ -278,6 +278,7 @@ fun SpamDB() {
             SwitchBox(isEnabled) { isTurningOn ->
                 spf.isEnabled = isTurningOn
                 isEnabled = isTurningOn
+                Events.basicRuleUpdated.fire()
             }
         }
     )

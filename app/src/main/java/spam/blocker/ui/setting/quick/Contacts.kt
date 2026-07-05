@@ -12,6 +12,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import spam.blocker.Events
 import spam.blocker.G
 import spam.blocker.R
 import spam.blocker.ui.M
@@ -148,11 +149,13 @@ fun Contacts() {
                         if (granted) {
                             spf.isEnabled = true
                             isEnabled = true
+                            Events.basicRuleUpdated.fire()
                         }
                     }
                 } else {
                     spf.isEnabled = false
                     isEnabled = false
+                    Events.basicRuleUpdated.fire()
                 }
             }
         }

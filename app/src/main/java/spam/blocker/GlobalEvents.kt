@@ -59,6 +59,10 @@ object Events {
     // An event triggered when one or multiple Bot is updated, maybe triggered by Workflow
     val botUpdated = Event()
 
+    // An event triggered when a Basic Rule (Contacts, STIR, SpamDB, etc.) is
+    // toggled/reconfigured, used to refresh the Basic Rules section header status icons.
+    val basicRuleUpdated = Event()
+
     // An event for notifying the configuration has changed,
     // observers should restart, such as:
     //  - history cleanup task

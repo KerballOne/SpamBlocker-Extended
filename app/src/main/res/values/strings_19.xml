@@ -38,8 +38,9 @@
     </string>
     <string name="help_notification">
         <![CDATA[
-        These settings only apply to <highlight><b>Calls</b></highlight> and <highlight><b>SMS/MMS</b></highlight>, not to Notification Screening.<br>
-        For allowed screened notifications, use <b>Basic Rules Alerts</b> instead.<br>
+        These settings apply to <highlight><b>Calls</b></highlight> and <highlight><b>SMS/MMS</b></highlight> actions triggered by <b>Basic Rules</b>, not to Notification Screening.<br>
+        A Number/Text Rule with its own Notification setting will override this default.<br>
+        For allowed screened notifications, use <b>Alerts</b> instead.<br>
         <br>
         The built-in notification channels: <br>
         <br>
@@ -79,7 +80,8 @@
     <string name="notification_allowed_alert">Notification Allowed Alert</string>
     <string name="help_notification_allowed_alert">
         <![CDATA[
-        These settings only apply to <highlight><b>allowed</b></highlight> Notification Screening detections, not to Calls or SMS/MMS.<br>
+        These settings apply to <highlight><b>allowed</b></highlight> Notification Screening detections triggered by <b>Basic Rules</b>, not to Calls or SMS/MMS.<br>
+        A Number/Text Rule with its own Alert setting will override this default.<br>
         <br>
         Choose a custom ringtone, vibration, flashlight, and screen-wake alert that SpamBlocker itself will play when an allowed notification arrives from one of the apps being screened.<br>
         <br>

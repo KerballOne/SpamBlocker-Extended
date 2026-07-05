@@ -27,6 +27,7 @@ import spam.blocker.ui.theme.MayaBlue
 import spam.blocker.ui.theme.RaisinBlack
 import spam.blocker.ui.theme.Salmon
 import spam.blocker.ui.theme.SilverGrey
+import spam.blocker.ui.theme.LightPurple
 import spam.blocker.ui.theme.SkyBlue
 import spam.blocker.ui.theme.Teal200
 import spam.blocker.util.TimeUtils.FreshnessColor
@@ -145,7 +146,7 @@ class spf { // for namespace only
         }
 
         var textGrey by color("text", SilverGrey, R.string.normal_text)
-        var infoBlue by color("info", SkyBlue, R.string.info_feature)
+        var infoBlue by color("info", LightPurple, R.string.info_feature)
         var warning by color("warning", DarkOrange, R.string.warning)
         var success by color("success", Emerald, R.string.success_allow)
         var error by color("error", Salmon, R.string.error_block)

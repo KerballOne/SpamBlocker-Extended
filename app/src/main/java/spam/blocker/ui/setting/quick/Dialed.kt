@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import spam.blocker.Events
 import spam.blocker.G
 import spam.blocker.R
 import spam.blocker.ui.setting.LabeledRow
@@ -118,11 +119,13 @@ fun Dialed() {
                         if (granted) {
                             spf.isEnabled = true
                             isEnabled = true
+                            Events.basicRuleUpdated.fire()
                         }
                     }
                 } else {
                     spf.isEnabled = false
                     isEnabled = false
+                    Events.basicRuleUpdated.fire()
                 }
             }
         }

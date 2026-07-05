@@ -17,6 +17,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,8 +32,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import spam.blocker.Events
 import spam.blocker.G
 import spam.blocker.R
+import spam.blocker.db.SpamTable
 import spam.blocker.service.checker.IChecker
 import spam.blocker.ui.M
 import spam.blocker.ui.setting.api.ApiHeader
@@ -76,6 +79,7 @@ import spam.blocker.ui.widgets.Fab
 import spam.blocker.ui.widgets.FabWrapper
 import spam.blocker.ui.widgets.GreyIcon16
 import spam.blocker.ui.widgets.NormalColumnScrollbar
+import spam.blocker.ui.widgets.ResIcon16
 import spam.blocker.ui.widgets.RowVCenter
 import spam.blocker.ui.widgets.RowVCenterSpaced
 import spam.blocker.ui.widgets.SearchBox
@@ -191,6 +195,7 @@ fun SettingScreen() {
                         quickSettingsCollapsed = !quickSettingsCollapsed
                         sectionSpf.isQuickSettingsCollapsed = quickSettingsCollapsed
                     },
+                    headerTrailing = { BasicRulesStatusIcons() },
                 ) {
                     Column {
                         Contacts()
@@ -392,6 +397,54 @@ fun SettingScreen() {
 }
 
 
+// Borderless icons mirroring each Basic Rule's own enabled-state indicator,
+// shown right-aligned in the "Basic Rules" section header.
+@Composable
+fun BasicRulesStatusIcons() {
+    val ctx = LocalContext.current
+    val C = G.palette
+
+    var refreshTick by remember { mutableStateOf(0) }
+    Events.basicRuleUpdated.Listen { refreshTick++ }
+
+    key(refreshTick) {
+    RowVCenterSpaced(8) {
+        val contactSpf = spf.Contact(ctx)
+        if (contactSpf.isEnabled) {
+            ResIcon16(R.drawable.ic_contact_square, color = C.textGrey)
+        }
+        if (spf.Stir(ctx).isEnabled) {
+            ResIcon16(R.drawable.ic_incognito, color = C.error)
+        }
+        val spamDbCount = spf.SpamDB(ctx).let { if (it.isEnabled) SpamTable.count(ctx) else null }
+        if (spamDbCount != null) {
+            Text(text = "$spamDbCount", fontSize = 12.sp, color = C.error)
+        }
+        if (spf.RepeatedCall(ctx).isEnabled) {
+            ResIcon16(R.drawable.ic_repeat, color = C.textGrey)
+        }
+        if (spf.Dialed(ctx).isEnabled) {
+            ResIcon16(R.drawable.ic_dial_pad, color = C.textGrey)
+        }
+        if (spf.Answered(ctx).isEnabled) {
+            ResIcon16(R.drawable.ic_dial_pad, color = C.textGrey)
+        }
+        if (spf.OffTime(ctx).isEnabled) {
+            ResIcon16(R.drawable.ic_time_slot, color = C.textGrey)
+        }
+        if (spf.EmergencySituation(ctx).isEnabled) {
+            ResIcon16(R.drawable.ic_dial_pad, color = C.textGrey)
+        }
+        if (spf.RecentApps(ctx).getList().isNotEmpty()) {
+            ResIcon16(R.drawable.ic_duration, color = C.textGrey)
+        }
+        if (spf.MeetingMode(ctx).getList().isNotEmpty()) {
+            ResIcon16(R.drawable.ic_settings, color = C.textGrey)
+        }
+    }
+    }
+}
+
 @Composable
 fun SettingRow(
     modifier: Modifier = Modifier,
@@ -438,7 +491,7 @@ fun LabeledRow(
     // Show a down arrow to indicate the content below is collapsed
     // - null: it's not collapsable
     // - true/false: if it's collapsed or not
-    isCollapsed: Boolean? = false,
+    isCollapsed: Boolean? = null,
     toggleCollapse: Lambda? = null,
 
     // Items on the right side, e.g.: "New" button

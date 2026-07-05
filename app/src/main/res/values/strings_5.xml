@@ -6,6 +6,7 @@
     <string name="action_notification">Basic Rules Notification</string>
     <string name="basic_rules_notifications">Basic Rules Notifications</string>
     <string name="basic_rules_alerts">Basic Rules Alerts</string>
+    <string name="alerts">Alerts</string>
     <string name="type">Type</string>
     <string name="times">Times</string>
     <plurals name="days">

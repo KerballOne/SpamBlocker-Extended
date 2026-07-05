@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -81,21 +82,24 @@ fun Section(
                             fontWeight = FontWeight.Bold,
                             color = G.palette.infoBlue,
                         )
-                        if (badge != null) {
-                            Box(modifier = M.padding(start = 8.dp))
-                            badge()
-                        }
-                        if (headerTrailing != null) {
+                        if (badge != null || headerTrailing != null) {
                             RowVCenter(
                                 modifier = M.weight(1f),
                                 horizontalArrangement = Arrangement.End,
                             ) {
-                                headerTrailing()
+                                badge?.invoke()
+                                if (badge != null && headerTrailing != null) {
+                                    Box(modifier = M.padding(start = 8.dp))
+                                }
+                                headerTrailing?.invoke()
                             }
                         }
                     }
                 }
                 if (collapsed != true) {
+                    if (isCollapsible) {
+                        HorizontalDivider(thickness = 1.dp, color = cardColor.slightDiff())
+                    }
                     Box(
                         modifier = M
                             .padding(horizontal = 14.dp, vertical = 10.dp)

@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import spam.blocker.Events
 import spam.blocker.G
 import spam.blocker.R
 import spam.blocker.ui.M
@@ -275,6 +276,7 @@ fun RecentApps() {
                     enabledAppInfos.indexOfFirst { it.pkgName == pkgName }
                 )
             }
+            Events.basicRuleUpdated.fire()
         },
         extra = { recentAppInfo ->
             if (recentAppInfo != null) {
