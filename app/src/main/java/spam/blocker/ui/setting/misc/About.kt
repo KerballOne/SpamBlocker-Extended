@@ -19,7 +19,7 @@ import spam.blocker.ui.widgets.Str
 import spam.blocker.ui.widgets.StrokeButton
 import spam.blocker.util.FileUtils.writeDataToUri
 
-const val REPO = "https://github.com/aj3423/SpamBlocker"
+const val REPO = "https://github.com/KerballOne/SpamBlocker-Extended"
 
 
 @Composable
