@@ -38,40 +38,28 @@ It works without replacing your call/SMS app.
 - For call: <br>
   It's a Caller ID app.
 
-- For SMS:
-  - <b>Standalone Mode</b>:
+- For SMS: <br>
+  <b>Standalone Mode</b>:
 
-    The app takes over SMS notifications, you need to disable notifications from the SMS app to avoid duplicates.
-    - Pros
-      - Works with any SMS app.
-      - Advanced notification management (customizable sound/icon/color/LED)
-      - Built-in "Quick Copy" support (for copying OTP codes)
-    - Cons
-      - Feels disconnected, as messages and notifications are handled by two different apps.
-      - The app doesn't handle RCS and MMS multimedia content.
-      - Requires SMS permission.
-  - <b>Screening provider mode</b> (experimental):
+  The app takes over SMS notifications, you need to disable notifications from the SMS app to avoid duplicates.
+  - Pros
+    - Works with any SMS app.
+    - Advanced notification management (customizable sound/icon/color/LED)
+    - Built-in "Quick Copy" support (for copying OTP codes)
+  - Cons
+    - Feels disconnected, as messages and notifications are handled by two different apps.
+    - The app doesn't handle RCS and MMS multimedia content.
+    - Requires SMS permission.
 
-    Similar to call screening, the app works as a service that a compatible SMS app can query in real time, this app simply replies "block" or "allow".
-    - Pros
-      - Notifications are handled by the SMS app, feels more natural and intuitive.
-      - Works without SMS permission.
-      - Better RCS/MMS support, in theory.
-    - Cons
-      - This protocol and its integrations are still a work in progress. As of writing, the only known third-party integration (QUIK) reliably sends the phone number but not the message content, so Text Rules won't match through this path, only Number Rules will.
-      - The SMS app might not support features like "Quick Copy" or notification customizing.
-  - <b>Notification Screening</b>:
+  <b>Notification Screening</b>:
 
-    For SMS/messaging apps that don't implement the screening protocol and aren't your default SMS app, screens their *notifications* directly (needs Notification Access, no SMS permission).
-    - Pros
-      - Works with any app that posts notifications, not just SMS apps.
-      - No SMS permission needed.
-    - Cons
-      - Only sees what's in the notification's title/body, not the full message.
-      - The original app's own notification still briefly appears before this app can dismiss it.
-
-> [!TIP]
-> You can kill the app after setup, it doesn't need to stay running in the background.
+  For SMS/messaging apps that aren't your default SMS app, screens their *notifications* directly (needs Notification Access, no SMS permission).
+  - Pros
+    - Works with any app that posts notifications, not just SMS apps.
+    - No SMS permission needed.
+  - Cons
+    - Only sees what's in the notification's title/body, not the full message.
+    - The original app's own notification still briefly appears before this app can dismiss it.
 
 # Features:
 
