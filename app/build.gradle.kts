@@ -28,7 +28,7 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "spam.blocker"
+        applicationId = "dev.kerballone.spamblocker"
         minSdk = 29
         targetSdk = 36
         versionCode = 512

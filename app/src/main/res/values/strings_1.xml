@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SpamBlocker</string>
+    <string name="app_name">SpamBlocker Extended</string>
     <string name="setting">Settings</string>
     <string name="call">Call</string>
     <string name="calls">Calls</string>

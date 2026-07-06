@@ -9,3 +9,5 @@ app/debug/
 auto_translate/go.sum
 local.properties
 auto_translate/.vscode/
+*.jks
+*.keystore

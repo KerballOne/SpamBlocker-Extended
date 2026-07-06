@@ -7,7 +7,10 @@
         Number Rules and Text Rules with <b>Title</b> / <b>Body</b> enabled under <b>Apply to Notifications</b> are checked against the notification, the same way as a real incoming SMS. <br>
         If the result is <b>Block</b>, the notification is dismissed. <br>
         <br>
-        This works independently of the <b>SMS</b> switch above, and requires <b>Notification Access</b> permission.
+        This works independently of the <b>SMS</b> switch above, and requires <b>Notification Access</b> permission. <br>
+        <br>
+        Some apps\' notifications may not be dismissed quickly enough to avoid a brief alert (sound/vibration) from the original app before <b>SpamBlocker Extended</b> can act. <br>
+        If this is annoying, you can disable that app\'s own notifications in system settings, then use <b>Alerts</b> instead to be notified only for explicitly <b>allowed</b> notifications.
         ]]>
     </string>
     <string name="apply_to_notifications">Apply to Notifications</string>
