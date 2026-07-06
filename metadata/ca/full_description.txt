@@ -1,0 +1,15 @@
+Bloqueja trucades, missatges SMS i notificacions d'aplicacions no desitjades sense reemplaçar la teva aplicació de trucades/SMS predeterminada.
+
+El filtratge de notificacions (Notification Screening) aplica les teves regles de bloqueig a RCS, Signal, WhatsApp, correu electrònic i qualsevol altra aplicació de missatgeria que mostri notificacions, no només a la teva aplicació d'SMS predeterminada, de manera que el spam es filtra sigui quina sigui l'aplicació per la qual arriba. Els Avisos (Alerts) ofereixen un senyal breu de so/vibració/llanterna/despertar de pantalla per a les notificacions filtrades i permeses, en lloc d'una notificació completa duplicada.
+
+Filtres:
+
+1. Regla d'expressió regular per al número i el contingut de l'SMS.
+2. Contacte
+3. Atestació STIR
+4. Trucada repetida
+5. Número marcat
+6. Aplicacions usades recentment
+7. Horari
+
+Detalls: https://github.com/KerballOne/SpamBlocker-Extended

@@ -1,0 +1,15 @@
+Memblokir panggilan, SMS, dan notifikasi aplikasi yang tidak diinginkan tanpa mengganti aplikasi panggilan/SMS default Anda.
+
+Notification Screening menerapkan aturan pemblokiran Anda ke RCS, Signal, WhatsApp, email, dan aplikasi pesan lain yang menampilkan notifikasi, tidak hanya aplikasi SMS default Anda, sehingga spam tersaring apa pun aplikasi yang digunakan untuk mengirimkannya. Alerts memberikan peringatan ringan berupa suara/getar/senter/bangunkan layar untuk notifikasi yang diperiksa dan diizinkan, bukan notifikasi lengkap duplikat.
+
+Filter:
+
+1. Aturan regex untuk nomor & konten SMS.
+2. Kontak
+3. Atestasi STIR
+4. Panggilan berulang
+5. Nomor yang dipanggil
+6. Aplikasi yang baru digunakan
+7. Jadwal waktu
+
+Detail: https://github.com/KerballOne/SpamBlocker-Extended

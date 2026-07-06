@@ -1,0 +1,15 @@
+Varsayılan arama/SMS uygulamanızı değiştirmeden istenmeyen aramaları, SMS'leri ve uygulama bildirimlerini engeller.
+
+Bildirim Taraması (Notification Screening), engelleme kurallarınızı sadece varsayılan SMS uygulamanıza değil, RCS, Signal, WhatsApp, e-posta ve bildirim gösteren diğer tüm mesajlaşma uygulamalarına uygular; böylece spam, hangi uygulama üzerinden gelirse gelsin filtrelenir. Uyarılar (Alerts) ise izin verilen taranmış bildirimler için tekrarlanan tam bir bildirim yerine kısa bir ses/titreşim/fener/ekran uyandırma uyarısı sunar.
+
+Filtreler:
+
+1. Numara ve SMS içeriği için regex kuralı.
+2. Kişi
+3. STIR onayı
+4. Tekrarlanan arama
+5. Aranan numara
+6. Son kullanılan uygulamalar
+7. Zaman çizelgesi
+
+Ayrıntılar: https://github.com/KerballOne/SpamBlocker-Extended

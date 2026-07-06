@@ -1,24 +1,19 @@
-# SpamBlocker
-Android Call/SMS blocker. (Android 10+)
+# SpamBlocker Extended
+Android Call/SMS/Notification blocker. (Android 10+)
+
+SpamBlocker Extended blocks spam calls, SMS, and now notifications too. Notification Screening lets you apply the same blocking rules to RCS, Signal, WhatsApp, email, and any other messaging app that posts a notification, not just your default SMS app, so spam gets filtered no matter which app it actually arrives through.
+
+Started as a fork of [aj3423/SpamBlocker](https://github.com/aj3423/SpamBlocker), with Notification Screening, per-app/per-rule Alerts, and a reworked Settings UI added on top. Published under its own applicationId (`dev.kerballone.spamblocker`) so it installs independently, side by side with the original if you want.
 
 <p>
-  <img src="https://github.com/aj3423/SpamBlocker/assets/4710875/9d44afe7-2524-4b34-8bf3-ba285200bb5c" alt="SpamBlocker" height="90" />
-
-  <a href="https://f-droid.org/packages/spam.blocker">
-    <img src="https://github.com/user-attachments/assets/8757c78c-b0d5-4b8a-9adb-934d8a758e9e" alt="Get it on F-Droid" height="60" />
-  </a>
-  <a href="https://github.com/ImranR98/Obtainium"> 
-    <img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png" alt="Get it on Obtainium" height="60" />
-  </a>
-  <a href="https://github.com/aj3423/SpamBlocker/releases/latest"> 
+  <a href="https://github.com/KerballOne/SpamBlocker-Extended/releases/latest">
     <img src="https://github.com/user-attachments/assets/75d2f736-ba69-4173-b972-6f69a1804e85" alt="Get it on Github" height="60" />
   </a>
 </p>
 
-
 Table of Contents
 =================
-   * [Screenshots](#screenshots)
+   * [What's different from SpamBlocker](#whats-different-from-spamblocker)
    * [How it works](#how-it-works)
    * [Features](#features)
    * [Limitations](#limitations)
@@ -28,13 +23,15 @@ Table of Contents
    * [Support](#support)
    * [Language Support](#language-support)
    * [Contributing](#contributing)
-   * [Some ideas](#some-ideas)
    * [Donate](#donate-)
 
-# Screenshots
-| History | Settings | Notification |
-|----|----|----|
-| <img src="https://github.com/user-attachments/assets/abfac64c-83e8-445b-b92a-8826e87156ed" width="200" height="400"> | <img src="https://github.com/user-attachments/assets/17a927a3-7d18-486b-b43e-943e22fc55b7" width="200" height="400"> | <img src="https://github.com/user-attachments/assets/70cb5537-1b29-49e8-be0e-47d362ae3ebc" width="200" height="400"> |
+# What makes this different
+
+- **Notification Screening**: screens notifications from chosen apps, including RCS, Signal, WhatsApp, email, and any other messaging app, through the same Number/Text Rules used for real calls/SMS, and dismisses the notification if the rule says "Block."
+- **Alerts**: a lightweight sound/vibration/flashlight/screen-wake chime, distinct from a full notification, for when Notification Screening *allows* a message. This avoids a duplicate notification when the app's own notification is already visible. Configurable per-app (Actions > Alerts) or per-rule (overrides the app default).
+- **Settings redesign**: collapsible card sections (Basic Rules, Number Rules, Text Rules, Advanced Rules, Actions, Integrations, Miscellaneous), a 4th bottom-nav tab for notification-screening-sourced history, right-aligned status icons/counters on section headers, and a toggle-chip "Apply to" selector (Calls/SMS/MMS/Title/Body) instead of a checkbox dropdown.
+
+See the [Core Features](https://github.com/KerballOne/SpamBlocker-Extended/wiki/Core-Features) wiki page for the regex rule engine, Query API workflows, Push Alert, SMS Alert, SMS Bomb, Spam Database, and more.
 
 # How it works
 It works without replacing your call/SMS app.
@@ -43,26 +40,35 @@ It works without replacing your call/SMS app.
 
 - For SMS:
   - <b>Standalone Mode</b>:
-    
-    The app takes over SMS notifications, you need to disable notifications from the SMS app to avoid duplicates. 
+
+    The app takes over SMS notifications, you need to disable notifications from the SMS app to avoid duplicates.
     - Pros
       - Works with any SMS app.
       - Advanced notification management (customizable sound/icon/color/LED)
       - Built-in "Quick Copy" support (for copying OTP codes)
     - Cons
-      - Feels disconnected, as messages and notifications are handled by two different apps. 
+      - Feels disconnected, as messages and notifications are handled by two different apps.
       - The app doesn't handle RCS and MMS multimedia content.
       - Requires SMS permission.
-  - <b>Screening provider mode</b>:
-    
-    Similar to call screening, the app works as a service. The SMS app asks it to check messages in real time, this app simply replies "block" or "allow". 
+  - <b>Screening provider mode</b> (experimental):
+
+    Similar to call screening, the app works as a service that a compatible SMS app can query in real time, this app simply replies "block" or "allow".
     - Pros
       - Notifications are handled by the SMS app, feels more natural and intuitive.
       - Works without SMS permission.
-      - Better RCS/MMS support.
+      - Better RCS/MMS support, in theory.
     - Cons
-      - It **Only** works with SMS apps that support this [SMS screening protocol](https://github.com/aj3423/SpamBlocker/wiki/SMS-Screening-protocol)
+      - This protocol and its integrations are still a work in progress. As of writing, the only known third-party integration (QUIK) reliably sends the phone number but not the message content, so Text Rules won't match through this path, only Number Rules will.
       - The SMS app might not support features like "Quick Copy" or notification customizing.
+  - <b>Notification Screening</b>:
+
+    For SMS/messaging apps that don't implement the screening protocol and aren't your default SMS app, screens their *notifications* directly (needs Notification Access, no SMS permission).
+    - Pros
+      - Works with any app that posts notifications, not just SMS apps.
+      - No SMS permission needed.
+    - Cons
+      - Only sees what's in the notification's title/body, not the full message.
+      - The original app's own notification still briefly appears before this app can dismiss it.
 
 > [!TIP]
 > You can kill the app after setup, it doesn't need to stay running in the background.
@@ -79,38 +85,40 @@ It works without replacing your call/SMS app.
 | Dialed Number                 | Have you dialed the number?                                                                                                                                                                    |
 | Answered Number               | Allow previously answered numbers                                                                                                                                                              |
 | Emergency                     | Allow calls for a while after dialing an emergency number                                                                                                                                      |
-| Push Alert                    | Allow calls after receiving notifications from other apps, e.g.: "Your order has been taken by driver ...", the driver may then contact you.                                                   | 
-| SMS Alert                     | Allow calls after receiving SMS messages like: "[From ...] We are calling to inform ..., please feel free to answer."                                                                          | 
+| Push Alert                    | Allow calls after receiving notifications from other apps, e.g.: "Your order has been taken by driver ...", the driver may then contact you.                                                   |
+| SMS Alert                     | Allow calls after receiving SMS messages like: "[From ...] We are calling to inform ..., please feel free to answer."                                                                          |
 | SMS Bomb                      | Block continuous OTP message floods                                                                                                                                                            |
 | Recent Apps                   | Allow calls if some apps have been used recently.<br>Use case:<br>&emsp; You ordered Pizza online and soon they call you to refund.                                                            |
 | Meeting Mode                  | Decline calls during online video meetings.                                                                                                                                                    |
 | Off Time                      | A time period that always allows calls, usually no spams at night.                                                                                                                             |
 | Spam Database                 | If it exists in the spam database. Any public downloadable spam databases can be integrated, such as the [DNC](https://www.ftc.gov/policy-notices/open-government/data-sets/do-not-call-data). |
 | Schedule & Calendar           | Auto adjust rules based on time schedule and calendar events                                                                                                                                   |
-| Geolocation & Carrier         | Block numbers based on geolocation or carrier name                                                                                                                                             | 
+| Geolocation & Carrier         | Block numbers based on geolocation or carrier name                                                                                                                                             |
 | CNAP                          | The caller's display name                                                                                                                                                                      |
 | Instant Query                 | Check the incoming number online in real time, querying multiple API endpoints simultaneously, such as the [PhoneBlock](https://phoneblock.net/).                                              |
 | Report Spam                   | Automatically or manually report the number to build our crowd-sourced databases, protecting others and yourself.                                                                              |
-| Regex<br>(regular expression) | Check the [Wiki](https://github.com/aj3423/SpamBlocker/wiki/Regex-Workflow-Templates) for examples.                                                                                            |
+| Notification Screening        | Screens notifications from chosen apps against Number/Text Rules with "Apply to: Title/Body" enabled.                                                                                          |
+| Alerts                        | A lightweight sound/vibration/flashlight/screen-wake chime for allowed screened notifications, per-app or per-rule.                                                                             |
+| Regex<br>(regular expression) | Check the [Wiki](https://github.com/KerballOne/SpamBlocker-Extended/wiki/Regex-Workflow-Templates) for examples.                                                                                |
 
-# Limitations 
-- Auto clear SMS: [No plan](https://github.com/aj3423/SpamBlocker/issues/274)
-- Local AI support: [Future plan, not yet ready](https://github.com/aj3423/SpamBlocker/issues/267#issuecomment-2632229803)
-- RCS support: [No plan](https://github.com/aj3423/SpamBlocker/issues/308#issuecomment-2692269430)
-- Android 9- support: [No plan](https://github.com/aj3423/SpamBlocker/issues/38)
+# Limitations
+- Auto clear SMS: no plan
+- Local AI support: no plan
+- RCS support: no plan
+- Android 9- support: no plan
+- Notification Screening only sees notification title/body text, not the full message content, and can't prevent the original app's own notification from briefly appearing before it's dismissed.
 
 # FAQ
  - [Security warning from Google Play when installing this app](https://github.com/aj3423/SpamBlocker/issues/108)
  - [How the "Priority" works](https://github.com/aj3423/SpamBlocker/issues/166)
  - [It stops working after being killed](https://github.com/aj3423/SpamBlocker/issues/100)
- - [Android 16+ always shows a "missed call" notification for silenced calls](https://issuetracker.google.com/issues/474398435)
 
 
-# Permissions 
+# Permissions
 
 | Permission (all optional)            | Why                                                                    |
 |--------------------------------------|------------------------------------------------------------------------|
-| INTERNET                             | For database downloading / instant query / number reporting            | 
+| INTERNET                             | For database downloading / instant query / number reporting            |
 | ANSWER_PHONE_CALLS                   | Reject, answer and hang-up calls                                       |
 | POST_NOTIFICATIONS                   | Show notifications                                                     |
 | READ_CONTACTS                        | Match contacts                                                         |
@@ -120,10 +128,11 @@ It works without replacing your call/SMS app.
 | PACKAGE_USAGE_STATS                  | For feature: Recent Apps (check whether an app has been used recently) |
 | READ_PHONE_STATE                     | For BlockMode: Answer+Hang-up (monitor ringing state)                  |
 | REQUEST_IGNORE_BATTERY_OPTIMIZATIONS | For it to keep working after being swiped and killed                   |
-| NOTIFICATION_ACCESS                  | For feature: Push Alert (receiving notifications from other apps)      |
-| WRITE_SETTINGS                       | For customizing call ringtone                                          | 
-| READ_LOG                             | For reporting bugs with logcat messages                                |   
-| SYSTEM_ALERT_WINDOW                  | For the caller ID floating window                                      |   
+| NOTIFICATION_ACCESS                  | For features: Push Alert and Notification Screening                   |
+| WRITE_SETTINGS                       | For customizing call ringtone                                          |
+| READ_LOG                             | For reporting bugs with logcat messages                                |
+| SYSTEM_ALERT_WINDOW                  | For the caller ID floating window                                      |
+| VIBRATE / WAKE_LOCK / CAMERA         | For Alerts (vibration, screen-wake, flashlight)                        |
 
 # Privacy
  - For offline features
@@ -140,18 +149,13 @@ It works without replacing your call/SMS app.
 
    Nothing else.
 
-   You can also [disable the internet access](https://github.com/aj3423/SpamBlocker/issues/147) , or download the offline apk from the release page.
- - [Reproducible](https://f-droid.org/docs/Reproducible_Builds/) apk
- - Apk signing signature:
+   You can also disable the internet access, or download the offline apk from the release page.
 
-    `apksigner verify --print-certs SpamBlocker.apk`
-    > 7b1ce727856f3427eab1fadfad6c9730cd4e6ba201661547f009206377dffb58
-
-Full [Privacy Policy](https://github.com/aj3423/SpamBlocker/blob/master/Docs/PRIVACY%20POLICY.md)
+Full [Privacy Policy](https://github.com/KerballOne/SpamBlocker-Extended/blob/master/Docs/PRIVACY%20POLICY.md).
 
 # Support
- - Most problems are already covered in the issue list, please search first.
- - There's a [matrix channel](https://matrix.to/#/#spam-blocker:matrix.org).
+ - Please open an [issue](https://github.com/KerballOne/SpamBlocker-Extended/issues) on this repo.
+ - Many common questions are already answered in the [original SpamBlocker's issue list](https://github.com/aj3423/SpamBlocker/issues).
 
 
 # Language support
@@ -159,11 +163,8 @@ Full [Privacy Policy](https://github.com/aj3423/SpamBlocker/blob/master/Docs/PRI
 Languages are translated using AI, PRs for corrections are welcome.
 
 # Contributing
- - [Contributing Guidelines](https://github.com/aj3423/SpamBlocker/blob/master/Docs/CONTRIBUTING.md)
-
-# Some ideas
- - [A decentralized database](https://github.com/aj3423/SpamBlocker/issues/340)
+ - [Contributing Guidelines](https://github.com/KerballOne/SpamBlocker-Extended/blob/master/Docs/CONTRIBUTING.md)
 
 # Donate 🤑
 
-https://aj3423.github.io/donate
+This project does not accept donations. If you'd like to support the developer of the original SpamBlocker project this was built on, see https://aj3423.github.io/donate

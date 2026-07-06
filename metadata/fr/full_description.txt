@@ -1,0 +1,15 @@
+Bloque les appels, SMS et notifications indésirables sans remplacer votre application d'appels/SMS par défaut.
+
+Le filtrage des notifications (Notification Screening) applique vos règles de blocage à RCS, Signal, WhatsApp, aux e-mails et à toute autre application de messagerie qui affiche des notifications, pas seulement à votre application SMS par défaut, afin que le spam soit filtré quelle que soit l'application par laquelle il arrive. Les Alertes offrent un signal léger son/vibration/lampe/réveil d'écran pour les notifications filtrées et autorisées, au lieu d'une notification complète en double.
+
+Filtres :
+
+1. Règle d'expression régulière pour le numéro et le contenu du SMS.
+2. Contact
+3. Attestation STIR
+4. Appel répété
+5. Numéro composé
+6. Applications récemment utilisées
+7. Horaire
+
+Détails : https://github.com/KerballOne/SpamBlocker-Extended

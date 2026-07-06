@@ -1,0 +1,16 @@
+Blockiert unerwünschte Anrufe, SMS und App-Benachrichtigungen, ohne deine Standard-Anruf-/SMS-App zu ersetzen.
+
+Notification Screening wendet deine Blockierregeln auf RCS, Signal, WhatsApp, E-Mail und jede andere Messaging-App an, die Benachrichtigungen anzeigt, nicht nur auf deine Standard-SMS-App, sodass Spam gefiltert wird, egal über welche App er ankommt. Alerts geben dir einen kurzen Ton/Vibration/Blitzlicht/Bildschirm-Weckreiz für erlaubte, geprüfte Benachrichtigungen, statt einer doppelten vollständigen Benachrichtigung.
+
+Filter:
+
+1. Regex-Regel für Nummer & SMS-Inhalt.
+2. Kontakt
+3. STIR-Attestierung
+4. Wiederholter Anruf
+5. Gewählte Nummer
+6. Zuletzt verwendete Apps
+7. Zeitplan
+8. Notification Screening (Titel/Text der Benachrichtigungen ausgewählter Apps)
+
+Details: https://github.com/KerballOne/SpamBlocker-Extended

@@ -1,0 +1,18 @@
+SpamBlocker Extended 6.0
+
+New:
+- Notification Screening: apply your blocking rules to notifications from RCS, Signal, WhatsApp, email, and any other messaging app, not just your default SMS app.
+- Alerts: a lightweight sound/vibration/flashlight/screen-wake chime for allowed screened notifications, configurable per-app or per-rule, instead of a duplicate full notification.
+- New adaptive app icon and app name (SpamBlocker Extended).
+
+Improvements:
+- Settings redesigned into collapsible card sections (Basic Rules, Number Rules, Text Rules, Advanced Rules, Actions, Integrations, Miscellaneous).
+- New "Notifications" tab in the bottom navigation for notification-screening history, separate from real SMS.
+- "Apply to" selector redesigned as toggle chips (Calls/SMS/MMS/Title/Body) instead of a checkbox dropdown.
+- Basic Rules section header now shows live status icons for each enabled rule.
+
+Fix:
+- Notification Screening no longer requires "Apply to: SMS/MMS" for rules that only apply to notification Title/Body.
+- Fixed an empty screening-detail log for notification-screening history records.
+- Fixed clearing history on the Notifications tab affecting the wrong data.
+- Auto Report no longer logs an entry when no report API is configured.

@@ -1,1 +1,1 @@
-Spam Call/SMS blocker
+Spam Call/SMS/Notification blocker
