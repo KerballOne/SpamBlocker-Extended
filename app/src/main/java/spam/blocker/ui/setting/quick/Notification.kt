@@ -5,6 +5,7 @@ import android.app.NotificationManager.IMPORTANCE_HIGH
 import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.NotificationManager.IMPORTANCE_NONE
 import android.graphics.BitmapFactory
+import android.media.RingtoneManager
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -697,19 +698,23 @@ fun Alerts() {
 fun AlertConfigControls(
     initConfig: AppAlertConfig,
     onSave: (AppAlertConfig) -> Unit,
+    // Shown as a small icon at the end of the row when non-null, e.g. to let a
+    //  per-rule override revert back to the app-level default (not applicable
+    //  to the per-app config, which has no further "default" to fall back to).
+    onReset: (() -> Unit)? = null,
 ) {
     val ctx = LocalContext.current
     val C = G.palette
 
-    var ringtone by remember { mutableStateOf(initConfig.ringtone) }
+    var ringtone by remember(initConfig) { mutableStateOf(initConfig.ringtone) }
     var ringtoneName by remember(ringtone) {
         mutableStateOf(
             if (ringtone.isEmpty()) "" else RingtoneUtil.getName(ctx, ringtone.toUri())
         )
     }
-    var vibrate by remember { mutableStateOf(initConfig.vibrate) }
-    var flashlight by remember { mutableStateOf(initConfig.flashlight) }
-    var wakeScreen by remember { mutableStateOf(initConfig.wakeScreen) }
+    var vibrate by remember(initConfig) { mutableStateOf(initConfig.vibrate) }
+    var flashlight by remember(initConfig) { mutableStateOf(initConfig.flashlight) }
+    var wakeScreen by remember(initConfig) { mutableStateOf(initConfig.wakeScreen) }
 
     fun save() {
         onSave(
@@ -723,7 +728,7 @@ fun AlertConfigControls(
     }
 
     val soundTrigger = remember { mutableStateOf(false) }
-    RingtonePicker(soundTrigger) { uri, name ->
+    RingtonePicker(soundTrigger, type = RingtoneManager.TYPE_NOTIFICATION) { uri, name ->
         if (uri != null) {
             ringtone = uri
             ringtoneName = name ?: ""
@@ -732,6 +737,7 @@ fun AlertConfigControls(
     }
 
     RowVCenterSpaced(10) {
+        Spacer(modifier = M.width(6.dp))
         // Vibration
         ResIcon(
             R.drawable.ic_vibration,
@@ -769,6 +775,17 @@ fun AlertConfigControls(
             ) {
                 soundTrigger.value = true
             }
+
+            if (onReset != null) {
+                Spacer(modifier = M.width(8.dp))
+                ResIcon(
+                    R.drawable.ic_refresh,
+                    modifier = M
+                        .size(18.dp)
+                        .clickable { onReset() },
+                    color = C.disabled,
+                )
+            }
         }
     }
 }
@@ -799,43 +816,24 @@ fun AppAlertConfigRow(
     }
 }
 
-// Per-rule Alert config popup: same controls as the per-app one, but backed by a single
-// RegexRule's own `alertConfigJson` field instead of the app-level store. Empty JSON means
-// "use the app-level default", so a "Reset to Default" option is offered.
+// Per-rule Alert config row: same controls as the per-app one, inlined directly (no
+// popup), backed by a single RegexRule's own `alertConfigJson` field instead of the
+// app-level store. Empty JSON means "use the app-level default"; the reset icon clears
+// back to that.
 @Composable
-fun RuleAlertConfigDialog(
-    trigger: MutableState<Boolean>,
+fun RuleAlertConfigRow(
     alertConfigJson: MutableState<String>,
 ) {
-    if (!trigger.value) {
-        return
-    }
-
-    val C = G.palette
-
-    val initConfig = remember {
+    val initConfig = remember(alertConfigJson.value) {
         alertConfigJson.value
             .takeIf { it.isNotEmpty() }
             ?.let { runCatching { Json.decodeFromString<AppAlertConfig>(it) }.getOrNull() }
             ?: AppAlertConfig(pkgName = "")
     }
 
-    PopupDialog(
-        trigger = trigger,
-        buttons = {
-            StrokeButton(
-                label = Str(R.string.reset_to_default),
-                color = C.textGrey,
-            ) {
-                alertConfigJson.value = ""
-                trigger.value = false
-            }
-        },
-        content = {
-            AlertConfigControls(
-                initConfig = initConfig,
-                onSave = { alertConfigJson.value = Json.encodeToString(it) },
-            )
-        }
+    AlertConfigControls(
+        initConfig = initConfig,
+        onSave = { alertConfigJson.value = Json.encodeToString(it) },
+        onReset = { alertConfigJson.value = "" },
     )
 }

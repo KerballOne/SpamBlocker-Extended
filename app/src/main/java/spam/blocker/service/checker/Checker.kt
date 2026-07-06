@@ -71,6 +71,11 @@ class CheckContext(
     val simSlot: Int?, // on which SIM slot is the call ringing on
     val smsContent: String? = null,
     val isMms: Boolean = false,
+    // True when this check was triggered by Notification Screening rather than a
+    //  real SMS/MMS, so `smsContent` actually holds the notification's title/body.
+    //  Used by RegexRuleChecker.isEnabled() to gate on the Title/Body "Apply to"
+    //  flags instead of the SMS/MMS ones.
+    val isNotificationScreening: Boolean = false,
     val logger: ILogger? = null,
     val startTimeMillis: Long = System.currentTimeMillis(),
     val checkers: List<IChecker>,
@@ -1018,16 +1023,24 @@ class Checker { // for namespace only
         }
 
         open fun isEnabled(cCtx: CheckContext): Boolean {
-            // 0. check if the rule is enabled for call/sms/mms
+            // 0. check if the rule is enabled for call/sms/mms/notification
             val isForSMS = cCtx.smsContent != null
-            if (isForSMS && cCtx.isMms && !rule.isForMms()) // for mms
-                return false
 
-            if (isForSMS && !cCtx.isMms && !isConfigEnabledForSms()) // for sms
-                return false
+            if (isForSMS && cCtx.isNotificationScreening) {
+                // The content being checked is a notification's title/body, not a real
+                //  SMS/MMS, so gate on the Title/Body "Apply to" flags instead of SMS/MMS.
+                if (!rule.isForNotifTitle() && !rule.isForNotifBody())
+                    return false
+            } else {
+                if (isForSMS && cCtx.isMms && !rule.isForMms()) // for mms
+                    return false
 
-            if (!isForSMS && !isConfigEnabledForCall()) // for call
-                return false
+                if (isForSMS && !cCtx.isMms && !isConfigEnabledForSms()) // for sms
+                    return false
+
+                if (!isForSMS && !isConfigEnabledForCall()) // for call
+                    return false
+            }
 
             // 1. check time schedule
             if (TimeSchedule.dissatisfyNow(rule.schedule)) {
@@ -1766,11 +1779,13 @@ class Checker { // for namespace only
             logger: ILogger? = null,
             checkers: List<IChecker> = defaultSmsCheckers(ctx),
             isMms: Boolean = false,
+            isNotificationScreening: Boolean = false,
         ): Triple<ICheckResult, String?, Boolean> {
             val cCtx = CheckContext(
                 rawNumber = rawNumber,
                 smsContent = messageBody,
                 isMms = isMms,
+                isNotificationScreening = isNotificationScreening,
                 logger = logger,
                 checkers = checkers,
                 simSlot = simSlot,

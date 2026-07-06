@@ -15,6 +15,10 @@ import spam.blocker.util.RingtoneUtil
 @Composable
 fun RingtonePicker(
     trigger: MutableState<Boolean>,
+    // TYPE_ALL includes full continuous call ringtones, which are inappropriate for
+    //  a brief non-continuous alert chime. Callers building a short alert (e.g. the
+    //  per-app/per-rule Notification Screening Alert) should pass TYPE_NOTIFICATION.
+    type: Int = TYPE_ALL,
     onRingtoneSelected: (String?, String?) -> Unit
 ) {
     val ctx = LocalContext.current
@@ -36,7 +40,7 @@ fun RingtonePicker(
     // Launch the ringtone picker when trigger changes to true
     if (trigger.value) {
         val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER).apply {
-            putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, TYPE_ALL)
+            putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, type)
             putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, false)
             putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false)
             putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, ctx.getString(R.string.select_notification_sound))

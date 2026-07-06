@@ -13,9 +13,11 @@ import androidx.compose.runtime.retain.retain
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.PlaceholderVerticalAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import spam.blocker.G
 import spam.blocker.R
+import spam.blocker.ui.M
 import spam.blocker.db.Notification.CHANNEL_HIGH
 import spam.blocker.db.Notification.CHANNEL_LOW
 import spam.blocker.def.Def
@@ -26,7 +28,7 @@ import spam.blocker.ui.setting.LabeledRow
 import spam.blocker.ui.setting.SettingRow
 import spam.blocker.ui.setting.quick.ChannelPicker
 import spam.blocker.ui.setting.quick.ConfigHangUp
-import spam.blocker.ui.setting.quick.RuleAlertConfigDialog
+import spam.blocker.ui.setting.quick.RuleAlertConfigRow
 import spam.blocker.ui.widgets.AnimatedVisibleV
 import spam.blocker.ui.widgets.CheckBox
 import spam.blocker.ui.widgets.ComboBox
@@ -231,8 +233,10 @@ object RegexMode {
                 }
                 AnimatedVisibleV(state.forParticular.value) {
                     RegexInputBox(
-                        // This must be SMS mode
-                        label = { Text(Str(regexModeByType(state.patternModeType.intValue).labelId)) },
+                        // "For number" is always about a number, regardless of the
+                        //  outer rule's own mode (e.g. SmsContent for Text Rules), so
+                        //  it uses the same primary label as the Number Rule's own field.
+                        label = { Text(Str(regexModeByType(state.patternExtraModeType.intValue).labelId)) },
                         regexStr = state.patternExtra.value,
                         regexFlags = state.patternExtraFlags,
                         maxTextLength = spf.RegexOptions(ctx).textboxLimit,
@@ -286,7 +290,7 @@ object RegexMode {
 
             // For Call/SMS/MMS/Title/Body
             LabeledRow(
-                labelId = R.string.apply_to,
+                labelId = null,
                 helpTooltip = Str(R.string.help_apply_to_call_sms),
             ) {
                 val applyToOptions = remember {
@@ -440,11 +444,7 @@ object RegexMode {
 
             // Notification Type
             AnimatedVisibleV(
-                visible = when (modeType) {
-                    ModeType.SmsContent -> true
-                    ModeType.QuickCopy     -> false
-                    else -> state.whiteOrBlack.intValue != 0 || (!forCNAP && (state.applyToSms.value || state.applyToMms.value))
-                }
+                visible = modeType != ModeType.QuickCopy
             ) {
                 Column {
                     // Auto change the current channelId to "Allow" or "Block" when user select `whitelist/blacklist`
@@ -460,35 +460,27 @@ object RegexMode {
 
                     LabeledRow(
                         labelId = R.string.notification,
-//                        helpTooltip = Str(R.string.help_notification),
+                        helpTooltip = Str(R.string.help_rule_notification),
                     ) {
                         ChannelPicker(state.channelId.value) { index, ch ->
                             state.channelId.value = ch.channelId
                         }
                     }
+                }
+            }
 
-                    // Alert: only meaningful for an Allow rule that can fire on a screened
-                    // notification (Notification Screening enabled, applies to Title/Body).
-                    AnimatedVisibleV(
-                        visible = G.notificationScreeningEnabled.value &&
-                                state.whiteOrBlack.intValue == 0 &&
-                                (state.applyToNotifTitle.value || state.applyToNotifBody.value)
-                    ) {
-                        LabeledRow(
-                            labelId = R.string.alert,
-                            helpTooltip = Str(R.string.help_rule_alert),
-                        ) {
-                            val alertPopupTrigger = remember { mutableStateOf(false) }
-                            RuleAlertConfigDialog(alertPopupTrigger, state.alertConfigJson)
-
-                            val hasCustomAlert = state.alertConfigJson.value.isNotEmpty()
-                            GreyButton(
-                                if (hasCustomAlert) Str(R.string.custom) else Str(R.string.default_),
-                            ) {
-                                alertPopupTrigger.value = true
-                            }
-                        }
-                    }
+            // Alert: only meaningful for an Allow rule that can fire on a screened
+            // notification (Notification Screening enabled, applies to Title/Body).
+            AnimatedVisibleV(
+                visible = G.notificationScreeningEnabled.value &&
+                        state.whiteOrBlack.intValue == 0 &&
+                        (state.applyToNotifTitle.value || state.applyToNotifBody.value)
+            ) {
+                LabeledRow(
+                    labelId = R.string.alert,
+                    helpTooltip = Str(R.string.help_rule_alert),
+                ) {
+                    RuleAlertConfigRow(state.alertConfigJson)
                 }
             }
 

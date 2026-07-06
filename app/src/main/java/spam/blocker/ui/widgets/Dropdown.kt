@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import spam.blocker.G
 import spam.blocker.ui.M
 import spam.blocker.ui.slightDiff
@@ -138,9 +139,8 @@ class CheckItem(
     }
 }
 
-// A button showing a comma-separated readout of the currently-checked options
-// (or a placeholder color when none are checked), that opens a multi-select
-// checkbox dropdown when tapped. Used e.g. for "Apply to: Call/SMS/MMS".
+// A row of toggle chips, one per option, highlighted when selected.
+// Used e.g. for "Apply to: Call/SMS/MMS/Title/Body".
 @Composable
 fun MultiSelectDropdownButton(
     options: List<Pair<String, MutableState<Boolean>>>, // label to checked-state
@@ -148,24 +148,15 @@ fun MultiSelectDropdownButton(
 ) {
     val C = G.palette
 
-    val summary = options.filter { it.second.value }.joinToString(", ") { it.first }
-
-    val items = remember(options) {
-        options.map { (label, state) ->
-            CheckItem(
-                state = state,
+    RowVCenterSpaced(6, modifier = modifier) {
+        options.forEach { (label, state) ->
+            StrokeButton(
                 label = label,
-                onCheckChange = { state.value = it },
+                color = if (state.value) C.teal200 else C.disabled,
+                fontSize = 14.sp * 0.75f, // shrunk so all 5 chips (Calls/SMS/MMS/Title/Body) fit on one row
+                onClick = { state.value = !state.value },
             )
         }
-    }
-
-    DropdownWrapper(items = items, modifier = modifier) { expanded ->
-        StrokeButton(
-            label = summary.ifEmpty { "-" },
-            color = if (summary.isEmpty()) C.disabled else C.textGrey,
-            onClick = { expanded.value = true },
-        )
     }
 }
 

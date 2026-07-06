@@ -22,7 +22,15 @@ import spam.blocker.util.loge
 fun fireAllowedNotificationAlert(ctx: Context, config: spf.AppAlertConfig) {
     if (config.ringtone.isNotEmpty()) {
         try {
-            RingtoneManager.getRingtone(ctx, config.ringtone.toUri())?.play()
+            val ringtone = RingtoneManager.getRingtone(ctx, config.ringtone.toUri())
+            ringtone?.play()
+            // This is a brief alert chime, not a continuous call ringtone: force-stop it
+            //  after a few seconds in case the selected sound is long or set to loop.
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (ringtone?.isPlaying == true) {
+                    ringtone.stop()
+                }
+            }, 3000)
         } catch (e: Exception) {
             loge("Failed to play allowed-notification ringtone: ${e.message}")
         }

@@ -78,8 +78,15 @@ fun autoReportSMS(
     smsContent: String,
     recordId: Long?,
 ) {
-    val scope = CoroutineScope(IO)
     val apis = listReportableSmsAPIs(ctx, blockReason = r.type)
+
+    // Skip entirely (including logging) if no reporting API is enabled/applicable,
+    //  otherwise the History detail would show a misleading "Auto Report / Executed at"
+    //  entry even though nothing was actually reported.
+    if (apis.isEmpty())
+        return
+
+    val scope = CoroutineScope(IO)
     val logger = SaveableLogger()
     logger.info(ctx.getString(R.string.auto_report))
     logger.debug("${ctx.getString(R.string.executed_at)} ${formatTime(ctx, System.currentTimeMillis())}\n")

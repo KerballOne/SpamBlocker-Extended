@@ -12,6 +12,7 @@ import spam.blocker.def.Def
 import spam.blocker.service.checker.ByRegexRule
 import spam.blocker.util.Permission
 import spam.blocker.util.PermissiveJson
+import spam.blocker.util.SaveableLogger
 import spam.blocker.util.spf.AppAlertConfig
 import spam.blocker.util.regexFind
 import spam.blocker.util.regexMatches
@@ -189,6 +190,7 @@ class NotificationListenerService : NotificationListenerService() {
                     messageBody = messageBodyForCheck,
                     simSlot = null,
                     isTest = false,
+                    logger = SaveableLogger(),
                     showNotification = false,
                     source = Def.SOURCE_NOTIFICATION,
                 )

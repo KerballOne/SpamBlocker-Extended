@@ -120,6 +120,7 @@ fun RegexHeaderMenuButton(
             color = C.infoBlue,
             items = shortClickItems,
             longTapItems = longClickItems,
+            footerIconId = R.drawable.ic_add,
         )
     } else {
         MenuButton(

@@ -6,9 +6,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.sp
 import spam.blocker.Events
 import spam.blocker.G
 import spam.blocker.R
-import spam.blocker.db.SpamTable
 import spam.blocker.service.checker.IChecker
 import spam.blocker.ui.M
 import spam.blocker.ui.setting.api.ApiHeader
@@ -228,15 +227,18 @@ fun SettingScreen() {
                             blockCount = G.NumberRuleVM.rules.count { it.isBlacklist },
                         )
                     },
-                    headerTrailing = if (numberRulesCollapsed) null else {
-                        { RegexHeaderMenuButton(G.NumberRuleVM) }
-                    },
                 ) {
                     Column {
                         SearchBox(G.NumberRuleVM.searchEnabled, G.NumberRuleVM.filter) {
                             G.NumberRuleVM.reloadDb(ctx)
                         }
                         RegexList(G.NumberRuleVM)
+                        RowVCenter(
+                            modifier = M.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End,
+                        ) {
+                            RegexHeaderMenuButton(G.NumberRuleVM)
+                        }
                     }
                 }
 
@@ -257,15 +259,18 @@ fun SettingScreen() {
                             blockCount = G.ContentRuleVM.rules.count { it.isBlacklist },
                         )
                     },
-                    headerTrailing = if (textRulesCollapsed) null else {
-                        { RegexHeaderMenuButton(G.ContentRuleVM) }
-                    },
                 ) {
                     Column {
                         SearchBox(G.ContentRuleVM.searchEnabled, G.ContentRuleVM.filter) {
                             G.ContentRuleVM.reloadDb(ctx)
                         }
                         RegexList(G.ContentRuleVM)
+                        RowVCenter(
+                            modifier = M.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End,
+                        ) {
+                            RegexHeaderMenuButton(G.ContentRuleVM)
+                        }
                     }
                 }
 
@@ -416,30 +421,29 @@ fun BasicRulesStatusIcons() {
         if (spf.Stir(ctx).isEnabled) {
             ResIcon16(R.drawable.ic_incognito, color = C.error)
         }
-        val spamDbCount = spf.SpamDB(ctx).let { if (it.isEnabled) SpamTable.count(ctx) else null }
-        if (spamDbCount != null) {
-            Text(text = "$spamDbCount", fontSize = 12.sp, color = C.error)
+        if (spf.SpamDB(ctx).isEnabled) {
+            ResIcon16(R.drawable.ic_database, color = C.error)
         }
         if (spf.RepeatedCall(ctx).isEnabled) {
             ResIcon16(R.drawable.ic_repeat, color = C.textGrey)
         }
         if (spf.Dialed(ctx).isEnabled) {
-            ResIcon16(R.drawable.ic_dial_pad, color = C.textGrey)
+            ResIcon16(R.drawable.ic_phone_forwarded, color = C.textGrey)
         }
         if (spf.Answered(ctx).isEnabled) {
-            ResIcon16(R.drawable.ic_dial_pad, color = C.textGrey)
+            ResIcon16(R.drawable.ic_phone_callback, color = C.textGrey)
         }
         if (spf.OffTime(ctx).isEnabled) {
             ResIcon16(R.drawable.ic_time_slot, color = C.textGrey)
         }
         if (spf.EmergencySituation(ctx).isEnabled) {
-            ResIcon16(R.drawable.ic_dial_pad, color = C.textGrey)
+            ResIcon16(R.drawable.ic_warning_tintable, color = C.textGrey)
         }
         if (spf.RecentApps(ctx).getList().isNotEmpty()) {
             ResIcon16(R.drawable.ic_duration, color = C.textGrey)
         }
         if (spf.MeetingMode(ctx).getList().isNotEmpty()) {
-            ResIcon16(R.drawable.ic_settings, color = C.textGrey)
+            ResIcon16(R.drawable.ic_videocam, color = C.error)
         }
     }
     }
@@ -511,7 +515,7 @@ fun LabeledRow(
     ) {
         RowVCenterSpaced(
             space = 2,
-            modifier = M.wrapContentWidth()
+            modifier = M.fillMaxWidth()
         ) {
             // label
             if (labelId != null) {

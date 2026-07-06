@@ -18,6 +18,7 @@ import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -26,6 +27,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import spam.blocker.G
@@ -152,11 +155,25 @@ fun BottomBar(vm: BottomBarViewModel) {
                         }
 
                         // label
-                        Text(
-                            text = tab.label,
-                            fontSize = 12.sp,
-                            color = if (tab.isSelected.value) C.infoBlue else C.textGrey
-                        )
+                        // Cap the effective font scale for the tab label only, so a large
+                        //  system font-scale setting doesn't truncate longer labels (e.g.
+                        //  "Notifications") within the tab's fixed equal-split width.
+                        val labelDensity = LocalDensity.current
+                        val cappedDensity = remember(labelDensity) {
+                            Density(
+                                density = labelDensity.density,
+                                fontScale = min(labelDensity.fontScale, 1f)
+                            )
+                        }
+                        CompositionLocalProvider(LocalDensity provides cappedDensity) {
+                            Text(
+                                text = tab.label,
+                                fontSize = 12.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                color = if (tab.isSelected.value) C.infoBlue else C.textGrey
+                            )
+                        }
                     }
                 }
             }

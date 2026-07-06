@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import spam.blocker.G
 import spam.blocker.R
-import spam.blocker.def.Def
 import spam.blocker.service.bot.Daily
 import spam.blocker.service.bot.MyWorkManager
 import spam.blocker.service.bot.PruneHistory
@@ -261,7 +260,7 @@ fun HistoryFabs(
                         // Log SMS Content
                         AnimatedVisibleV(loggingEnabled) {
                             LabeledRow(
-                                labelId = R.string.sms_content,
+                                labelId = R.string.content,
                                 helpTooltip = Str(R.string.help_log_sms_content)
                             ) {
                                 val trigger = remember { mutableStateOf(false) }
@@ -453,17 +452,8 @@ fun HistoryFabs(
             buttons = {
                 StrokeButton(label = Str(R.string.delete), color = C.error) {
                     deleteConfirm.value = false
-                    when (vm.forType) {
-                        Def.ForNumber -> {
-                            G.callVM.table.clearAll(ctx)
-                            G.callVM.records.clear()
-                        }
-
-                        Def.ForSms -> {
-                            G.smsVM.table.clearAll(ctx)
-                            G.smsVM.records.clear()
-                        }
-                    }
+                    vm.table.clearAll(ctx, source = vm.sourceFilter)
+                    vm.records.clear()
                 }
             }
         ) {

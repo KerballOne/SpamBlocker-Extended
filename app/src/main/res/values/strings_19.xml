@@ -62,6 +62,31 @@
           It\'s considered an <highlight><b>Active Chat</b></highlight> when the screen is unlocked and the SMS app is open in the foreground. <br>
         ]]>
     </string>
+    <string name="help_rule_notification">
+        <![CDATA[
+        This overrides the app-wide <b>Notifications</b> default (in <b>Actions</b>) for this rule only, applying only to <highlight><b>Calls</b></highlight> and <highlight><b>SMS/MMS</b></highlight>, not to Notification Screening.<br>
+        For allowed screened notifications, use <b>Alert</b> below instead.<br>
+        <br>
+        The built-in notification channels: <br>
+        <br>
+        <title><b>None</b></title> &ensp; <img src=\'ic_bell_mute\'/> <br>
+        &ensp; No notification at all. <br>
+        <br>
+        <title><b>Low</b></title> &ensp; <img src=\'ic_statusbar_shade\'/>  <br>
+        &ensp; Appears in the status bar and notification shade. <br>
+        <br>
+        <title><b>Medium</b></title> &ensp; <img src=\'ic_bell_ringing\'/><img src=\'ic_statusbar_shade\'/> <br>
+        &ensp; Appears in the status bar and notification shade with a sound. <br>
+        <br>
+        <title><b>High</b></title> &ensp; <img src=\'ic_bell_ringing\'/><img src=\'ic_statusbar_shade\'/><img src=\'ic_heads_up\'/> <br>
+        &ensp; Appears in the status bar, notification shade, and as heads-up pop-up with a sound. <br>
+        <br>
+        <title><b>High Muted</b></title> &ensp; <img src=\'ic_statusbar_shade\'/><img src=\'ic_heads_up\'/> <br>
+        &ensp; It\'s similar to <b>High</b> but mutes the sound. <br>
+        &ensp; It\'s ideal for <highlight><b>Active Chat</b></highlight> where continuous sounds might be annoying. <br>
+          It\'s considered an <highlight><b>Active Chat</b></highlight> when the screen is unlocked and the SMS app is open in the foreground. <br>
+        ]]>
+    </string>
     <string name="none">None</string>
     <string name="low">Low</string>
     <string name="medium">Medium</string>

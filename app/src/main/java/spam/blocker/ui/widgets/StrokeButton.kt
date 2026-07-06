@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import spam.blocker.G
 import spam.blocker.R
@@ -102,6 +103,7 @@ fun StrokeButton(
     shape: RoundedCornerShape = RoundedCornerShape(BUTTON_CORNER_RADIUS.dp),
     contentPadding: PaddingValues = PaddingValues(BUTTON_H_PADDING.dp, 0.dp),
     enabled: Boolean = true,
+    fontSize: TextUnit = TextUnit.Unspecified,
     onClick: Lambda,
 ) {
     Button(
@@ -117,7 +119,8 @@ fun StrokeButton(
                 icon?.let { it() }
                 label?.let {
                     Text(
-                        text = label, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis
+                        text = label, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                        fontSize = fontSize,
                     )
                 }
             }

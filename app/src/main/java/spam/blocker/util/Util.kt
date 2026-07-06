@@ -499,8 +499,7 @@ object Util {
 
                 cacheAppList = packageInfos.filter {
                     val appInfo = it.applicationInfo
-                    val hasInternet = it.requestedPermissions?.contains(Manifest.permission.INTERNET) == true
-                    appInfo != null && hasInternet && (appInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0
+                    appInfo != null && (appInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0
                 }.map {
                     val appInfo = it.applicationInfo!!
 

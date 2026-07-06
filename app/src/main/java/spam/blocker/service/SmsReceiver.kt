@@ -114,7 +114,8 @@ open class SmsReceiver : BroadcastReceiver() {
             logi("process Sms")
 
             val (r, fullScreeningLog, anythingWrong) = Checker.checkSms(
-                ctx, rawNumber = rawNumber, messageBody = messageBody, simSlot = simSlot, logger = logger, isMms = isMms)
+                ctx, rawNumber = rawNumber, messageBody = messageBody, simSlot = simSlot, logger = logger, isMms = isMms,
+                isNotificationScreening = source == Def.SOURCE_NOTIFICATION)
 
             // 1. log to history db
             val spfHistory = spf.HistoryOptions(ctx)

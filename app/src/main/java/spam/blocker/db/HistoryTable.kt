@@ -170,9 +170,16 @@ abstract class HistoryTable {
             it.moveToFirst()
         }
     }
-    fun clearAll(ctx: Context) {
+    // When `source` is null, clears every record in the table (e.g. the Calls tab).
+    // When set, only clears records from that source (e.g. Def.SOURCE_SMS vs
+    //  Def.SOURCE_NOTIFICATION, which share the same underlying SMS table).
+    fun clearAll(ctx: Context, source: Int? = null) {
         val db = Db.getInstance(ctx).writableDatabase
-        val sql = "DELETE FROM ${tableName()} "
+        val sql = if (source == null) {
+            "DELETE FROM ${tableName()}"
+        } else {
+            "DELETE FROM ${tableName()} WHERE ${Db.COLUMN_SOURCE} = $source"
+        }
         db.execSQL(sql)
     }
     @SuppressLint("Range")
