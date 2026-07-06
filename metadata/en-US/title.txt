@@ -1,1 +1,1 @@
-SpamBlocker (Call & SMS)
+SpamBlocker Extended (Call/SMS/Notification)
