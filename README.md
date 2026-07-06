@@ -35,8 +35,11 @@ See the [Core Features](https://github.com/KerballOne/SpamBlocker-Extended/wiki/
 
 # How it works
 It works without replacing your call/SMS app.
-- For call: <br>
-  It's a Caller ID app.
+- For calls: <br>
+  It's a Caller ID app, with a choice of three blocking modes:
+  - <b>Reject</b>: same as pressing the decline button, completely silent, the screen never lights up.
+  - <b>Silence</b>: rejected on your side but keeps ringing for the caller, so it looks like you're just not answering (and wastes the caller's time, discouraging repeat spam calls).
+  - <b>Hang Up</b>: answers and immediately hangs up, so it never reaches voicemail.
 
 - For SMS: <br>
   <b>Standalone Mode</b>:
