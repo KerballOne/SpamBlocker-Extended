@@ -37,7 +37,6 @@ import spam.blocker.service.checker.ICheckResult
 import spam.blocker.ui.history.HistoryViewModel
 import spam.blocker.ui.history.tagOther
 import spam.blocker.util.Contacts
-import spam.blocker.util.Lambda2
 import spam.blocker.util.Permission
 import spam.blocker.util.PhoneNumber
 import spam.blocker.util.SaveableLogger
