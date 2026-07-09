@@ -698,10 +698,14 @@ fun Alerts() {
 fun AlertConfigControls(
     initConfig: AppAlertConfig,
     onSave: (AppAlertConfig) -> Unit,
-    // Shown as a small icon at the end of the row when non-null, e.g. to let a
-    //  per-rule override revert back to the app-level default (not applicable
-    //  to the per-app config, which has no further "default" to fall back to).
-    onReset: (() -> Unit)? = null,
+    // When non-null, this config can fall back to some further-up default when unset
+    //  (e.g. the per-rule override falls back to the app-level config when empty; the
+    //  per-app config itself has no further default, so it always passes null here).
+    // `isUnset`: true when there's no saved config yet (falls back to the default).
+    // `onSet`: called when the user explicitly opts in to an all-off override, turning
+    //  `isUnset` false without changing any individual control's value.
+    // `onClear`: called to go back to `isUnset = true`, i.e. resume falling back.
+    unsetControl: UnsetControl? = null,
 ) {
     val ctx = LocalContext.current
     val C = G.palette
@@ -734,6 +738,19 @@ fun AlertConfigControls(
             ringtoneName = name ?: ""
             save()
         }
+    }
+
+    if (unsetControl != null && unsetControl.isUnset) {
+        // No saved override yet, it's currently falling back to the app-level default.
+        // Show a single "Set" button instead of the all-disabled-looking icon row,
+        //  which would otherwise be visually identical to an explicit all-off override.
+        RowVCenterSpaced(10) {
+            Spacer(modifier = M.width(6.dp))
+            GreyButton(Str(R.string.set)) {
+                unsetControl.onSet()
+            }
+        }
+        return
     }
 
     RowVCenterSpaced(10) {
@@ -776,19 +793,30 @@ fun AlertConfigControls(
                 soundTrigger.value = true
             }
 
-            if (onReset != null) {
+            if (unsetControl != null) {
+                // Clears this override back to "unset"/falls back to the app-level
+                //  default, as opposed to a plain refresh/undo — labeled with an "X"
+                //  rather than a reset icon so it's clear this empties the override
+                //  rather than restoring some previous value.
                 Spacer(modifier = M.width(8.dp))
                 ResIcon(
-                    R.drawable.ic_refresh,
+                    R.drawable.ic_clear,
                     modifier = M
                         .size(18.dp)
-                        .clickable { onReset() },
+                        .clickable { unsetControl.onClear() },
                     color = C.disabled,
                 )
             }
         }
     }
 }
+
+// See `AlertConfigControls`'s `unsetControl` parameter.
+data class UnsetControl(
+    val isUnset: Boolean,
+    val onSet: () -> Unit,
+    val onClear: () -> Unit,
+)
 
 // A single app's row: label + AlertConfigControls, backed by the per-app AllowedNotificationAlerts store.
 @Composable
@@ -834,6 +862,10 @@ fun RuleAlertConfigRow(
     AlertConfigControls(
         initConfig = initConfig,
         onSave = { alertConfigJson.value = Json.encodeToString(it) },
-        onReset = { alertConfigJson.value = "" },
+        unsetControl = UnsetControl(
+            isUnset = alertConfigJson.value.isEmpty(),
+            onSet = { alertConfigJson.value = Json.encodeToString(AppAlertConfig(pkgName = "")) },
+            onClear = { alertConfigJson.value = "" },
+        ),
     )
 }

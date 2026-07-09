@@ -1,6 +1,7 @@
 <resources>
     <string name="perm_write_settings">Write Settings</string>
     <string name="set_to">Set To</string>
+    <string name="set">Set</string>
     <string name="help_set_ringtone_to">
     <![CDATA[
         Set the ringtone for a particular feature, or mute it. <br>
