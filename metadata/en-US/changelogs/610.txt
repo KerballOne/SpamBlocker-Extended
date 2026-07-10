@@ -1,0 +1,10 @@
+SpamBlocker Extended 6.1
+
+New:
+- Voicemail Notification: pull the caller's number out of a voicemail-app notification and block it by Non-Contact or Database, the same way a call would be blocked. Optionally also check it against your Number/Text Rules, and optionally allow it if the number had a recent, non-blocked call in your own Calls log.
+
+Improvements:
+- Voicemail Notification now also honors an allowed Contact, same as a real call.
+- Notification Screening's dedup cache now clears a notification's content key when it's removed, so a genuinely new repost with identical content (e.g. repeated spam using the same canned message) is evaluated and blocked again instead of being silently skipped.
+- "Allow if Call Allowed" now shows the original call's actual allow reason (e.g. Answered Number) instead of a generic "Passed by default".
+- "Allow if Call Allowed" no longer trusts a stale verdict from a Repeated Call/Dialed Number/Answered Number rule that has since been disabled.
