@@ -144,4 +144,67 @@
         ]]>
     </string>
     <string name="tap_text_to_edit_color">انقر على نص ARGB لتعديله يدويًا.</string>
+    <string name="active_chat">دردشة نشطة</string>
+    <string name="alert">تنبيه</string>
+    <string name="calls_blocked">المكالمات المحظورة</string>
+    <string name="flashlight">مصباح يدوي</string>
+    <string name="help_active_chat">يُستخدم بدلاً من قنوات الرسائل القصيرة العادية أثناء فتح تطبيق الرسائل القصيرة وإلغاء قفل الشاشة، بحيث لا تقاطع الرسائل الواردة بصوت عالٍ أو نافذة منبثقة عائمة.</string>
+    <string name="help_notification_allowed_alert">
+        <![CDATA[
+        تنطبق هذه الإعدادات على اكتشافات فحص الإشعارات <highlight><b>المسموح بها</b></highlight> التي تُشغّلها <b>القواعد الأساسية</b>، وليس على المكالمات أو الرسائل النصية/رسائل الوسائط المتعددة.<br>
+        تتجاوز قاعدة رقم/نص لها إعداد تنبيه خاص بها هذا الإعداد الافتراضي.<br>
+        <br>
+        اختر نغمة رنين مخصصة، واهتزاز، ومصباح يدوي، وتنبيه إيقاظ الشاشة سيقوم SpamBlocker نفسه بتشغيله عند وصول إشعار مسموح به من أحد التطبيقات التي يتم فحصها.<br>
+        <br>
+        هذا مفيد إذا قمت بكتم قناة إشعار التطبيق نفسه لتجنب الضوضاء من الإشعارات المحظورة، حيث سيؤدي ذلك بخلاف ذلك إلى إسكات الإشعارات المسموح بها أيضًا.<br>
+        <br>
+        لكل تطبيق إعدادات تنبيه خاصة به، انقر على الأيقونات لتبديلها بين التشغيل/الإيقاف:<br>
+        &ensp; <img src=\'ic_vibration\'/> &ensp; اهتزاز<br>
+        &ensp; <img src=\'ic_flashlight\'/> &ensp; مصباح يدوي<br>
+        &ensp; <img src=\'ic_wake_screen\'/> &ensp; إيقاظ الشاشة<br>
+        <br>
+        انقر على الزر الموجود على اليمين لاختيار نغمة رنين.
+        ]]>
+    </string>
+    <string name="help_rule_alert">
+        <![CDATA[
+        اختر نغمة رنين مخصصة، واهتزاز، ومصباح يدوي، وتنبيه إيقاظ الشاشة عندما تسمح هذه القاعدة بإشعار تم فحصه.<br>
+        <br>
+        هذا يختلف عن إعداد الإشعارات العادي أعلاه: نظرًا لأن الإشعار الأصلي مرئي بالفعل على الشاشة، فإن السماح به مرة أخرى لا يحتاج إلى إشعار مكرر من SpamBlocker، بل فقط تنبيه قصير لجذب الانتباه.<br>
+        <br>
+        اترك هذا كغير محدد (انقر على "تعيين" للتكوين) لاستخدام التنبيه على مستوى التطبيق المكوّن ضمن إشعار القواعد الأساسية.
+        ]]>
+    </string>
+    <string name="help_rule_notification">
+        <![CDATA[
+        هذا يتجاوز الإعداد الافتراضي لـ<b>الإشعارات</b> على مستوى التطبيق (في <b>الإجراءات</b>) لهذه القاعدة فقط، وينطبق فقط على <highlight><b>المكالمات</b></highlight> و<highlight><b>الرسائل النصية/رسائل الوسائط المتعددة</b></highlight>، وليس على فحص الإشعارات.<br>
+        للإشعارات المفحوصة المسموح بها، استخدم <b>التنبيه</b> أدناه بدلاً من ذلك.<br>
+        <br>
+        قنوات الإشعارات المدمجة: <br>
+        <br>
+        <title><b>بلا</b></title> &ensp; <img src=\'ic_bell_mute\'/> <br>
+        &ensp; لا يوجد إشعار على الإطلاق. <br>
+        <br>
+        <title><b>منخفض</b></title> &ensp; <img src=\'ic_statusbar_shade\'/>  <br>
+        &ensp; يظهر في شريط الحالة ودرج الإشعارات. <br>
+        <br>
+        <title><b>متوسط</b></title> &ensp; <img src=\'ic_bell_ringing\'/><img src=\'ic_statusbar_shade\'/> <br>
+        &ensp; يظهر في شريط الحالة ودرج الإشعارات مع صوت. <br>
+        <br>
+        <title><b>مرتفع</b></title> &ensp; <img src=\'ic_bell_ringing\'/><img src=\'ic_statusbar_shade\'/><img src=\'ic_heads_up\'/> <br>
+        &ensp; يظهر في شريط الحالة، ودرج الإشعارات، وكنوافذة منبثقة عائمة مع صوت. <br>
+        <br>
+        <title><b>مرتفع صامت</b></title> &ensp; <img src=\'ic_statusbar_shade\'/><img src=\'ic_heads_up\'/> <br>
+        &ensp; إنه مشابه لـ <b>مرتفع</b> ولكنه يكتم الصوت. <br>
+        &ensp; إنه مثالي لـ <highlight><b>دردشة نشطة</b></highlight> حيث قد تكون الأصوات المستمرة مزعجة. <br>
+          يعتبر <highlight><b>دردشة نشطة</b></highlight> عندما تكون الشاشة غير مقفلة وتطبيق الرسائل القصيرة مفتوحًا في المقدمة. <br>
+        ]]>
+    </string>
+    <string name="no_screened_apps">لا توجد تطبيقات محددة حاليًا لفحص الإشعارات.</string>
+    <string name="notification_allowed_alert">تنبيه الإشعار المسموح به</string>
+    <string name="reset_to_default">إعادة التعيين إلى الافتراضي</string>
+    <string name="sms_mms_allowed">الرسائل النصية/رسائل الوسائط المتعددة المسموح بها</string>
+    <string name="sms_mms_blocked">الرسائل النصية/رسائل الوسائط المتعددة المحظورة</string>
+    <string name="vibration">اهتزاز</string>
+    <string name="wake_screen">إيقاظ الشاشة</string>
 </resources>

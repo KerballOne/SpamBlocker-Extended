@@ -1,6 +1,7 @@
 <resources>
     <string name="perm_write_settings">Ayarları Yaz</string>
     <string name="set_to">Şuna Ayarla</string>
+    <string name="set">Ayarla</string>
     <string name="help_set_ringtone_to">
     <![CDATA[
         Belirli bir özellik için zil sesini ayarlayın veya sessize alın. <br>

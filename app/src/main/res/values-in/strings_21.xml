@@ -1,6 +1,7 @@
 <resources>
     <string name="perm_write_settings">Ubah Pengaturan</string>
     <string name="set_to">Atur ke</string>
+    <string name="set">Atur</string>
     <string name="help_set_ringtone_to">
     <![CDATA[
         Atur nada dering untuk fitur tertentu, atau bisukan. <br>

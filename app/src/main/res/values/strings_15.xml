@@ -105,22 +105,24 @@
     <string name="voicemail_notification"><short>Voicemail Notification</short></string>
     <string name="help_voicemail_notification">
         <![CDATA[
-        Extract phone numbers from the notifications of chosen voicemail/dialer apps, and check
-          them against <b>Basic Rules</b> and <b>Number Rules</b>, the same as a real incoming call. <br>
+        Pull the caller\'s number out of a voicemail notification from a chosen app, and block
+          it the same way a call would be blocked: by <b>Non-Contact</b> or <b>Database</b>. <br>
         <br>
-        Ordinary Notification Screening only dismisses a notification if a Number/Text Rule\'s own
-          Title/Body flags match it directly; it never runs Basic Rules (Contacts, STIR, Spam
-          Database, Repeated Call, etc.) against notification content. This lets those same Basic
-          Rules apply too, agnostic of which app shows the voicemail notification or whether the
-          number appears in its title or body. <br>
-        <br>
-        Only apps already selected under Screening > Notifications can be chosen here. <br>
-        <br>
-        When a checked number is <b>not</b> blocked (i.e. Basic/Number Rules allow it), the
-          app-level Alert configured under Actions &gt; Alerts fires, same as ordinary Notification
-          Screening. It does not apply to Calls or SMS/MMS. A Number/Text Rule with its own Alert
-          setting still takes priority when that rule is the one that matched.
+        Only apps already selected under Screening > Notifications can be chosen here.
         ]]>
     </string>
     <string name="voicemail_notification_apps">Voicemail App</string>
+    <string name="voicemail_notification_include_regex_rules">Number/Text Rules</string>
+    <string name="voicemail_notification_allow_if_call_allowed">Allow if Call Allowed</string>
+    <string name="allowed_by_recent_call">Recent Call Allowed</string>
+    <string name="help_voicemail_notification_options">
+        <![CDATA[
+        <title><b>Number/Text Rules</b></title><br>
+        Also check the number against your <b>Number Rules</b> and <b>Text Rules</b>. <br>
+        <br>
+        <title><b>Allow if Call Allowed</b></title><br>
+        Skip the block check if this number had a recent, non-blocked call in your <b>Calls</b>
+          log (last 3 entries, within 10 minutes).
+        ]]>
+    </string>
 </resources>

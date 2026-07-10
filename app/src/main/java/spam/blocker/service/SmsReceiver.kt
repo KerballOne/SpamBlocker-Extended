@@ -11,6 +11,7 @@ import spam.blocker.db.Notification.ChannelTable
 import spam.blocker.db.SmsTable
 import spam.blocker.def.Def
 import spam.blocker.service.checker.Checker
+import spam.blocker.service.checker.IChecker
 import spam.blocker.service.checker.ICheckResult
 import spam.blocker.service.reporting.autoReportSMS
 import spam.blocker.ui.NotificationTrampolineActivity
@@ -109,12 +110,19 @@ open class SmsReceiver : BroadcastReceiver() {
             showNotification: Boolean = true, // no notification for sms-screening-provider mode
             isMms: Boolean = false,
             source: Int = Def.SOURCE_SMS,
+            checkers: List<IChecker>? = null,
         ): ICheckResult {
             logi("process Sms")
 
-            val (r, fullScreeningLog, anythingWrong) = Checker.checkSms(
-                ctx, rawNumber = rawNumber, messageBody = messageBody, simSlot = simSlot, logger = logger, isMms = isMms,
-                isNotificationScreening = source == Def.SOURCE_NOTIFICATION)
+            val (r, fullScreeningLog, anythingWrong) = if (checkers != null) {
+                Checker.checkSms(
+                    ctx, rawNumber = rawNumber, messageBody = messageBody, simSlot = simSlot, logger = logger, isMms = isMms,
+                    isNotificationScreening = source == Def.SOURCE_NOTIFICATION, checkers = checkers)
+            } else {
+                Checker.checkSms(
+                    ctx, rawNumber = rawNumber, messageBody = messageBody, simSlot = simSlot, logger = logger, isMms = isMms,
+                    isNotificationScreening = source == Def.SOURCE_NOTIFICATION)
+            }
 
             // 1. log to history db
             val spfHistory = spf.HistoryOptions(ctx)

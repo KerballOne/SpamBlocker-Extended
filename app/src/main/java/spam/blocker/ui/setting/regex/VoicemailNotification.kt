@@ -66,6 +66,8 @@ fun VoicemailNotification() {
 
     val applyToTitle = remember { mutableStateOf(vmSpf.applyToTitle) }
     val applyToBody = remember { mutableStateOf(vmSpf.applyToBody) }
+    val includeNumberTextRules = remember { mutableStateOf(vmSpf.includeNumberTextRules) }
+    val allowIfCallAllowed = remember { mutableStateOf(vmSpf.allowIfCallAllowed) }
 
     LabeledRow(
         labelId = R.string.voicemail_notification,
@@ -156,9 +158,26 @@ fun VoicemailNotification() {
                 }
             }
 
-            LaunchedEffect(applyToTitle.value, applyToBody.value) {
+            LabeledRow(
+                labelId = null,
+                paddingHorizontal = 20,
+                helpTooltip = Str(R.string.help_voicemail_notification_options),
+                content = {
+                    val options = remember {
+                        listOf(
+                            ctx.getString(R.string.voicemail_notification_include_regex_rules) to includeNumberTextRules,
+                            ctx.getString(R.string.voicemail_notification_allow_if_call_allowed) to allowIfCallAllowed,
+                        )
+                    }
+                    MultiSelectDropdownButton(options = options)
+                }
+            )
+
+            LaunchedEffect(applyToTitle.value, applyToBody.value, includeNumberTextRules.value, allowIfCallAllowed.value) {
                 vmSpf.applyToTitle = applyToTitle.value
                 vmSpf.applyToBody = applyToBody.value
+                vmSpf.includeNumberTextRules = includeNumberTextRules.value
+                vmSpf.allowIfCallAllowed = allowIfCallAllowed.value
                 resetVoicemailNotificationCache()
             }
         }

@@ -102,4 +102,27 @@
                 La tâche de nettoyage s\'exécute chaque jour à 00:00.
         ]]>
     </string>
+    <string name="voicemail_notification"><short>Notification de messagerie vocale</short></string>
+    <string name="help_voicemail_notification">
+        <![CDATA[
+        Extrait le numéro de l\'appelant d\'une notification de messagerie vocale provenant d\'une application choisie,
+          et le bloque de la même manière qu\'un appel serait bloqué : par <b>Non-Contact</b> ou <b>Base de données</b>. <br>
+        <br>
+        Seules les applications déjà sélectionnées sous Filtrage > Notifications peuvent être choisies ici.
+        ]]>
+    </string>
+    <string name="voicemail_notification_apps">Application de messagerie vocale</string>
+    <string name="voicemail_notification_include_regex_rules">Règles de numéro/texte</string>
+    <string name="voicemail_notification_allow_if_call_allowed">Autoriser si l\'appel est autorisé</string>
+    <string name="allowed_by_recent_call">Autorisé par un appel récent</string>
+    <string name="help_voicemail_notification_options">
+        <![CDATA[
+        <title><b>Règles de numéro/texte</b></title><br>
+        Vérifie également le numéro par rapport à vos <b>Règles de numéro</b> et <b>Règles de texte</b>. <br>
+        <br>
+        <title><b>Autoriser si l\'appel est autorisé</b></title><br>
+        Ignore la vérification de blocage si ce numéro a eu un appel récent et non bloqué dans votre journal
+          <b>Appels</b> (3 dernières entrées, dans les 10 minutes).
+        ]]>
+    </string>
 </resources>

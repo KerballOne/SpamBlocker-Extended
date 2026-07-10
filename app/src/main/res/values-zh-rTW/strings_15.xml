@@ -101,4 +101,27 @@
                 清理工作會在每天 00:00 執行。
         ]]>
     </string>
+    <string name="voicemail_notification"><short>語音信箱通知</short></string>
+    <string name="help_voicemail_notification">
+        <![CDATA[
+        從所選應用程式的語音信箱通知中擷取來電者的電話號碼，並以與封鎖來電相同的方式封鎖該號碼：
+          透過<b>非聯絡人</b>或<b>資料庫</b>。 <br>
+        <br>
+        這裡只能選擇已在 篩選 > 通知 中選取的應用程式。
+        ]]>
+    </string>
+    <string name="voicemail_notification_apps">語音信箱應用程式</string>
+    <string name="voicemail_notification_include_regex_rules">號碼/文字規則</string>
+    <string name="voicemail_notification_allow_if_call_allowed">若允許來電則允許</string>
+    <string name="allowed_by_recent_call">近期來電已允許</string>
+    <string name="help_voicemail_notification_options">
+        <![CDATA[
+        <title><b>號碼/文字規則</b></title><br>
+        也會依照您的<b>號碼規則</b>與<b>文字規則</b>檢查該號碼。 <br>
+        <br>
+        <title><b>若允許來電則允許</b></title><br>
+        若此號碼在您的<b>通話記錄</b>中有近期且未被封鎖的來電（最近 3 筆記錄，10 分鐘內），
+          則略過封鎖檢查。
+        ]]>
+    </string>
 </resources>

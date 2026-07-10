@@ -144,4 +144,67 @@
         ]]>
     </string>
     <string name="tap_text_to_edit_color">Toca el texto ARGB para editarlo manualmente.</string>
+    <string name="active_chat">Chat Activo</string>
+    <string name="alert">Alerta</string>
+    <string name="calls_blocked">Llamadas Bloqueadas</string>
+    <string name="flashlight">Linterna</string>
+    <string name="help_active_chat">Se usa en lugar de los canales normales de SMS mientras tienes la app de SMS abierta y la pantalla desbloqueada, para que los mensajes entrantes no interrumpan con un sonido fuerte o una ventana emergente.</string>
+    <string name="help_notification_allowed_alert">
+        <![CDATA[
+        Estos ajustes se aplican a las detecciones <highlight><b>permitidas</b></highlight> del Filtrado de Notificaciones activadas por las <b>Reglas Básicas</b>, no a Llamadas ni SMS/MMS.<br>
+        Una Regla de Número/Texto con su propia configuración de Alerta anulará este valor predeterminado.<br>
+        <br>
+        Elige un tono, vibración, linterna y alerta de reactivación de pantalla personalizados que SpamBlocker reproducirá cuando llegue una notificación permitida de una de las apps filtradas.<br>
+        <br>
+        Esto es útil si has silenciado el canal de notificación propio de la app para evitar el ruido de las notificaciones bloqueadas, ya que de lo contrario también silenciaría las permitidas.<br>
+        <br>
+        Cada app tiene su propia configuración de alerta, toca los iconos para activarlos/desactivarlos:<br>
+        &ensp; <img src=\'ic_vibration\'/> &ensp; Vibración<br>
+        &ensp; <img src=\'ic_flashlight\'/> &ensp; Linterna<br>
+        &ensp; <img src=\'ic_wake_screen\'/> &ensp; Reactivar Pantalla<br>
+        <br>
+        Toca el botón de la derecha para elegir un tono.
+        ]]>
+    </string>
+    <string name="help_rule_alert">
+        <![CDATA[
+        Elige un tono, vibración, linterna y alerta de reactivación de pantalla personalizados para cuando ESTA regla permita una notificación filtrada.<br>
+        <br>
+        Esto es diferente de la configuración de Notificación normal de arriba: dado que la notificación original ya es visible en la pantalla, permitirla de nuevo no necesita una notificación duplicada de SpamBlocker, solo una breve alerta para llamar la atención.<br>
+        <br>
+        Deja esto como Sin establecer (toca "Establecer" para configurarlo) para usar la alerta a nivel de app configurada en Notificación de Reglas Básicas.
+        ]]>
+    </string>
+    <string name="help_rule_notification">
+        <![CDATA[
+        Esto anula el valor predeterminado de <b>Notificaciones</b> a nivel de app (en <b>Acciones</b>) solo para esta regla, aplicándose únicamente a <highlight><b>Llamadas</b></highlight> y <highlight><b>SMS/MMS</b></highlight>, no al Filtrado de Notificaciones.<br>
+        Para notificaciones filtradas permitidas, usa <b>Alerta</b> más abajo en su lugar.<br>
+        <br>
+        Los canales de notificación incorporados: <br>
+        <br>
+        <title><b>Ninguno</b></title> &ensp; <img src=\'ic_bell_mute\'/> <br>
+        &ensp; Ninguna notificación en absoluto. <br>
+        <br>
+        <title><b>Baja</b></title> &ensp; <img src=\'ic_statusbar_shade\'/>  <br>
+        &ensp; Aparece en la barra de estado y en el panel de notificaciones. <br>
+        <br>
+        <title><b>Media</b></title> &ensp; <img src=\'ic_bell_ringing\'/><img src=\'ic_statusbar_shade\'/> <br>
+        &ensp; Aparece en la barra de estado y en el panel de notificaciones con sonido. <br>
+        <br>
+        <title><b>Alta</b></title> &ensp; <img src=\'ic_bell_ringing\'/><img src=\'ic_statusbar_shade\'/><img src=\'ic_heads_up\'/> <br>
+        &ensp; Aparece en la barra de estado, el panel de notificaciones y como una ventana emergente (heads-up) con sonido. <br>
+        <br>
+        <title><b>Alta Silenciada</b></title> &ensp; <img src=\'ic_statusbar_shade\'/><img src=\'ic_heads_up\'/> <br>
+        &ensp; Es similar a <b>Alta</b> pero silencia el sonido. <br>
+        &ensp; Es ideal para un <highlight><b>Chat Activo</b></highlight> donde los sonidos continuos pueden ser molestos. <br>
+          Se considera un <highlight><b>Chat Activo</b></highlight> cuando la pantalla está desbloqueada y la aplicación de SMS está abierta en primer plano. <br>
+        ]]>
+    </string>
+    <string name="no_screened_apps">No hay ninguna app seleccionada actualmente para el Filtrado de Notificaciones.</string>
+    <string name="notification_allowed_alert">Alerta de Notificación Permitida</string>
+    <string name="reset_to_default">Restablecer Predeterminado</string>
+    <string name="sms_mms_allowed">SMS/MMS Permitido</string>
+    <string name="sms_mms_blocked">SMS/MMS Bloqueado</string>
+    <string name="vibration">Vibración</string>
+    <string name="wake_screen">Reactivar Pantalla</string>
 </resources>

@@ -103,4 +103,27 @@
                 A tarefa de limpeza é executada diariamente às 00:00.
         ]]>
     </string>
+    <string name="voicemail_notification"><short>Notificação de Correio de Voz</short></string>
+    <string name="help_voicemail_notification">
+        <![CDATA[
+        Extrai o número do autor da chamada de uma notificação de correio de voz de um aplicativo escolhido, e o
+          bloqueia da mesma forma que uma chamada seria bloqueada: por <b>Não-Contato</b> ou <b>Banco de Dados</b>. <br>
+        <br>
+        Apenas os aplicativos já selecionados em Triagem > Notificações podem ser escolhidos aqui.
+        ]]>
+    </string>
+    <string name="voicemail_notification_apps">App de Correio de Voz</string>
+    <string name="voicemail_notification_include_regex_rules">Regras de Número/Texto</string>
+    <string name="voicemail_notification_allow_if_call_allowed">Permitir se a Chamada For Permitida</string>
+    <string name="allowed_by_recent_call">Permitido por Chamada Recente</string>
+    <string name="help_voicemail_notification_options">
+        <![CDATA[
+        <title><b>Regras de Número/Texto</b></title><br>
+        Também verifica o número em relação às suas <b>Regras de Número</b> e <b>Regras de Texto</b>. <br>
+        <br>
+        <title><b>Permitir se a Chamada For Permitida</b></title><br>
+        Ignora a verificação de bloqueio se esse número teve uma chamada recente e não bloqueada em seu
+          registro de <b>Chamadas</b> (últimas 3 entradas, dentro de 10 minutos).
+        ]]>
+    </string>
 </resources>

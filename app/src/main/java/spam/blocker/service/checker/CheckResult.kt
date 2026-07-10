@@ -48,6 +48,7 @@ import spam.blocker.def.Def.RESULT_ALLOWED_BY_NUMBER_REGEX
 import spam.blocker.def.Def.RESULT_ALLOWED_BY_OFF_TIME
 import spam.blocker.def.Def.RESULT_ALLOWED_BY_PUSH_ALERT
 import spam.blocker.def.Def.RESULT_ALLOWED_BY_RECENT_APP
+import spam.blocker.def.Def.RESULT_ALLOWED_BY_RECENT_CALL
 import spam.blocker.def.Def.RESULT_ALLOWED_BY_REPEATED
 import spam.blocker.def.Def.RESULT_ALLOWED_BY_SMS_ALERT
 import spam.blocker.def.Def.RESULT_ALLOWED_BY_STIR
@@ -337,6 +338,34 @@ class ByAnsweredNumber(
 ) : ICheckResult {
     override fun resultReasonStr(ctx: Context): String {
         return ctx.getString(R.string.answered_number)
+    }
+}
+
+// allowed because a recent real call from this number already rang through unblocked
+//  (used by Voicemail Notification's "Allow if Call Allowed" option)
+// `originalResult` is whatever actually allowed the earlier call (Repeated Call, a whitelist
+//  Number Rule, etc.), reconstructed from that call's own logged HistoryRecord — this class
+//  is just a wrapper that also shows that original reason, not a bespoke reason of its own.
+class ByAllowedCall(
+    private val originalResult: ICheckResult? = null,
+    override val type: Int = RESULT_ALLOWED_BY_RECENT_CALL,
+) : ICheckResult {
+    // This is saved in history log db
+    @Serializable
+    data class DbData(
+        val originalType: Int,
+        val originalReason: String,
+    )
+
+    override fun reasonToDb(): String {
+        val original = originalResult ?: return ""
+        return Json.encodeToString(
+            DbData(original.type, original.reasonToDb())
+        )
+    }
+
+    override fun resultReasonStr(ctx: Context): String {
+        return originalResult?.resultReasonStr(ctx) ?: ctx.getString(R.string.allowed_by_recent_call)
     }
 }
 
@@ -645,6 +674,16 @@ fun parseCheckResultFromDb(ctx: Context, result: Int, reason: String): ICheckRes
     return when (result) {
         RESULT_ALLOWED_BY_EMERGENCY_CALL -> ByEmergencyCall()
         RESULT_ALLOWED_BY_EMERGENCY_SITUATION -> ByEmergencySituation()
+
+        RESULT_ALLOWED_BY_RECENT_CALL -> {
+            val original = if (reason.isNotEmpty()) {
+                val data = Json.decodeFromString<ByAllowedCall.DbData>(reason)
+                parseCheckResultFromDb(ctx, data.originalType, data.originalReason)
+            } else {
+                null
+            }
+            ByAllowedCall(originalResult = original)
+        }
 
         RESULT_ALLOWED_BY_CONTACT -> ByContact(
             contactName = reason

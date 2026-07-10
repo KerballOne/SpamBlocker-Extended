@@ -102,4 +102,27 @@
                 清理任务每天 00:00 执行。
         ]]>
     </string>
+    <string name="voicemail_notification"><short>语音信箱通知</short></string>
+    <string name="help_voicemail_notification">
+        <![CDATA[
+        从所选应用的语音信箱通知中提取来电号码，并按照来电被拦截的相同方式对其进行拦截：
+          通过<b>非联系人</b>或<b>数据库</b>。 <br>
+        <br>
+        这里只能选择已在 筛选 > 通知 中选定的应用。
+        ]]>
+    </string>
+    <string name="voicemail_notification_apps">语音信箱应用</string>
+    <string name="voicemail_notification_include_regex_rules">号码/文本规则</string>
+    <string name="voicemail_notification_allow_if_call_allowed">来电已允许时放行</string>
+    <string name="allowed_by_recent_call">近期来电已允许</string>
+    <string name="help_voicemail_notification_options">
+        <![CDATA[
+        <title><b>号码/文本规则</b></title><br>
+        同时按照您的<b>号码规则</b>和<b>文本规则</b>检查该号码。 <br>
+        <br>
+        <title><b>来电已允许时放行</b></title><br>
+        如果该号码在您的<b>通话</b>记录中最近有一次未被拦截的来电
+          （最近 3 条记录内，10 分钟以内），则跳过拦截检查。
+        ]]>
+    </string>
 </resources>

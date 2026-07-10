@@ -144,4 +144,67 @@
         ]]>
     </string>
     <string name="tap_text_to_edit_color">Touchez le texte ARGB pour le modifier manuellement.</string>
+    <string name="active_chat">Chat actif</string>
+    <string name="alert">Alerte</string>
+    <string name="calls_blocked">Appels bloqués</string>
+    <string name="flashlight">Lampe torche</string>
+    <string name="help_active_chat">Utilisé à la place des canaux SMS normaux tant que vous avez l\'application SMS ouverte et l\'écran déverrouillé, afin que les messages entrants n\'interrompent pas avec un son fort ou une fenêtre pop-up.</string>
+    <string name="help_notification_allowed_alert">
+        <![CDATA[
+        Ces paramètres s\'appliquent aux détections <highlight><b>autorisées</b></highlight> du filtrage des notifications déclenchées par les <b>Règles de base</b>, pas aux appels ou aux SMS/MMS.<br>
+        Une règle de numéro/texte avec son propre paramètre d\'alerte remplacera ce réglage par défaut.<br>
+        <br>
+        Choisissez une sonnerie personnalisée, une vibration, un flash et une alerte de réveil d\'écran que SpamBlocker jouera lui-même lorsqu\'une notification autorisée arrivera de l\'une des applications filtrées.<br>
+        <br>
+        Ceci est utile si vous avez rendu muet le canal de notification propre de l\'application pour éviter le bruit des notifications bloquées, car cela rendrait sinon muettes également les notifications autorisées.<br>
+        <br>
+        Chaque application a ses propres paramètres d\'alerte, touchez les icônes pour les activer/désactiver :<br>
+        &ensp; <img src=\'ic_vibration\'/> &ensp; Vibration<br>
+        &ensp; <img src=\'ic_flashlight\'/> &ensp; Lampe torche<br>
+        &ensp; <img src=\'ic_wake_screen\'/> &ensp; Réveil d\'écran<br>
+        <br>
+        Touchez le bouton à droite pour choisir une sonnerie.
+        ]]>
+    </string>
+    <string name="help_rule_alert">
+        <![CDATA[
+        Choisissez une sonnerie personnalisée, une vibration, un flash et une alerte de réveil d\'écran pour le cas où CETTE règle autorise une notification filtrée.<br>
+        <br>
+        Ceci est différent du paramètre de notification normal ci-dessus : comme la notification originale est déjà visible à l\'écran, l\'autoriser à nouveau ne nécessite pas de notification SpamBlocker en double, juste une brève alerte pour attirer l\'attention.<br>
+        <br>
+        Laissez ceci sur Non défini (touchez "Définir" pour configurer) pour utiliser l\'alerte au niveau de l\'application configurée sous Notification des règles de base.
+        ]]>
+    </string>
+    <string name="help_rule_notification">
+        <![CDATA[
+        Ceci remplace le paramètre par défaut <b>Notifications</b> au niveau de l\'application (dans <b>Actions</b>) pour cette règle uniquement, s\'appliquant uniquement aux <highlight><b>Appels</b></highlight> et <highlight><b>SMS/MMS</b></highlight>, pas au filtrage des notifications.<br>
+        Pour les notifications filtrées autorisées, utilisez plutôt <b>Alerte</b> ci-dessous.<br>
+        <br>
+        Les canaux de notification intégrés : <br>
+        <br>
+        <title><b>Aucun</b></title> &ensp; <img src=\'ic_bell_mute\'/> <br>
+        &ensp; Aucune notification du tout. <br>
+        <br>
+        <title><b>Faible</b></title> &ensp; <img src=\'ic_statusbar_shade\'/>  <br>
+        &ensp; Apparaît dans la barre d\'état et le panneau de notifications. <br>
+        <br>
+        <title><b>Moyenne</b></title> &ensp; <img src=\'ic_bell_ringing\'/><img src=\'ic_statusbar_shade\'/> <br>
+        &ensp; Apparaît dans la barre d\'état et le panneau de notifications avec un son. <br>
+        <br>
+        <title><b>Élevée</b></title> &ensp; <img src=\'ic_bell_ringing\'/><img src=\'ic_statusbar_shade\'/><img src=\'ic_heads_up\'/> <br>
+        &ensp; Apparaît dans la barre d\'état, le panneau de notifications, et comme pop-up flottant avec un son. <br>
+        <br>
+        <title><b>Élevée (silencieuse)</b></title> &ensp; <img src=\'ic_statusbar_shade\'/><img src=\'ic_heads_up\'/> <br>
+        &ensp; C\'est similaire à <b>Élevée</b> mais sans le son. <br>
+        &ensp; C\'est idéal pour un <highlight><b>Chat actif</b></highlight> où les sons continus peuvent être gênants. <br>
+          C\'est considéré comme un <highlight><b>Chat actif</b></highlight> lorsque l\'écran est déverrouillé et que l\'application SMS est ouverte au premier plan. <br>
+        ]]>
+    </string>
+    <string name="no_screened_apps">Aucune application n\'est actuellement sélectionnée pour le filtrage des notifications.</string>
+    <string name="notification_allowed_alert">Alerte de notification autorisée</string>
+    <string name="reset_to_default">Réinitialiser par défaut</string>
+    <string name="sms_mms_allowed">SMS/MMS autorisé</string>
+    <string name="sms_mms_blocked">SMS/MMS bloqué</string>
+    <string name="vibration">Vibration</string>
+    <string name="wake_screen">Réveil d\'écran</string>
 </resources>

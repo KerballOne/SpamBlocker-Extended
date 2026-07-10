@@ -102,4 +102,27 @@
                 משימת הניקוי פועלת מדי יום בשעה 00:00.
         ]]>
     </string>
+    <string name="voicemail_notification"><short>התראת תא קולי</short></string>
+    <string name="help_voicemail_notification">
+        <![CDATA[
+        חלץ את מספר המתקשר מתוך התראת תא קולי של אפליקציה נבחרת, וחסום אותו באותו אופן
+          שבו שיחה הייתה נחסמת: על ידי <b>לא איש קשר</b> או <b>מסד נתונים</b>. <br>
+        <br>
+        ניתן לבחור כאן רק אפליקציות שכבר נבחרו תחת סינון > התראות.
+        ]]>
+    </string>
+    <string name="voicemail_notification_apps">אפליקציית תא קולי</string>
+    <string name="voicemail_notification_include_regex_rules">כללי מספר/טקסט</string>
+    <string name="voicemail_notification_allow_if_call_allowed">אשר אם השיחה אושרה</string>
+    <string name="allowed_by_recent_call">אושר על ידי שיחה אחרונה</string>
+    <string name="help_voicemail_notification_options">
+        <![CDATA[
+        <title><b>כללי מספר/טקסט</b></title><br>
+        בדוק את המספר גם מול <b>כללי המספרים</b> ו<b>כללי הטקסט</b> שלך. <br>
+        <br>
+        <title><b>אשר אם השיחה אושרה</b></title><br>
+        דלג על בדיקת החסימה אם למספר זה הייתה שיחה אחרונה שלא נחסמה ביומן ה<b>שיחות</b>
+          שלך (3 הרשומות האחרונות, בטווח של 10 דקות).
+        ]]>
+    </string>
 </resources>

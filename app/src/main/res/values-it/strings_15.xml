@@ -102,4 +102,27 @@
                 L\'attività di pulizia viene eseguita ogni giorno alle 00:00.
         ]]>
     </string>
+    <string name="voicemail_notification"><short>Notifica Segreteria</short></string>
+    <string name="help_voicemail_notification">
+        <![CDATA[
+        Estrae il numero del chiamante da una notifica di segreteria telefonica di un\'app scelta, e lo
+          blocca nello stesso modo in cui verrebbe bloccata una chiamata: tramite <b>Non Contatto</b> o <b>Database</b>. <br>
+        <br>
+        Qui si possono scegliere solo le app già selezionate in Screening > Notifiche.
+        ]]>
+    </string>
+    <string name="voicemail_notification_apps">App Segreteria</string>
+    <string name="voicemail_notification_include_regex_rules">Regole Numero/Testo</string>
+    <string name="voicemail_notification_allow_if_call_allowed">Consenti se Chiamata Consentita</string>
+    <string name="allowed_by_recent_call">Consentito da Chiamata Recente</string>
+    <string name="help_voicemail_notification_options">
+        <![CDATA[
+        <title><b>Regole Numero/Testo</b></title><br>
+        Verifica il numero anche rispetto alle tue <b>Regole numero</b> e <b>Regole testo</b>. <br>
+        <br>
+        <title><b>Consenti se Chiamata Consentita</b></title><br>
+        Salta il controllo di blocco se questo numero ha avuto una chiamata recente non bloccata nel tuo log
+          <b>Chiamate</b> (ultime 3 voci, entro 10 minuti).
+        ]]>
+    </string>
 </resources>

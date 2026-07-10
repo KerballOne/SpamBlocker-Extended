@@ -99,4 +99,27 @@
                 وظیفه پاک‌سازی هر روز در ساعت 00:00 اجرا می‌شود.
         ]]>
     </string>
+    <string name="voicemail_notification"><short>اعلان پیام صوتی</short></string>
+    <string name="help_voicemail_notification">
+        <![CDATA[
+        شماره تماس‌گیرنده را از اعلان پیام صوتی یک برنامه انتخاب‌شده استخراج می‌کند و
+          آن را دقیقاً مانند یک تماس، مسدود می‌کند: توسط <b>غیرمخاطب</b> یا <b>پایگاه داده</b>. <br>
+        <br>
+        فقط برنامه‌هایی که از پیش تحت غربالگری &gt; اعلان‌ها انتخاب شده‌اند را می‌توان اینجا انتخاب کرد.
+        ]]>
+    </string>
+    <string name="voicemail_notification_apps">برنامه پیام صوتی</string>
+    <string name="voicemail_notification_include_regex_rules">قوانین شماره/متن</string>
+    <string name="voicemail_notification_allow_if_call_allowed">مجاز در صورت مجاز بودن تماس</string>
+    <string name="allowed_by_recent_call">مجاز شده توسط تماس اخیر</string>
+    <string name="help_voicemail_notification_options">
+        <![CDATA[
+        <title><b>قوانین شماره/متن</b></title><br>
+        شماره را همچنین در برابر <b>قوانین شماره</b> و <b>قوانین متن</b> شما بررسی می‌کند. <br>
+        <br>
+        <title><b>مجاز در صورت مجاز بودن تماس</b></title><br>
+        اگر این شماره اخیراً در لاگ <b>تماس‌ها</b>ی شما یک تماس مجاز (غیرمسدود) داشته باشد
+          (۳ ورودی آخر، در بازه ۱۰ دقیقه)، بررسی مسدودسازی را رد می‌کند.
+        ]]>
+    </string>
 </resources>

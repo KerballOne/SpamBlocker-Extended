@@ -144,4 +144,67 @@
         ]]>
     </string>
     <string name="tap_text_to_edit_color">Tippen Sie auf den ARGB-Text, um ihn manuell zu bearbeiten.</string>
+    <string name="active_chat">Aktiver Chat</string>
+    <string name="alert">Alarm</string>
+    <string name="calls_blocked">Blockierte Anrufe</string>
+    <string name="flashlight">Taschenlampe</string>
+    <string name="help_active_chat">Wird anstelle der normalen SMS-Kanäle verwendet, während Sie die SMS-App geöffnet und den Bildschirm entsperrt haben, sodass eingehende Nachrichten nicht mit einem lauten Ton oder Pop-up stören.</string>
+    <string name="help_notification_allowed_alert">
+        <![CDATA[
+        Diese Einstellungen gelten für <highlight><b>zugelassene</b></highlight> Erkennungen der Benachrichtigungsüberprüfung, die durch <b>Basisregeln</b> ausgelöst werden, nicht für Anrufe oder SMS/MMS.<br>
+        Eine Nummern-/Textregel mit einer eigenen Alarmeinstellung überschreibt diesen Standard.<br>
+        <br>
+        Wählen Sie einen benutzerdefinierten Klingelton, eine Vibration, eine Taschenlampen- und Bildschirm-Aufweck-Warnung, die SpamBlocker selbst abspielt, wenn eine zugelassene Benachrichtigung von einer der überprüften Apps eintrifft.<br>
+        <br>
+        Dies ist nützlich, wenn Sie den eigenen Benachrichtigungskanal der App stummgeschaltet haben, um Lärm von blockierten Benachrichtigungen zu vermeiden, da dies sonst auch zugelassene Benachrichtigungen stummschalten würde.<br>
+        <br>
+        Jede App hat ihre eigenen Alarmeinstellungen, tippen Sie auf die Symbole, um sie ein-/auszuschalten:<br>
+        &ensp; <img src=\'ic_vibration\'/> &ensp; Vibration<br>
+        &ensp; <img src=\'ic_flashlight\'/> &ensp; Taschenlampe<br>
+        &ensp; <img src=\'ic_wake_screen\'/> &ensp; Bildschirm aufwecken<br>
+        <br>
+        Tippen Sie auf die Schaltfläche rechts, um einen Klingelton auszuwählen.
+        ]]>
+    </string>
+    <string name="help_rule_alert">
+        <![CDATA[
+        Wählen Sie einen benutzerdefinierten Klingelton, eine Vibration, eine Taschenlampen- und Bildschirm-Aufweck-Warnung für den Fall, dass DIESE Regel eine überprüfte Benachrichtigung zulässt.<br>
+        <br>
+        Dies unterscheidet sich von der regulären Benachrichtigungseinstellung oben: Da die ursprüngliche Benachrichtigung bereits auf dem Bildschirm sichtbar ist, ist für die erneute Zulassung keine doppelte SpamBlocker-Benachrichtigung erforderlich, sondern nur ein kurzer Alarm, um Aufmerksamkeit zu erregen.<br>
+        <br>
+        Lassen Sie dies als Nicht festgelegt (tippen Sie auf "Festlegen", um es zu konfigurieren), um den app-weiten Alarm zu verwenden, der unter Basisregeln-Benachrichtigung konfiguriert ist.
+        ]]>
+    </string>
+    <string name="help_rule_notification">
+        <![CDATA[
+        Dies überschreibt den app-weiten <b>Benachrichtigungen</b>-Standard (in <b>Aktionen</b>) nur für diese Regel und gilt nur für <highlight><b>Anrufe</b></highlight> und <highlight><b>SMS/MMS</b></highlight>, nicht für die Benachrichtigungsüberprüfung.<br>
+        Für zugelassene überprüfte Benachrichtigungen verwenden Sie stattdessen <b>Alarm</b> unten.<br>
+        <br>
+        Die integrierten Benachrichtigungskanäle: <br>
+        <br>
+        <title><b>Keine</b></title> &ensp; <img src=\'ic_bell_mute\'/> <br>
+        &ensp; Überhaupt keine Benachrichtigung. <br>
+        <br>
+        <title><b>Niedrig</b></title> &ensp; <img src=\'ic_statusbar_shade\'/>  <br>
+        &ensp; Erscheint in der Statusleiste und im Benachrichtigungsbereich. <br>
+        <br>
+        <title><b>Mittel</b></title> &ensp; <img src=\'ic_bell_ringing\'/><img src=\'ic_statusbar_shade\'/> <br>
+        &ensp; Erscheint in der Statusleiste und im Benachrichtigungsbereich mit Ton. <br>
+        <br>
+        <title><b>Hoch</b></title> &ensp; <img src=\'ic_bell_ringing\'/><img src=\'ic_statusbar_shade\'/><img src=\'ic_heads_up\'/> <br>
+        &ensp; Erscheint in der Statusleiste, im Benachrichtigungsbereich und als Heads-up-Pop-up mit Ton. <br>
+        <br>
+        <title><b>Hoch (stummgeschaltet)</b></title> &ensp; <img src=\'ic_statusbar_shade\'/><img src=\'ic_heads_up\'/> <br>
+        &ensp; Es ist ähnlich wie <b>Hoch</b> aber ohne Ton. <br>
+        &ensp; Es ist ideal für <highlight><b>Aktiven Chat</b></highlight>, wo kontinuierliche Töne störend sein könnten. <br>
+          Es gilt als <highlight><b>Aktiver Chat</b></highlight>, wenn der Bildschirm entsperrt ist und die SMS-App im Vordergrund geöffnet ist. <br>
+        ]]>
+    </string>
+    <string name="no_screened_apps">Derzeit sind keine Apps für die Benachrichtigungsüberprüfung ausgewählt.</string>
+    <string name="notification_allowed_alert">Alarm für zugelassene Benachrichtigungen</string>
+    <string name="reset_to_default">Auf Standard zurücksetzen</string>
+    <string name="sms_mms_allowed">SMS/MMS zugelassen</string>
+    <string name="sms_mms_blocked">SMS/MMS blockiert</string>
+    <string name="vibration">Vibration</string>
+    <string name="wake_screen">Bildschirm aufwecken</string>
 </resources>

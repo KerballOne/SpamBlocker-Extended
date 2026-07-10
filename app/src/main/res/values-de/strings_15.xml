@@ -103,4 +103,27 @@
                 Die Bereinigungsaufgabe läuft täglich um 00:00 Uhr.
         ]]>
     </string>
+    <string name="voicemail_notification"><short>Mailbox-Benachrichtigung</short></string>
+    <string name="help_voicemail_notification">
+        <![CDATA[
+        Extrahiert die Nummer des Anrufers aus einer Mailbox-Benachrichtigung einer ausgewählten App und blockiert
+          sie auf dieselbe Weise, wie ein Anruf blockiert würde: durch <b>Nicht-Kontakt</b> oder <b>Datenbank</b>. <br>
+        <br>
+        Hier können nur Apps ausgewählt werden, die bereits unter Überprüfung > Benachrichtigungen ausgewählt wurden.
+        ]]>
+    </string>
+    <string name="voicemail_notification_apps">Mailbox-App</string>
+    <string name="voicemail_notification_include_regex_rules">Nummern-/Textregeln</string>
+    <string name="voicemail_notification_allow_if_call_allowed">Zulassen, wenn Anruf zugelassen</string>
+    <string name="allowed_by_recent_call">Durch kürzlichen Anruf zugelassen</string>
+    <string name="help_voicemail_notification_options">
+        <![CDATA[
+        <title><b>Nummern-/Textregeln</b></title><br>
+        Die Nummer zusätzlich anhand deiner <b>Nummernregeln</b> und <b>Textregeln</b> überprüfen. <br>
+        <br>
+        <title><b>Zulassen, wenn Anruf zugelassen</b></title><br>
+        Die Blockierungsprüfung überspringen, wenn diese Nummer einen kürzlichen, nicht blockierten Anruf in
+          deinem <b>Anrufe</b>-Protokoll hat (letzte 3 Einträge, innerhalb von 10 Minuten).
+        ]]>
+    </string>
 </resources>

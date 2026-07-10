@@ -103,4 +103,28 @@
                 Tugas pembersihan berjalan setiap hari pada pukul 00:00.
         ]]>
     </string>
+    <string name="voicemail_notification"><short>Notifikasi Pesan Suara</short></string>
+    <string name="help_voicemail_notification">
+        <![CDATA[
+        Mengambil nomor telepon penelepon dari notifikasi pesan suara pada aplikasi yang dipilih,
+          dan memblokirnya dengan cara yang sama seperti panggilan akan diblokir: melalui
+          <b>Bukan-Kontak</b> atau <b>Basis Data</b>. <br>
+        <br>
+        Hanya aplikasi yang sudah dipilih di bawah Penyaringan > Notifikasi yang dapat dipilih di sini.
+        ]]>
+    </string>
+    <string name="voicemail_notification_apps">Aplikasi Pesan Suara</string>
+    <string name="voicemail_notification_include_regex_rules">Aturan Nomor/Teks</string>
+    <string name="voicemail_notification_allow_if_call_allowed">Izinkan jika Panggilan Diizinkan</string>
+    <string name="allowed_by_recent_call">Diizinkan oleh Panggilan Terbaru</string>
+    <string name="help_voicemail_notification_options">
+        <![CDATA[
+        <title><b>Aturan Nomor/Teks</b></title><br>
+        Periksa juga nomor tersebut terhadap <b>Aturan Nomor</b> dan <b>Aturan Teks</b> Anda. <br>
+        <br>
+        <title><b>Izinkan jika Panggilan Diizinkan</b></title><br>
+        Lewati pemeriksaan pemblokiran jika nomor ini memiliki panggilan terbaru yang tidak
+          diblokir dalam log <b>Panggilan</b> Anda (3 entri terakhir, dalam 10 menit).
+        ]]>
+    </string>
 </resources>

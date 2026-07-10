@@ -763,32 +763,37 @@ fun AlertConfigControls(
 
     RowVCenterSpaced(10, modifier = modifier) {
         leadingContent()
-        // Vibration
-        ResIcon(
-            R.drawable.ic_vibration,
-            modifier = M
-                .size(20.dp)
-                .clickable { vibrate = !vibrate; save() },
-            color = if (vibrate) C.teal200 else C.disabled,
-        )
-        // Flashlight
-        ResIcon(
-            R.drawable.ic_flashlight,
-            modifier = M
-                .size(20.dp)
-                .clickable { flashlight = !flashlight; save() },
-            color = if (flashlight) C.teal200 else C.disabled,
-        )
-        // Wake Screen
-        ResIcon(
-            R.drawable.ic_wake_screen,
-            modifier = M
-                .size(20.dp)
-                .clickable { wakeScreen = !wakeScreen; save() },
-            color = if (wakeScreen) C.teal200 else C.disabled,
-        )
 
+        // Toggle icons + ringtone button + clear, grouped together and right-aligned
+        //  next to the ringtone control they all relate to.
         RowVCenter(modifier = M.weight(1f), horizontalArrangement = Arrangement.End) {
+            // Vibration
+            ResIcon(
+                R.drawable.ic_vibration,
+                modifier = M
+                    .size(20.dp)
+                    .clickable { vibrate = !vibrate; save() },
+                color = if (vibrate) C.teal200 else C.disabled,
+            )
+            Spacer(modifier = M.width(10.dp))
+            // Flashlight
+            ResIcon(
+                R.drawable.ic_flashlight,
+                modifier = M
+                    .size(20.dp)
+                    .clickable { flashlight = !flashlight; save() },
+                color = if (flashlight) C.teal200 else C.disabled,
+            )
+            Spacer(modifier = M.width(10.dp))
+            // Wake Screen
+            ResIcon(
+                R.drawable.ic_wake_screen,
+                modifier = M
+                    .size(20.dp)
+                    .clickable { wakeScreen = !wakeScreen; save() },
+                color = if (wakeScreen) C.teal200 else C.disabled,
+            )
+            Spacer(modifier = M.width(10.dp))
             ResIcon(
                 R.drawable.ic_music,
                 modifier = M.size(20.dp),

@@ -508,6 +508,72 @@ class Checker { // for namespace only
             return null
         }
     }
+    // Used only by Voicemail Notification's "Allow if Call Allowed" option: allows a
+    //  candidate number if SpamBlocker's OWN Calls history (not the system call log — that
+    //  can't tell us why a call wasn't rejected, only that it wasn't) already recorded a
+    //  recent, not-blocked verdict for it. That earlier verdict already reflects whichever
+    //  rule allowed it (Repeated/Dialed/Answered, a whitelist regex rule, etc.), so this
+    //  doesn't re-derive or guess at the reason — it trusts SpamBlocker's own prior decision.
+    // Not part of `defaultSmsCheckers`/`defaultCallCheckers` — only added by
+    //  `voicemailNotificationCheckers` when that option is on.
+    class AllowedByRecentCall(
+        private val ctx: Context,
+    ) : IChecker {
+        override fun isConfigEnabledForCall() = true
+        override fun isConfigEnabledForSms() = true
+
+        // Must outrank NonContact/SpamDB (both priority 0-ish) so a recently-allowed call
+        //  is trusted before either of those gets a chance to block the voicemail.
+        override fun priority(): Int {
+            return 15
+        }
+
+        override fun desc() =
+            ctx.getString(R.string.allowed_by_recent_call).A(G.palette.infoBlue)
+
+        // A RAD result stored in an old Calls-tab record is only trustworthy if that specific
+        //  RAD rule is still enabled today — otherwise a call allowed last week by e.g. Answered
+        //  Number would keep excusing voicemails forever, even after the user turns it off.
+        //  Non-RAD reasons (Contact, a whitelist Number Rule, etc.) aren't gated by a toggle
+        //  the same way, so they're always trusted as-is.
+        private fun isStillTrusted(resultType: Int): Boolean {
+            return when (resultType) {
+                Def.RESULT_ALLOWED_BY_REPEATED -> spf.RepeatedCall(ctx).isEnabled
+                Def.RESULT_ALLOWED_BY_DIALED -> spf.Dialed(ctx).isEnabled
+                Def.RESULT_ALLOWED_BY_ANSWERED -> spf.Answered(ctx).isEnabled
+                else -> true
+            }
+        }
+
+        override fun check(cCtx: CheckContext): ICheckResult? {
+            val rawNumber = cCtx.rawNumber
+            val phoneNumber = PhoneNumber(ctx, rawNumber)
+
+            // A voicemail typically follows its call within seconds to a couple of minutes;
+            //  10 minutes gives comfortable slack. Only the last 3 Calls-tab records for this
+            //  number are considered, newest first — an old allowed call from days ago
+            //  shouldn't retroactively excuse today's voicemail.
+            val withinMillis = 10L * 60 * 1000
+            val recentRecords = CallTable().listRecentRecords(ctx, Now.currentMillis() - withinMillis)
+            val matchedRecord = recentRecords
+                .filter { phoneNumber.isSame(it.peer) }
+                .take(3)
+                .firstOrNull { it.isNotBlocked() && isStillTrusted(it.result) }
+
+            return if (matchedRecord != null) {
+                // Show what actually allowed that earlier call (Repeated Call, a whitelist
+                //  Number Rule, etc.), reconstructed from its own logged verdict.
+                val originalResult = parseCheckResultFromDb(ctx, matchedRecord.result, matchedRecord.reason)
+                cCtx.logger?.success(
+                    ctx.getString(R.string.allowed_by).formatAnnotated(desc())
+                )
+                ByAllowedCall(originalResult = originalResult)
+            } else {
+                null
+            }
+        }
+    }
+
     private class RepeatedCall(
         private val ctx: Context,
     ) : IChecker {
@@ -1809,6 +1875,37 @@ class Checker { // for namespace only
             return Triple(
                 result, fullScreeningLog, cCtx.anythingWrong
             )
+        }
+
+        // The checker set used by Voicemail Notification: intentionally narrower than
+        //  `defaultSmsCheckers`. Only Block-capable Basic Rules that make sense for a number
+        //  extracted from a voicemail app's notification are included:
+        //   - NonContact ("block non-contacts" mode of the Contacts rule)
+        //   - SpamDB (the spam number database)
+        //  Excluded on purpose:
+        //   - Contact (plain allow-by-contact) — Voicemail Notification only needs block rules;
+        //     an allow here isn't meaningful since the default outcome is already "allowed".
+        //   - RepeatedCall/Dialed/Answered — per their own tooltips these are calls-only trust
+        //     signals ("Allow calls..."); a voicemail notification isn't itself a call, and
+        //     `Include SMS` on RepeatedCall only means SMS counts toward a call's repeat tally,
+        //     not that SMS/notifications can themselves be allowed by this rule. Instead, the
+        //     `includeAllowedCall` option below checks the REAL call log directly for a recent
+        //     unblocked call — a fact, not a re-derivation of any rule's own trigger condition.
+        //   - STIR — call-signaling only, no equivalent signal exists for a notification.
+        //   - MeetingMode/OffTime/SmsBomb/InstantQuery — situational rules not meaningful here.
+        //  Number/Text Regex Rules are NOT included here; they're optionally merged in by the
+        //  caller (see `includeNumberTextRules` in NotificationListenerService.kt) since that's
+        //  a user-facing toggle, not a fixed part of this checker set.
+        fun voicemailNotificationCheckers(ctx: Context, includeAllowedCall: Boolean): List<IChecker> {
+            return buildList {
+                add(PassedByDefault(ctx))
+                if (includeAllowedCall) {
+                    add(AllowedByRecentCall(ctx))
+                }
+                add(Contact(ctx))
+                add(NonContact(ctx))
+                add(SpamDB(ctx))
+            }
         }
 
         // It returns a list<String>, all the Strings will be shown as Buttons in the notification.

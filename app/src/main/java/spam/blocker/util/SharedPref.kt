@@ -599,6 +599,12 @@ class spf { // for namespace only
         var appList by str("voicemail_notification_apps") // comma-joined package names, subset of AppNotifications
         var applyToTitle by bool("voicemail_notification_apply_to_title")
         var applyToBody by bool("voicemail_notification_apply_to_body", true)
+        // Also check candidates against Number/Text Regex Rules, not just Non-Contact/Database.
+        var includeNumberTextRules by bool("voicemail_notification_include_regex_rules", true)
+        // Before checking Non-Contact/Database, check whether a recent real call from this
+        //  number was already let through (via Repeated/Dialed/Answered or simply not blocked) —
+        //  if so, treat the voicemail that followed it as trusted too.
+        var allowIfCallAllowed by bool("voicemail_notification_allow_if_call_allowed", true)
 
         fun getApps(): List<String> {
             if (appList == "")

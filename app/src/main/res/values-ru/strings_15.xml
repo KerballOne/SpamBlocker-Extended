@@ -102,4 +102,27 @@
                 Задача очистки выполняется ежедневно в 00:00.
         ]]>
     </string>
+    <string name="voicemail_notification"><short>Уведомление голосовой почты</short></string>
+    <string name="help_voicemail_notification">
+        <![CDATA[
+        Извлекайте номер звонящего из уведомления голосовой почты выбранного приложения и блокируйте
+          его так же, как был бы заблокирован звонок: с помощью <b>Не из контактов</b> или <b>Базы данных</b>. <br>
+        <br>
+        Здесь можно выбрать только приложения, уже выбранные в разделе Проверка > Уведомления.
+        ]]>
+    </string>
+    <string name="voicemail_notification_apps">Приложение голосовой почты</string>
+    <string name="voicemail_notification_include_regex_rules">Правила номера/текста</string>
+    <string name="voicemail_notification_allow_if_call_allowed">Разрешить, если звонок разрешён</string>
+    <string name="allowed_by_recent_call">Разрешено недавним звонком</string>
+    <string name="help_voicemail_notification_options">
+        <![CDATA[
+        <title><b>Правила номера/текста</b></title><br>
+        Также проверять номер по вашим <b>Правилам номера</b> и <b>Правилам текста</b>. <br>
+        <br>
+        <title><b>Разрешить, если звонок разрешён</b></title><br>
+        Пропустить проверку блокировки, если для этого номера недавно был незаблокированный звонок в вашем
+          журнале <b>Звонков</b> (последние 3 записи, в течение 10 минут).
+        ]]>
+    </string>
 </resources>

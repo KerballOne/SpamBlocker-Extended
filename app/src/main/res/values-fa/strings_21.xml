@@ -1,6 +1,7 @@
 <resources>
     <string name="perm_write_settings">نوشتن تنظیمات</string>
     <string name="set_to">تنظیم روی</string>
+    <string name="set">تنظیم</string>
     <string name="help_set_ringtone_to">
     <![CDATA[
         آهنگ زنگ را برای یک ویژگی خاص تنظیم کنید یا آن را بی‌صدا کنید. <br>

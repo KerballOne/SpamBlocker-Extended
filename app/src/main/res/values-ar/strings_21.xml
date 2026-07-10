@@ -1,6 +1,7 @@
 <resources>
     <string name="perm_write_settings">كتابة الإعدادات</string>
     <string name="set_to">تعيين إلى</string>
+    <string name="set">تعيين</string>
     <string name="help_set_ringtone_to">
     <![CDATA[
         عيّن نغمة الرنين لميزة معينة، أو اجعلها صامتة. <br>

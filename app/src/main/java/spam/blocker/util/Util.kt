@@ -913,6 +913,7 @@ object Util {
                 phoneNumber.isSame(it.rawNumber)
             }
     }
+
     fun recentCalls(
         ctx: Context,
         withinMillis: Long,

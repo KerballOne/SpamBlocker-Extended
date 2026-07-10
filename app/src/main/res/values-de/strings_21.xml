@@ -102,4 +102,5 @@
         Erforderliche Spalte %s fehlt. Sie können den Header %s für die Rufnummernspalte verwenden oder einen vorhandenen
         Header in \"CSV analysieren\" auf %s abbilden.
     </string>
+    <string name="set">Festlegen</string>
 </resources>

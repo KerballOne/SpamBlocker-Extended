@@ -101,4 +101,5 @@
     <string name="csv_missing_column">
         Colonna richiesta %s mancante. Puoi usare l\'intestazione %s per la colonna del numero di telefono, o mappare un\'intestazione esistente a %s in \"Analizza CSV\".
     </string>
+    <string name="set">Imposta</string>
 </resources>

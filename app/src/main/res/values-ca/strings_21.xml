@@ -100,4 +100,5 @@
     <string name="csv_missing_column">
         Falta la columna obligatòria %s. Pots utilitzar la capçalera %s per a la columna de números de telèfon, o assignar una capçalera existent a %s a \"Analitzar CSV\".
     </string>
+    <string name="set">Estableix</string>
 </resources>

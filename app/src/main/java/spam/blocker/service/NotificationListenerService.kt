@@ -10,10 +10,14 @@ import spam.blocker.db.PushAlertTable
 import spam.blocker.db.RegexRule
 import spam.blocker.def.Def
 import spam.blocker.service.checker.ByRegexRule
+import spam.blocker.service.checker.Checker
 import spam.blocker.service.checker.ICheckResult
+import spam.blocker.service.checker.numberRuleToChecker
+import spam.blocker.util.CountryCode
 import spam.blocker.util.Permission
 import spam.blocker.util.PermissiveJson
 import spam.blocker.util.SaveableLogger
+import spam.blocker.util.Util
 import spam.blocker.util.spf.AppAlertConfig
 import spam.blocker.util.regexFind
 import spam.blocker.util.regexMatches
@@ -36,6 +40,40 @@ private fun findNumberCandidates(title: String): List<String> {
         .map { it.value.trim().trimStart('(', ')', '-', '.') }
         .filter { candidate -> candidate.count { it.isDigit() } in 3..15 }
         .toList()
+}
+
+// Basic Rule checkers (e.g. Spam Database) match `rawNumber` as an exact string
+//  against however the number happens to be stored, with only a narrow set of
+//  fallback normalizations. A voicemail app's notification text commonly omits the
+//  country code (e.g. "New voicemail from 555-123-4567"), which then can't match a
+//  database entry saved with one (e.g. "+1 (555) 123-4567"), even after formatting
+//  is stripped. Widen each candidate with a country-code-prepended variant so both
+//  forms get tried, without changing how Basic Rule checkers themselves look numbers
+//  up (keeps this fix scoped to Voicemail Notification's own candidate list).
+// Shortest plausible local number length (without country code) across common numbering
+//  plans — used only to avoid mistaking a short/malformed candidate for one that already
+//  has a country-code prefix merely because its leading digit(s) happen to match.
+private const val MIN_LOCAL_NUMBER_LENGTH = 7
+
+private fun withCountryCodeVariants(ctx: Context, candidates: List<String>): List<String> {
+    val cc = CountryCode.current(ctx) ?: return candidates
+    val ccStr = cc.toString()
+    return candidates.flatMap { candidate ->
+        val cleaned = Util.clearNumber(candidate)
+        // Don't prepend the country code again if the cleaned number already starts with it
+        //  AND is long enough to plausibly be [country code][local number] (e.g. candidate
+        //  "+15125551234" cleans to "15125551234", 11 digits — already has the "1"; prepending
+        //  again would produce the nonsensical "115125551234"). The length check avoids treating
+        //  a short/malformed candidate as already-prefixed just because its leading digit(s)
+        //  happen to coincide with the country code (e.g. a stray "1..." local-only fragment).
+        val alreadyHasCc = cleaned.startsWith(ccStr) &&
+            cleaned.length >= ccStr.length + MIN_LOCAL_NUMBER_LENGTH
+        if (alreadyHasCc) {
+            listOf(candidate, cleaned)
+        } else {
+            listOf(candidate, "$cc$cleaned", "+$cc$cleaned")
+        }
+    }.distinct()
 }
 
 // The set of package names to screen (App Notifications), cached to avoid
@@ -65,6 +103,8 @@ private var voicemailNotificationEnabled: Boolean? = null
 private var voicemailNotificationPkgs: Set<String>? = null
 private var voicemailNotificationApplyToTitle: Boolean? = null
 private var voicemailNotificationApplyToBody: Boolean? = null
+private var voicemailNotificationIncludeRegexRules: Boolean? = null
+private var voicemailNotificationAllowIfCallAllowed: Boolean? = null
 
 // Own dedup set, independent from `screenedNotifications` above, so this feature's
 //  pass/no-match outcome doesn't get short-circuited by (or short-circuit) the
@@ -76,6 +116,11 @@ fun resetVoicemailNotificationCache() {
     voicemailNotificationPkgs = null
     voicemailNotificationApplyToTitle = null
     voicemailNotificationApplyToBody = null
+    voicemailNotificationIncludeRegexRules = null
+    voicemailNotificationAllowIfCallAllowed = null
+    // Config changed (e.g. toggled off/on, app list changed) — forget prior screening
+    //  decisions so they don't silently stay skipped under the new configuration.
+    voicemailScreenedNotifications.clear()
 }
 
 private fun ensureVoicemailNotificationCache(ctx: Context) {
@@ -85,6 +130,8 @@ private fun ensureVoicemailNotificationCache(ctx: Context) {
         voicemailNotificationPkgs = spf.getApps().toSet()
         voicemailNotificationApplyToTitle = spf.applyToTitle
         voicemailNotificationApplyToBody = spf.applyToBody
+        voicemailNotificationIncludeRegexRules = spf.includeNumberTextRules
+        voicemailNotificationAllowIfCallAllowed = spf.allowIfCallAllowed
     }
 }
 
@@ -249,10 +296,14 @@ class NotificationListenerService : NotificationListenerService() {
         }
 
         // Voicemail Notification: independent of the Number/Text-Rule gate above. Runs
-        //  candidate numbers through the FULL Checker pipeline (Basic Rules included),
-        //  not just a Number/Text-Rule pre-check, so e.g. a voicemail notification from
-        //  a Spam-Database/STIR/Contacts-blocked number gets dismissed too, agnostic of
-        //  which app shows it or whether the number is in the title or the body.
+        //  candidate numbers through a deliberately narrow Basic-Rule checker set (see
+        //  `Checker.voicemailNotificationCheckers`: Non-Contact + Spam Database only — the
+        //  other Basic Rules either don't apply to a notification (STIR, call-only) or are
+        //  calls-only trust signals (Repeated/Dialed/Answered) per their own tooltips, not
+        //  meaningful for a voicemail notification that isn't itself a call), plus optionally
+        //  Number/Text Regex Rules (user toggle, since those already run on all Notification
+        //  Screening apps via the gate above, but with different number-extraction logic that
+        //  might catch matches this feature's own extraction/normalization would miss).
         run {
             val voicemailContentKey = "$pkgName|$title|$text"
             val voicemailAlreadyScreened = voicemailScreenedNotifications.contains(voicemailContentKey)
@@ -264,17 +315,37 @@ class NotificationListenerService : NotificationListenerService() {
                 voicemailNotificationPkgs?.contains(pkgName) == true &&
                 !voicemailAlreadyScreened
             ) {
-                val candidates = buildList {
+                val rawCandidates = buildList {
                     if (voicemailNotificationApplyToTitle == true) addAll(findNumberCandidates(title))
                     if (voicemailNotificationApplyToBody == true) addAll(findNumberCandidates(text))
                 }.distinct()
+                val candidates = withCountryCodeVariants(this, rawCandidates)
 
                 if (candidates.isNotEmpty()) {
                     voicemailScreenedNotifications.add(voicemailContentKey)
 
-                    // Dismiss if ANY candidate's verdict is Block; otherwise fire the
-                    //  Allowed-notification Alert for the first non-blocking result
-                    //  (mirrors the Number/Text-Rule gate's allow-path above).
+                    val checkers = buildList {
+                        addAll(Checker.voicemailNotificationCheckers(
+                            this@NotificationListenerService,
+                            includeAllowedCall = voicemailNotificationAllowIfCallAllowed == true,
+                        ))
+                        if (voicemailNotificationIncludeRegexRules == true) {
+                            ensureNotificationScreeningCache(this@NotificationListenerService)
+                            val regexRules = buildList {
+                                notifTitleNumberRules?.let { addAll(it) }
+                                notifBodyNumberRules?.let { addAll(it) }
+                            }.distinctBy { it.id }
+                            addAll(regexRules.map { it.numberRuleToChecker(this@NotificationListenerService) })
+
+                            val contentRules = buildList {
+                                notifTitleContentRules?.let { addAll(it) }
+                                notifBodyContentRules?.let { addAll(it) }
+                            }.distinctBy { it.id }
+                            addAll(contentRules.map { Checker.Content(this@NotificationListenerService, it) })
+                        }
+                    }
+
+                    // Dismiss if ANY candidate is blocked by any of the checkers above.
                     var blocked = false
                     var allowResult: ICheckResult? = null
 
@@ -288,6 +359,7 @@ class NotificationListenerService : NotificationListenerService() {
                             logger = SaveableLogger(),
                             showNotification = false,
                             source = Def.SOURCE_NOTIFICATION,
+                            checkers = checkers,
                         )
                         if (result.shouldBlock()) {
                             blocked = true
@@ -358,6 +430,8 @@ class NotificationListenerService : NotificationListenerService() {
         val extras = sbn.notification.extras ?: return
         val title = extras.getString("android.title", "")
         val text = extras.getString("android.text", "")
-        screenedNotifications.remove("${sbn.packageName}|$title|$text")
+        val contentKey = "${sbn.packageName}|$title|$text"
+        screenedNotifications.remove(contentKey)
+        voicemailScreenedNotifications.remove(contentKey)
     }
 }

@@ -107,6 +107,16 @@ abstract class HistoryTable {
         return _listRecordsByFilter(ctx, additional)
     }
 
+    // Records within a recent time window, newest first, regardless of peer. Callers that
+    //  need to match a specific number should filter the result themselves using
+    //  `PhoneNumber.isSame()` for format-tolerant comparison (the stored `peer` may be in a
+    //  different format than the number being checked against it) — see Voicemail
+    //  Notification's Allow-if-Call-Allowed option, which uses this on the Calls table.
+    fun listRecentRecords(ctx: Context, sinceMillis: Long): List<HistoryRecord> {
+        val additional = " WHERE ${Db.COLUMN_TIME} >= ? ORDER BY time DESC"
+        return _listRecordsByFilter(ctx, additional, arrayOf(sinceMillis.toString()))
+    }
+
     fun addNewRecord(ctx: Context, r: HistoryRecord): Long {
         val db = Db.getInstance(ctx).writableDatabase
         val cv = ContentValues()

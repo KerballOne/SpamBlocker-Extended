@@ -99,4 +99,28 @@
                 Temizleme görevi her gün 00:00\'da çalışır.
         ]]>
     </string>
+    <string name="voicemail_notification"><short>Sesli Mesaj Bildirimi</short></string>
+    <string name="help_voicemail_notification">
+        <![CDATA[
+        Seçilen bir uygulamadan gelen sesli mesaj bildiriminden arayanın numarasını çıkarır ve
+          bunu bir çağrının engelleneceği şekilde engeller: <b>Kişi Olmayan</b> veya
+          <b>Veritabanı</b> ile. <br>
+        <br>
+        Burada yalnızca Tarama > Bildirimler altında zaten seçili olan uygulamalar seçilebilir.
+        ]]>
+    </string>
+    <string name="voicemail_notification_apps">Sesli Mesaj Uygulaması</string>
+    <string name="voicemail_notification_include_regex_rules">Numara/Metin Kuralları</string>
+    <string name="voicemail_notification_allow_if_call_allowed">Çağrıya İzin Verildiyse İzin Ver</string>
+    <string name="allowed_by_recent_call">Son Çağrıya İzin Verildi</string>
+    <string name="help_voicemail_notification_options">
+        <![CDATA[
+        <title><b>Numara/Metin Kuralları</b></title><br>
+        Numarayı ayrıca <b>Numara Kuralları</b>nıza ve <b>Metin Kuralları</b>nıza göre kontrol edin. <br>
+        <br>
+        <title><b>Çağrıya İzin Verildiyse İzin Ver</b></title><br>
+        Bu numaranın <b>Çağrılar</b> günlüğünüzde yakın zamanda engellenmemiş bir çağrısı varsa
+          (son 3 kayıt, 10 dakika içinde) engelleme kontrolünü atlayın.
+        ]]>
+    </string>
 </resources>

@@ -103,4 +103,27 @@
                 Завдання очищення виконується щодня о 00:00.
         ]]>
     </string>
+    <string name="voicemail_notification"><short>Сповіщення голосової пошти</short></string>
+    <string name="help_voicemail_notification">
+        <![CDATA[
+        Витягуйте номер абонента зі сповіщення голосової пошти від обраного додатка та блокуйте
+          його так само, як блокувався б дзвінок: за <b>Не-контактом</b> або <b>Базою даних</b>. <br>
+        <br>
+        Тут можна обрати лише додатки, вже обрані в розділі Перевірка > Сповіщення.
+        ]]>
+    </string>
+    <string name="voicemail_notification_apps">Додаток голосової пошти</string>
+    <string name="voicemail_notification_include_regex_rules">Правила номера/тексту</string>
+    <string name="voicemail_notification_allow_if_call_allowed">Дозволити, якщо дзвінок дозволено</string>
+    <string name="allowed_by_recent_call">Дозволено нещодавнім дзвінком</string>
+    <string name="help_voicemail_notification_options">
+        <![CDATA[
+        <title><b>Правила номера/тексту</b></title><br>
+        Також перевіряти номер за вашими <b>Правилами номера</b> та <b>Правилами тексту</b>. <br>
+        <br>
+        <title><b>Дозволити, якщо дзвінок дозволено</b></title><br>
+        Пропустити перевірку блокування, якщо для цього номера був недавній, незаблокований
+          дзвінок у журналі <b>Дзвінків</b> (останні 3 записи, протягом 10 хвилин).
+        ]]>
+    </string>
 </resources>

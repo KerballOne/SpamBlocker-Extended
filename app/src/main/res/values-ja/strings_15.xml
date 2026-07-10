@@ -100,4 +100,27 @@
                 クリーンアップ処理は毎日00:00に実行されます。
         ]]>
     </string>
+    <string name="voicemail_notification"><short>留守番電話通知</short></string>
+    <string name="help_voicemail_notification">
+        <![CDATA[
+        選択したアプリの留守番電話通知から発信者の番号を取り出し、実際の着信と同じ方法で
+          ブロックします：<b>非連絡先</b>または<b>データベース</b>によって。<br>
+        <br>
+        ここで選択できるのは、スクリーニング > 通知の下ですでに選択されているアプリのみです。
+        ]]>
+    </string>
+    <string name="voicemail_notification_apps">留守番電話アプリ</string>
+    <string name="voicemail_notification_include_regex_rules">電話番号/テキストルール</string>
+    <string name="voicemail_notification_allow_if_call_allowed">通話が許可されていれば許可</string>
+    <string name="allowed_by_recent_call">最近の通話により許可</string>
+    <string name="help_voicemail_notification_options">
+        <![CDATA[
+        <title><b>電話番号/テキストルール</b></title><br>
+        この番号を<b>電話番号ルール</b>と<b>テキストルール</b>にも照らしてチェックします。<br>
+        <br>
+        <title><b>通話が許可されていれば許可</b></title><br>
+        この番号が<b>通話</b>ログの中で最近（直近3件、10分以内）ブロックされずに着信していた
+          場合、ブロックチェックをスキップします。
+        ]]>
+    </string>
 </resources>

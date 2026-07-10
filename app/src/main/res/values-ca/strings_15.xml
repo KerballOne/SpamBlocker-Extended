@@ -102,4 +102,27 @@
                 La tasca de neteja s\'executa cada dia a les 00:00.
         ]]>
     </string>
+    <string name="voicemail_notification"><short>Notificació de bústia de veu</short></string>
+    <string name="help_voicemail_notification">
+        <![CDATA[
+        Extreu el número del trucant d\'una notificació de bústia de veu d\'una aplicació triada, i el
+          bloqueja de la mateixa manera que es bloquejaria una trucada: per <b>No-Contacte</b> o <b>Base de dades</b>. <br>
+        <br>
+        Aquí només es poden triar les aplicacions ja seleccionades a Filtratge > Notificacions.
+        ]]>
+    </string>
+    <string name="voicemail_notification_apps">Aplicació de bústia de veu</string>
+    <string name="voicemail_notification_include_regex_rules">Regles de número/text</string>
+    <string name="voicemail_notification_allow_if_call_allowed">Permet si la trucada és permesa</string>
+    <string name="allowed_by_recent_call">Permès per trucada recent</string>
+    <string name="help_voicemail_notification_options">
+        <![CDATA[
+        <title><b>Regles de número/text</b></title><br>
+        Verifica també el número contra les vostres <b>Regles de número</b> i <b>Regles de text</b>. <br>
+        <br>
+        <title><b>Permet si la trucada és permesa</b></title><br>
+        Omet la verificació de bloqueig si aquest número ha tingut una trucada recent i no bloquejada al vostre
+          registre de <b>Trucades</b> (últimes 3 entrades, en els últims 10 minuts).
+        ]]>
+    </string>
 </resources>

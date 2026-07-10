@@ -101,4 +101,27 @@
                 تعمل مهمة التنظيف يوميًا عند 00:00.
         ]]>
     </string>
+    <string name="voicemail_notification"><short>إشعار البريد الصوتي</short></string>
+    <string name="help_voicemail_notification">
+        <![CDATA[
+        استخراج رقم المتصل من إشعار بريد صوتي صادر عن تطبيق مختار، وحظره بنفس الطريقة التي يتم
+          بها حظر المكالمة: عبر <b>غير جهة اتصال</b> أو <b>قاعدة البيانات</b>. <br>
+        <br>
+        لا يمكن هنا اختيار سوى التطبيقات المحددة مسبقًا ضمن الفحص > الإشعارات.
+        ]]>
+    </string>
+    <string name="voicemail_notification_apps">تطبيق البريد الصوتي</string>
+    <string name="voicemail_notification_include_regex_rules">قواعد الأرقام/النصوص</string>
+    <string name="voicemail_notification_allow_if_call_allowed">السماح إذا كانت المكالمة مسموحة</string>
+    <string name="allowed_by_recent_call">مسموح به بسبب مكالمة حديثة</string>
+    <string name="help_voicemail_notification_options">
+        <![CDATA[
+        <title><b>قواعد الأرقام/النصوص</b></title><br>
+        التحقق من الرقم أيضًا مقابل <b>قواعد الأرقام</b> و<b>قواعد النصوص</b> الخاصة بك. <br>
+        <br>
+        <title><b>السماح إذا كانت المكالمة مسموحة</b></title><br>
+        تخطي التحقق من الحظر إذا كان لهذا الرقم مكالمة حديثة غير محظورة في سجل <b>المكالمات</b>
+          الخاص بك (آخر 3 إدخالات، خلال 10 دقائق).
+        ]]>
+    </string>
 </resources>

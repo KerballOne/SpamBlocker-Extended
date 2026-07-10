@@ -101,4 +101,5 @@
     <string name="csv_missing_column">
         Falta la columna requerida %s. Puedes usar el encabezado %s para la columna de números, o mapear un encabezado existente a %s en \"Analizar CSV\".
     </string>
+    <string name="set">Establecer</string>
 </resources>

@@ -102,4 +102,27 @@
                 La tarea de limpieza se ejecuta todos los días a las 00:00.
         ]]>
     </string>
+    <string name="voicemail_notification"><short>Notificación de buzón de voz</short></string>
+    <string name="help_voicemail_notification">
+        <![CDATA[
+        Extrae el número del llamante de una notificación de buzón de voz de una aplicación elegida, y lo
+          bloquea de la misma manera que se bloquearía una llamada: mediante <b>No-Contacto</b> o <b>Base de Datos</b>. <br>
+        <br>
+        Solo se pueden elegir aquí las aplicaciones ya seleccionadas en Filtrado > Notificaciones.
+        ]]>
+    </string>
+    <string name="voicemail_notification_apps">App de Buzón de Voz</string>
+    <string name="voicemail_notification_include_regex_rules">Reglas de Número/Texto</string>
+    <string name="voicemail_notification_allow_if_call_allowed">Permitir si la Llamada está Permitida</string>
+    <string name="allowed_by_recent_call">Permitido por Llamada Reciente</string>
+    <string name="help_voicemail_notification_options">
+        <![CDATA[
+        <title><b>Reglas de Número/Texto</b></title><br>
+        También verifica el número contra tus <b>Reglas de Número</b> y <b>Reglas de Texto</b>. <br>
+        <br>
+        <title><b>Permitir si la Llamada está Permitida</b></title><br>
+        Omite la verificación de bloqueo si este número tuvo una llamada reciente y no bloqueada en tu registro de
+          <b>Llamadas</b> (últimas 3 entradas, dentro de 10 minutos).
+        ]]>
+    </string>
 </resources>

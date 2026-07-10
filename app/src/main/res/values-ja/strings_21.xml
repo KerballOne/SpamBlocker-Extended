@@ -1,6 +1,7 @@
 <resources>
     <string name="perm_write_settings">設定の書き込み</string>
     <string name="set_to">に設定</string>
+    <string name="set">設定</string>
     <string name="help_set_ringtone_to">
     <![CDATA[
         特定の機能の着信音を設定するか、ミュートにします。<br>

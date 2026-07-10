@@ -1,6 +1,7 @@
 <resources>
     <string name="perm_write_settings">כתוב הגדרות</string>
     <string name="set_to">הגדר ל-</string>
+    <string name="set">הגדר</string>
     <string name="help_set_ringtone_to">
     <![CDATA[
         הגדר את הצלצול עבור תכונה מסוימת, או השתק אותו. <br>
