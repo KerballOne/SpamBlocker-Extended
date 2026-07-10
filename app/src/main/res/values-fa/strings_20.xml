@@ -1,6 +1,7 @@
 <resources>
     <string name="call_screening_not_enabled">غربالگری تماس فعال نیست.</string>
     <string name="sms_screening_not_enabled">غربالگری پیامک فعال نیست.</string>
+    <string name="notification_screening_not_enabled">غربالگری اعلان فعال نیست.</string>
     <string name="category_mapping">نگاشت دسته‌بندی</string>
     <string name="help_category_mapping">
     <![CDATA[

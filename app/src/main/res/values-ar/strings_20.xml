@@ -1,6 +1,7 @@
 <resources>
     <string name="call_screening_not_enabled">فحص المكالمات غير مفعّل.</string>
     <string name="sms_screening_not_enabled">فحص الرسائل النصية القصيرة غير مفعّل.</string>
+    <string name="notification_screening_not_enabled">فحص الإشعارات غير مفعّل.</string>
     <string name="category_mapping">تعيين الفئات</string>
     <string name="help_category_mapping">
     <![CDATA[

@@ -1,6 +1,7 @@
 <resources>
     <string name="call_screening_not_enabled">El filtratge de trucades no està activat.</string>
     <string name="sms_screening_not_enabled">El filtratge de SMS no està activat.</string>
+    <string name="notification_screening_not_enabled">El filtratge de notificacions no està activat.</string>
     <string name="category_mapping">Mapeig de Categories</string>
     <string name="help_category_mapping">
     <![CDATA[

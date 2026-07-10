@@ -1,6 +1,7 @@
 <resources>
     <string name="call_screening_not_enabled">Çağrı taraması etkin değil.</string>
     <string name="sms_screening_not_enabled">SMS taraması etkin değil.</string>
+    <string name="notification_screening_not_enabled">Bildirim taraması etkin değil.</string>
     <string name="category_mapping">Kategori Eşleştirme</string>
     <string name="help_category_mapping">
     <![CDATA[

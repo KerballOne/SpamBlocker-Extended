@@ -46,9 +46,21 @@
     <string name="title_rule_testing">Rule Testing</string>
     <string name="help_test_rules">
         <![CDATA[
-        This helps to check if the rules are set as expected.<br>
+        This helps to check if the rules are set as expected. It is just a simulation and will
+          not actually pop up an incoming call, text message, or notification. <br>
         <br>
-        It is just a simulation and will not actually pop up an incoming call (or text message).<br>
+        <title><b>Call</b></title><br>
+        <b>Phone Number</b> and <b>Caller Name</b> are tested against Basic Rules, Number Rules,
+          and Content Rules that apply to calls. <br>
+        <br>
+        <title><b>SMS</b></title><br>
+        <b>Phone Number</b> and <b>SMS Content</b> are tested against Basic Rules, Number Rules,
+          and Content Rules that apply to SMS/MMS. <br>
+        <br>
+        <title><b>Notification</b></title><br>
+        <b>Phone Number</b> is tested against Basic Rules and Number Rules, same as a call/SMS.
+          <b>Title</b> and <b>Body</b> are each tested independently against Number/Text Rules
+          with Title/Body enabled under Apply to Notifications. <br>
         <br>
         The result is shown here, in the history log, and in notifications.
         ]]>

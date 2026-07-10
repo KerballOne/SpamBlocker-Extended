@@ -1,6 +1,7 @@
 <resources>
     <string name="call_screening_not_enabled">Penyaringan panggilan tidak diaktifkan.</string>
     <string name="sms_screening_not_enabled">Penyaringan SMS tidak diaktifkan.</string>
+    <string name="notification_screening_not_enabled">Penyaringan notifikasi tidak diaktifkan.</string>
     <string name="category_mapping">Pemetaan Kategori</string>
     <string name="help_category_mapping">
     <![CDATA[

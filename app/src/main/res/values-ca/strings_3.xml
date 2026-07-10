@@ -46,11 +46,26 @@
     <string name="title_rule_testing">Prova de la regla</string>
     <string name="help_test_rules">
         <![CDATA[
-        Això ajuda a comprovar si les regles estan configurades com s\'esperava.<br>
+        Això ajuda a comprovar si les regles estan configurades com s\'esperava. És només una
+          simulació i no farà aparèixer realment una trucada entrant, un missatge de text ni
+          una notificació. <br>
         <br>
-        És només una simulació i no apareixerà realment una trucada entrant (o un missatge de text).<br>
+        <title><b>Trucada</b></title><br>
+        El <b>Número de telèfon</b> i el <b>Nom de la persona que truca</b> es comproven amb les
+          Regles Bàsiques, les Regles de Número i les Regles de Contingut que s\'apliquen a les
+          trucades. <br>
         <br>
-        El resultat es mostra aquí, i al registre d\'historial, amb notificació.
+        <title><b>SMS</b></title><br>
+        El <b>Número de telèfon</b> i el <b>Contingut de l\'SMS</b> es comproven amb les Regles
+          Bàsiques, les Regles de Número i les Regles de Contingut que s\'apliquen als SMS/MMS. <br>
+        <br>
+        <title><b>Notificació</b></title><br>
+        El <b>Número de telèfon</b> es comprova amb les Regles Bàsiques i les Regles de Número,
+          igual que en una trucada o un SMS. El <b>Títol</b> i el <b>Cos</b> es comproven cadascun
+          de manera independent amb les Regles de Número/Text que tinguin el Títol/Cos activat a
+          Aplica a Notificacions. <br>
+        <br>
+        El resultat es mostra aquí, al registre d\'historial i a les notificacions.
         ]]>
     </string>
 

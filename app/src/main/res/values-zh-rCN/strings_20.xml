@@ -1,6 +1,7 @@
 <resources>
     <string name="call_screening_not_enabled">未启用来电筛选。</string>
     <string name="sms_screening_not_enabled">未启用短信筛选。</string>
+    <string name="notification_screening_not_enabled">未启用通知筛选。</string>
     <string name="category_mapping">类别映射</string>
     <string name="help_category_mapping">
     <![CDATA[

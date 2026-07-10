@@ -1,6 +1,7 @@
 <resources>
     <string name="call_screening_not_enabled">未啟用電話篩選。</string>
     <string name="sms_screening_not_enabled">未啟用簡訊篩選。</string>
+    <string name="notification_screening_not_enabled">未啟用通知篩選。</string>
     <string name="category_mapping">分類對應</string>
     <string name="help_category_mapping">
     <![CDATA[

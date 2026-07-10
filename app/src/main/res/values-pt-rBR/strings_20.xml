@@ -1,6 +1,7 @@
 <resources>
     <string name="call_screening_not_enabled">A triagem de chamadas não está ativada.</string>
     <string name="sms_screening_not_enabled">A triagem de SMS não está ativada.</string>
+    <string name="notification_screening_not_enabled">A triagem de notificações não está ativada.</string>
     <string name="category_mapping">Mapeamento de Categoria</string>
     <string name="help_category_mapping">
     <![CDATA[

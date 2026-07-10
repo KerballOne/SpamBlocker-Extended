@@ -46,11 +46,23 @@
     <string name="title_rule_testing">Prueba de reglas</string>
     <string name="help_test_rules">
         <![CDATA[
-        Esto ayuda a verificar si las reglas se establecen como se esperaba.<br>
+        Esto ayuda a verificar si las reglas están configuradas como se espera. Es solo una simulación y
+          no hará que aparezca realmente una llamada entrante, un mensaje de texto o una notificación. <br>
         <br>
-        Es solo una simulación y no realmente aparecerá una llamada entrante (o mensaje de texto).<br>
+        <title><b>Llamada</b></title><br>
+        <b>Número de teléfono</b> y <b>Nombre del interlocutor</b> se comparan con las Reglas Básicas, las Reglas de Número
+          y las Reglas de Contenido que se aplican a las llamadas. <br>
         <br>
-        El resultado se muestra aquí, y en el historial de registro, con notificación.
+        <title><b>SMS</b></title><br>
+        <b>Número de teléfono</b> y <b>Contenido del SMS</b> se comparan con las Reglas Básicas, las Reglas de Número
+          y las Reglas de Contenido que se aplican a SMS/MMS. <br>
+        <br>
+        <title><b>Notificación</b></title><br>
+        <b>Número de teléfono</b> se compara con las Reglas Básicas y las Reglas de Número, igual que en una llamada/SMS.
+          <b>Título</b> y <b>Cuerpo</b> se comparan cada uno de forma independiente con las Reglas de Número/Texto
+          que tengan Título/Cuerpo habilitado en Aplicar a Notificaciones. <br>
+        <br>
+        El resultado se muestra aquí, en el historial de registro y en las notificaciones.
         ]]>
     </string>
 

@@ -1,6 +1,7 @@
 <resources>
     <string name="call_screening_not_enabled">סינון שיחות אינו מופעל.</string>
     <string name="sms_screening_not_enabled">סינון הודעות SMS אינו מופעל.</string>
+    <string name="notification_screening_not_enabled">סינון התראות אינו מופעל.</string>
     <string name="category_mapping">מיפוי קטגוריות</string>
     <string name="help_category_mapping">
     <![CDATA[

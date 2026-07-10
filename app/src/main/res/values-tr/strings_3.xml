@@ -46,11 +46,23 @@
     <string name="title_rule_testing">Kural Testi</string>
     <string name="help_test_rules">
         <![CDATA[
-        Bu, kuralların beklendiği gibi ayarlandığını kontrol etmeye yardımcı olur.<br>
+        Bu, kuralların beklendiği gibi ayarlanıp ayarlanmadığını kontrol etmeye yardımcı olur. Bu sadece bir
+          simülasyondur ve gerçekten gelen bir arama, metin mesajı veya bildirim açmayacaktır. <br>
         <br>
-        Bu sadece bir simülasyondur ve gerçekten gelen bir arama (veya metin mesajı) açmayacaktır.<br>
+        <title><b>Arama</b></title><br>
+        <b>Telefon Numarası</b> ve <b>Arayan Adı</b>, aramalara uygulanan Temel Kurallara, Numara Kurallarına
+          ve İçerik Kurallarına karşı test edilir. <br>
         <br>
-        Sonuç burada ve bildirimle birlikte geçmiş kaydında gösterilmektedir.
+        <title><b>SMS</b></title><br>
+        <b>Telefon Numarası</b> ve <b>SMS İçeriği</b>, SMS/MMS\'e uygulanan Temel Kurallara, Numara Kurallarına
+          ve İçerik Kurallarına karşı test edilir. <br>
+        <br>
+        <title><b>Bildirim</b></title><br>
+        <b>Telefon Numarası</b>, tıpkı bir arama/SMS\'te olduğu gibi Temel Kurallara ve Numara Kurallarına karşı
+          test edilir. <b>Başlık</b> ve <b>Gövde</b>, Bildirimlere Uygula altında Başlık/Gövde etkinleştirilmiş
+          Numara/Metin Kurallarına karşı her biri ayrı ayrı test edilir. <br>
+        <br>
+        Sonuç burada, geçmiş kaydında ve bildirimlerde gösterilir.
         ]]>
     </string>
 

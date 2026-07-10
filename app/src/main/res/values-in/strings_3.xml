@@ -46,11 +46,23 @@
     <string name="title_rule_testing">Pengujian Aturan</string>
     <string name="help_test_rules">
         <![CDATA[
-        Hal ini membantu untuk memeriksa apakah aturan yang ditetapkan sudah sesuai dengan yang diharapkan.<br>
+        Ini membantu memeriksa apakah aturan sudah diatur sesuai yang diharapkan. Ini hanyalah simulasi dan
+          tidak akan benar-benar memunculkan panggilan masuk, pesan teks, atau notifikasi. <br>
         <br>
-        Ini hanyalah simulasi dan tidak akan benar-benar memunculkan panggilan masuk (atau pesan teks).<br>
+        <title><b>Panggilan</b></title><br>
+        <b>Nomor Telepon</b> dan <b>Nama Penelepon</b> diuji terhadap Aturan Dasar, Aturan Nomor,
+          dan Aturan Konten yang berlaku untuk panggilan. <br>
         <br>
-        Hasilnya ditampilkan di sini, dan dalam log riwayat, dengan pemberitahuan.
+        <title><b>SMS</b></title><br>
+        <b>Nomor Telepon</b> dan <b>Isi SMS</b> diuji terhadap Aturan Dasar, Aturan Nomor,
+          dan Aturan Konten yang berlaku untuk SMS/MMS. <br>
+        <br>
+        <title><b>Notifikasi</b></title><br>
+        <b>Nomor Telepon</b> diuji terhadap Aturan Dasar dan Aturan Nomor, sama seperti panggilan/SMS.
+          <b>Judul</b> dan <b>Isi</b> masing-masing diuji secara terpisah terhadap Aturan Nomor/Teks
+          dengan Judul/Isi diaktifkan di bawah Terapkan ke Notifikasi. <br>
+        <br>
+        Hasilnya ditampilkan di sini, dalam log riwayat, dan dalam notifikasi.
         ]]>
     </string>
 

@@ -1,6 +1,7 @@
 <resources>
     <string name="call_screening_not_enabled">Call screening is not enabled.</string>
     <string name="sms_screening_not_enabled">SMS screening is not enabled.</string>
+    <string name="notification_screening_not_enabled">Notification screening is not enabled.</string>
     <string name="category_mapping">Category Mapping</string>
     <string name="help_category_mapping">
     <![CDATA[

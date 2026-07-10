@@ -1,6 +1,7 @@
 <resources>
     <string name="call_screening_not_enabled">Le filtrage des appels n\'est pas activé.</string>
     <string name="sms_screening_not_enabled">Le filtrage des SMS n\'est pas activé.</string>
+    <string name="notification_screening_not_enabled">Le filtrage des notifications n\'est pas activé.</string>
     <string name="category_mapping">Mappage de catégories</string>
     <string name="help_category_mapping">
     <![CDATA[

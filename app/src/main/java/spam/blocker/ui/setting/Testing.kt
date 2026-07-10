@@ -20,6 +20,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import spam.blocker.G
 import spam.blocker.R
+import spam.blocker.def.Def
 import spam.blocker.def.Def.ANDROID_12
 import spam.blocker.service.CallScreeningService
 import spam.blocker.service.SmsReceiver
@@ -29,6 +30,7 @@ import spam.blocker.ui.widgets.AnimatedVisibleV
 import spam.blocker.ui.widgets.BalloonQuestionMark
 import spam.blocker.ui.widgets.FloatingWindow
 import spam.blocker.ui.widgets.GreyLabel
+import spam.blocker.ui.widgets.Placeholder
 import spam.blocker.ui.widgets.PopupDialog
 import spam.blocker.ui.widgets.PopupSize
 import spam.blocker.ui.widgets.RadioGroup
@@ -53,6 +55,8 @@ class TestingViewModel {
     val phone = mutableStateOf("")
     val callerName = mutableStateOf("")
     val sms = mutableStateOf("")
+    val notifTitle = mutableStateOf("")
+    val notifBody = mutableStateOf("")
     val simSlot = mutableStateOf<Int?>(null)
     val showCallerID = mutableStateOf(false)
 }
@@ -72,6 +76,7 @@ fun TestDialog(
         listOf(
             RadioItem(text = ctx.getString(R.string.call), color = C.textGrey),
             RadioItem(text = ctx.getString(R.string.sms), color = C.textGrey),
+            RadioItem(text = ctx.getString(R.string.notification), color = C.textGrey),
         )
     }
 
@@ -127,6 +132,11 @@ fun TestDialog(
                     vm.selectedType.intValue == 0
                 }
             }
+            val isForNotification by remember {
+                derivedStateOf {
+                    vm.selectedType.intValue == 2
+                }
+            }
 
             // Test Button
             StrokeButton(label = Str(R.string.test), color = C.teal200) {
@@ -139,17 +149,39 @@ fun TestDialog(
                 ))
 
                 coroutine.launch(IO) {
-                    if (isForCall)
-                        CallScreeningService.processCall(
-                            ctx, rawNumber = vm.phone.value, simSlot = vm.simSlot.value,
-                            callDetails = null, cnap = vm.callerName.value.ifEmpty { null },
-                            isTest = true, logger = multiLogger, showCallerId = vm.showCallerID.value
-                        )
-                    else
-                        SmsReceiver.processSms(
-                            ctx, rawNumber = vm.phone.value, messageBody = vm.sms.value,
-                            simSlot = vm.simSlot.value, isTest = true, logger = multiLogger
-                        )
+                    when {
+                        isForCall ->
+                            CallScreeningService.processCall(
+                                ctx, rawNumber = vm.phone.value, simSlot = vm.simSlot.value,
+                                callDetails = null, cnap = vm.callerName.value.ifEmpty { null },
+                                isTest = true, logger = multiLogger, showCallerId = vm.showCallerID.value
+                            )
+                        isForNotification -> {
+                            // A rule can independently target the notification's Title and/or
+                            //  Body (see help_apply_to_notification), so test each field that
+                            //  was actually filled in as its own check rather than silently
+                            //  collapsing them into one result.
+                            if (vm.notifTitle.value.isNotEmpty()) {
+                                SmsReceiver.processSms(
+                                    ctx, rawNumber = vm.phone.value, messageBody = vm.notifTitle.value,
+                                    simSlot = vm.simSlot.value, isTest = true, logger = multiLogger,
+                                    source = Def.SOURCE_NOTIFICATION,
+                                )
+                            }
+                            if (vm.notifBody.value.isNotEmpty()) {
+                                SmsReceiver.processSms(
+                                    ctx, rawNumber = vm.phone.value, messageBody = vm.notifBody.value,
+                                    simSlot = vm.simSlot.value, isTest = true, logger = multiLogger,
+                                    source = Def.SOURCE_NOTIFICATION,
+                                )
+                            }
+                        }
+                        else ->
+                            SmsReceiver.processSms(
+                                ctx, rawNumber = vm.phone.value, messageBody = vm.sms.value,
+                                simSlot = vm.simSlot.value, isTest = true, logger = multiLogger
+                            )
+                    }
                 }
             }
         },
@@ -160,8 +192,18 @@ fun TestDialog(
                         vm.selectedType.intValue == 0
                     }
                 }
+                val isForSms by remember {
+                    derivedStateOf {
+                        vm.selectedType.intValue == 1
+                    }
+                }
+                val isForNotification by remember {
+                    derivedStateOf {
+                        vm.selectedType.intValue == 2
+                    }
+                }
 
-                // Type   [Call, SMS]
+                // Type   [Call, SMS, Notification]
                 LabeledRow(labelId = R.string.type) {
                     RadioGroup(items = items, selectedIndex = vm.selectedType.intValue) { newSel ->
                         vm.selectedType.intValue = newSel
@@ -199,6 +241,11 @@ fun TestDialog(
                 StrInputBox(
                     text = vm.phone.value,
                     label = { GreyLabel(Str(R.string.phone_number)) },
+                    placeholder = if (isForNotification) {
+                        { Placeholder(Str(R.string.optional)) }
+                    } else {
+                        null
+                    },
                     leadingIconId = R.drawable.ic_call,
                     onValueChange = {
                         vm.phone.value = it
@@ -246,7 +293,7 @@ fun TestDialog(
                     )
                 }
                 // SMS content
-                AnimatedVisibleV(!isForCall) {
+                AnimatedVisibleV(isForSms) {
                     StrInputBox(
                         text = vm.sms.value,
                         label = { GreyLabel(Str(R.string.sms_content)) },
@@ -258,13 +305,42 @@ fun TestDialog(
                     )
                 }
 
-                if ((isForCall && !G.callEnabled.value) || (!isForCall && !G.smsEnabled.value)) {
+                // Notification Title
+                AnimatedVisibleV(isForNotification) {
+                    StrInputBox(
+                        text = vm.notifTitle.value,
+                        label = { GreyLabel(Str(R.string.title_short)) },
+                        leadingIconId = R.drawable.ic_sms,
+                        onValueChange = {
+                            vm.notifTitle.value = it
+                            clearPreviousResult()
+                        }
+                    )
+                }
+                // Notification Body
+                AnimatedVisibleV(isForNotification) {
+                    StrInputBox(
+                        text = vm.notifBody.value,
+                        label = { GreyLabel(Str(R.string.body_short)) },
+                        leadingIconId = R.drawable.ic_sms,
+                        onValueChange = {
+                            vm.notifBody.value = it
+                            clearPreviousResult()
+                        }
+                    )
+                }
+
+                if ((isForCall && !G.callEnabled.value) ||
+                    (isForSms && !G.smsEnabled.value) ||
+                    (isForNotification && !spf.Global(ctx).isNotificationScreeningEnabled)
+                ) {
                     Text(
                         text = Str(
-                            if (isForCall)
-                                R.string.call_screening_not_enabled
-                            else
-                                R.string.sms_screening_not_enabled
+                            when {
+                                isForCall -> R.string.call_screening_not_enabled
+                                isForSms -> R.string.sms_screening_not_enabled
+                                else -> R.string.notification_screening_not_enabled
+                            }
                         ),
                         color = C.warning,
                     )

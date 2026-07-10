@@ -1,6 +1,7 @@
 <resources>
     <string name="call_screening_not_enabled">Фильтрация звонков не включена.</string>
     <string name="sms_screening_not_enabled">Фильтрация SMS не включена.</string>
+    <string name="notification_screening_not_enabled">Фильтрация уведомлений не включена.</string>
     <string name="category_mapping">Сопоставление категорий</string>
     <string name="help_category_mapping">
     <![CDATA[

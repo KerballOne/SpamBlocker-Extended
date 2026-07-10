@@ -46,11 +46,25 @@
     <string name="title_rule_testing">Regeltest</string>
     <string name="help_test_rules">
         <![CDATA[
-        Dies hilft zu überprüfen, ob die Regeln wie erwartet eingerichtet sind.<br>
+        Dies hilft zu überprüfen, ob die Regeln wie erwartet eingerichtet sind. Es handelt sich nur
+          um eine Simulation, es wird kein eingehender Anruf, keine Textnachricht und keine
+          Benachrichtigung tatsächlich angezeigt. <br>
         <br>
-        Es handelt sich nur um eine Simulation und es wird kein eingehender Anruf (oder eine Textnachricht) tatsächlich angezeigt.<br>
+        <title><b>Anruf</b></title><br>
+        <b>Telefonnummer</b> und <b>Anrufername</b> werden gegen Basisregeln, Nummernregeln und
+          Inhaltsregeln geprüft, die für Anrufe gelten. <br>
         <br>
-        Das Ergebnis wird hier und im Verlaufsprotokoll mit Benachrichtigung angezeigt.
+        <title><b>SMS</b></title><br>
+        <b>Telefonnummer</b> und <b>SMS-Inhalt</b> werden gegen Basisregeln, Nummernregeln und
+          Inhaltsregeln geprüft, die für SMS/MMS gelten. <br>
+        <br>
+        <title><b>Benachrichtigung</b></title><br>
+        <b>Telefonnummer</b> wird, genau wie bei einem Anruf/einer SMS, gegen Basisregeln und
+          Nummernregeln geprüft. <b>Titel</b> und <b>Inhalt</b> werden jeweils unabhängig gegen
+          Nummern-/Textregeln geprüft, bei denen Titel/Inhalt unter \'Auf Benachrichtigungen
+          anwenden\' aktiviert ist. <br>
+        <br>
+        Das Ergebnis wird hier, im Verlaufsprotokoll und in Benachrichtigungen angezeigt.
         ]]>
     </string>
 
