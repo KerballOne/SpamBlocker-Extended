@@ -71,6 +71,7 @@ import spam.blocker.ui.setting.regex.RegexList
 import spam.blocker.ui.setting.regex.RegexViewModel
 import spam.blocker.ui.setting.regex.SmsAlert
 import spam.blocker.ui.setting.regex.SmsBomb
+import spam.blocker.ui.setting.regex.VoicemailNotification
 import spam.blocker.ui.theme.White
 import spam.blocker.ui.widgets.AnimatedVisibleV
 import spam.blocker.ui.widgets.BalloonQuestionMark
@@ -310,6 +311,9 @@ fun SettingScreen() {
 
                         // SMS Bomb
                         SmsBomb()
+
+                        // Voicemail Notification
+                        VoicemailNotification()
                     }
                 }
 

@@ -10,6 +10,7 @@ import spam.blocker.db.PushAlertTable
 import spam.blocker.db.RegexRule
 import spam.blocker.def.Def
 import spam.blocker.service.checker.ByRegexRule
+import spam.blocker.service.checker.ICheckResult
 import spam.blocker.util.Permission
 import spam.blocker.util.PermissiveJson
 import spam.blocker.util.SaveableLogger
@@ -27,7 +28,12 @@ private val phoneNumberCandidateRegex = Regex("""\+?[\s().-]*(?:\d[\s().-]*){3,1
 
 private fun findNumberCandidates(title: String): List<String> {
     return phoneNumberCandidateRegex.findAll(title)
-        .map { it.value }
+        // The regex's leading `[\s().-]*` can capture stray whitespace/punctuation
+        //  before the first digit (e.g. a leading space from "from 5551234567"),
+        //  which would otherwise reach Basic Rule checkers (e.g. Spam Database) as
+        //  part of `rawNumber` and break their exact-match lookups. The old Number
+        //  Rule gate never hit this because `regexMatchesNumber` normalizes first.
+        .map { it.value.trim().trimStart('(', ')', '-', '.') }
         .filter { candidate -> candidate.count { it.isDigit() } in 3..15 }
         .toList()
 }
@@ -49,6 +55,37 @@ fun resetNotificationScreeningCache() {
     notifBodyNumberRules = null
     notifTitleContentRules = null
     notifBodyContentRules = null
+}
+
+// Voicemail Notification: separate from the Number/Text-Rule gate above, this runs
+//  candidate numbers extracted from selected apps' notifications through the FULL
+//  Basic+Number+Text Rule pipeline (Checker.checkSms), not just a Number/Text-Rule
+//  pre-check. See spf.VoicemailNotification and ui/setting/regex/VoicemailNotification.kt.
+private var voicemailNotificationEnabled: Boolean? = null
+private var voicemailNotificationPkgs: Set<String>? = null
+private var voicemailNotificationApplyToTitle: Boolean? = null
+private var voicemailNotificationApplyToBody: Boolean? = null
+
+// Own dedup set, independent from `screenedNotifications` above, so this feature's
+//  pass/no-match outcome doesn't get short-circuited by (or short-circuit) the
+//  existing Number/Text-Rule gate's dedup bookkeeping for the same notification.
+private var voicemailScreenedNotifications: MutableSet<String> = mutableSetOf()
+
+fun resetVoicemailNotificationCache() {
+    voicemailNotificationEnabled = null
+    voicemailNotificationPkgs = null
+    voicemailNotificationApplyToTitle = null
+    voicemailNotificationApplyToBody = null
+}
+
+private fun ensureVoicemailNotificationCache(ctx: Context) {
+    if (voicemailNotificationEnabled == null) {
+        val spf = spf.VoicemailNotification(ctx)
+        voicemailNotificationEnabled = spf.isEnabled
+        voicemailNotificationPkgs = spf.getApps().toSet()
+        voicemailNotificationApplyToTitle = spf.applyToTitle
+        voicemailNotificationApplyToBody = spf.applyToBody
+    }
 }
 
 private fun ensureNotificationScreeningCache(ctx: Context) {
@@ -207,6 +244,72 @@ class NotificationListenerService : NotificationListenerService() {
                         ?: spf.AllowedNotificationAlerts(this).find(pkgName)
 
                     config?.let { fireAllowedNotificationAlert(this, it) }
+                }
+            }
+        }
+
+        // Voicemail Notification: independent of the Number/Text-Rule gate above. Runs
+        //  candidate numbers through the FULL Checker pipeline (Basic Rules included),
+        //  not just a Number/Text-Rule pre-check, so e.g. a voicemail notification from
+        //  a Spam-Database/STIR/Contacts-blocked number gets dismissed too, agnostic of
+        //  which app shows it or whether the number is in the title or the body.
+        run {
+            val voicemailContentKey = "$pkgName|$title|$text"
+            val voicemailAlreadyScreened = voicemailScreenedNotifications.contains(voicemailContentKey)
+
+            ensureVoicemailNotificationCache(this)
+
+            if (voicemailNotificationEnabled == true &&
+                Permission.notificationAccess.isGranted &&
+                voicemailNotificationPkgs?.contains(pkgName) == true &&
+                !voicemailAlreadyScreened
+            ) {
+                val candidates = buildList {
+                    if (voicemailNotificationApplyToTitle == true) addAll(findNumberCandidates(title))
+                    if (voicemailNotificationApplyToBody == true) addAll(findNumberCandidates(text))
+                }.distinct()
+
+                if (candidates.isNotEmpty()) {
+                    voicemailScreenedNotifications.add(voicemailContentKey)
+
+                    // Dismiss if ANY candidate's verdict is Block; otherwise fire the
+                    //  Allowed-notification Alert for the first non-blocking result
+                    //  (mirrors the Number/Text-Rule gate's allow-path above).
+                    var blocked = false
+                    var allowResult: ICheckResult? = null
+
+                    for (candidate in candidates) {
+                        val result = SmsReceiver.processSms(
+                            ctx = this,
+                            rawNumber = candidate,
+                            messageBody = text,
+                            simSlot = null,
+                            isTest = false,
+                            logger = SaveableLogger(),
+                            showNotification = false,
+                            source = Def.SOURCE_NOTIFICATION,
+                        )
+                        if (result.shouldBlock()) {
+                            blocked = true
+                            break
+                        }
+                        if (allowResult == null) {
+                            allowResult = result
+                        }
+                    }
+
+                    if (blocked) {
+                        cancelNotification(sbn.key)
+                    } else if (allowResult != null) {
+                        val ruleAlertJson = (allowResult as? ByRegexRule)
+                            ?.rule?.alertConfigJson?.takeIf { it.isNotEmpty() }
+
+                        val config = ruleAlertJson
+                            ?.let { runCatching { PermissiveJson.decodeFromString<AppAlertConfig>(it) }.getOrNull() }
+                            ?: spf.AllowedNotificationAlerts(this).find(pkgName)
+
+                        config?.let { fireAllowedNotificationAlert(this, it) }
+                    }
                 }
             }
         }

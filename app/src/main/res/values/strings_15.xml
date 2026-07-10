@@ -102,4 +102,25 @@
             A workaround is to switch to SMS.
         ]]>
     </string>
+    <string name="voicemail_notification"><short>Voicemail Notification</short></string>
+    <string name="help_voicemail_notification">
+        <![CDATA[
+        Extract phone numbers from the notifications of chosen voicemail/dialer apps, and check
+          them against <b>Basic Rules</b> and <b>Number Rules</b>, the same as a real incoming call. <br>
+        <br>
+        Ordinary Notification Screening only dismisses a notification if a Number/Text Rule\'s own
+          Title/Body flags match it directly; it never runs Basic Rules (Contacts, STIR, Spam
+          Database, Repeated Call, etc.) against notification content. This lets those same Basic
+          Rules apply too, agnostic of which app shows the voicemail notification or whether the
+          number appears in its title or body. <br>
+        <br>
+        Only apps already selected under Screening > Notifications can be chosen here. <br>
+        <br>
+        When a checked number is <b>not</b> blocked (i.e. Basic/Number Rules allow it), the
+          app-level Alert configured under Actions &gt; Alerts fires, same as ordinary Notification
+          Screening. It does not apply to Calls or SMS/MMS. A Number/Text Rule with its own Alert
+          setting still takes priority when that rule is the one that matched.
+        ]]>
+    </string>
+    <string name="voicemail_notification_apps">Voicemail App</string>
 </resources>

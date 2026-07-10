@@ -132,7 +132,7 @@
         <br>
         This is different from the regular Notification setting above: since the original notification is already visible on screen, allowing it again does not need a duplicate SpamBlocker notification, just a short alert to draw attention.<br>
         <br>
-        Leave this as Default to use the app-level alert configured under Basic Rules Notification.
+        Leave this as Unset (tap "Set" to configure) to use the app-level alert configured under Basic Rules Notification.
         ]]>
     </string>
     <string name="channel_id">Channel ID</string>

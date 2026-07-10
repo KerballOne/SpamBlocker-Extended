@@ -589,6 +589,27 @@ class spf { // for namespace only
         var isLockScreenProtectionEnabled by bool("sms_bomb_lockscreen_protection_enabled", true)
     }
 
+    // Extracts candidate phone numbers from selected apps' notification title/body (e.g. a
+    // voicemail app announcing "New voicemail from 5551234567") and runs them through the
+    // full Basic+Number+Text Rule pipeline, same as a real call/SMS, instead of only the
+    // Number/Text-Rule pre-check that gates ordinary Notification Screening.
+    class VoicemailNotification(ctx: Context) : SharedPref(ctx) {
+        var isEnabled by bool("voicemail_notification_enabled")
+        var isCollapsed by bool("voicemail_notification_collapsed")
+        var appList by str("voicemail_notification_apps") // comma-joined package names, subset of AppNotifications
+        var applyToTitle by bool("voicemail_notification_apply_to_title")
+        var applyToBody by bool("voicemail_notification_apply_to_body", true)
+
+        fun getApps(): List<String> {
+            if (appList == "")
+                return listOf()
+            return appList.split(",")
+        }
+        fun setApps(list: List<String>) {
+            appList = list.joinToString(",")
+        }
+    }
+
     class OAuth(ctx: Context) : SharedPref(ctx) {
         var phoneBlockToken by str(PhoneBlock.spfTokenKey)
     }

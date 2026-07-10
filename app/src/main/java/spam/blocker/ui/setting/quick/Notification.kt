@@ -9,10 +9,12 @@ import android.media.RingtoneManager
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -24,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.toArgb
@@ -698,6 +701,7 @@ fun Alerts() {
 fun AlertConfigControls(
     initConfig: AppAlertConfig,
     onSave: (AppAlertConfig) -> Unit,
+    modifier: Modifier = Modifier,
     // When non-null, this config can fall back to some further-up default when unset
     //  (e.g. the per-rule override falls back to the app-level config when empty; the
     //  per-app config itself has no further default, so it always passes null here).
@@ -706,6 +710,10 @@ fun AlertConfigControls(
     //  `isUnset` false without changing any individual control's value.
     // `onClear`: called to go back to `isUnset = true`, i.e. resume falling back.
     unsetControl: UnsetControl? = null,
+
+    // Content shown before the toggle icons, in the same row, e.g. an app icon+name.
+    // Defaults to the plain leading spacer used when there's no such content (per-rule row).
+    leadingContent: @Composable RowScope.() -> Unit = { Spacer(modifier = M.width(6.dp)) },
 ) {
     val ctx = LocalContext.current
     val C = G.palette
@@ -744,8 +752,8 @@ fun AlertConfigControls(
         // No saved override yet, it's currently falling back to the app-level default.
         // Show a single "Set" button instead of the all-disabled-looking icon row,
         //  which would otherwise be visually identical to an explicit all-off override.
-        RowVCenterSpaced(10) {
-            Spacer(modifier = M.width(6.dp))
+        RowVCenterSpaced(10, modifier = modifier) {
+            leadingContent()
             GreyButton(Str(R.string.set)) {
                 unsetControl.onSet()
             }
@@ -753,8 +761,8 @@ fun AlertConfigControls(
         return
     }
 
-    RowVCenterSpaced(10) {
-        Spacer(modifier = M.width(6.dp))
+    RowVCenterSpaced(10, modifier = modifier) {
+        leadingContent()
         // Vibration
         ResIcon(
             R.drawable.ic_vibration,
@@ -829,19 +837,20 @@ fun AppAlertConfigRow(
 
     val initConfig = remember { spf.find(pkgName) ?: AppAlertConfig(pkgName = pkgName) }
 
-    Column(modifier = M.padding(vertical = 4.dp)) {
-        RowVCenterSpaced(10) {
+    AlertConfigControls(
+        initConfig = initConfig,
+        onSave = { spf.save(it) },
+        modifier = M.padding(vertical = 4.dp),
+        leadingContent = {
             AppIcon(pkgName)
             Text(
                 AppInfo.fromPackage(ctx, pkgName).label,
                 color = C.infoBlue,
-                modifier = M.weight(1f),
+                maxLines = 1,
+                modifier = M.widthIn(max = 90.dp),
             )
-        }
-        Column(modifier = M.padding(start = 30.dp, top = 4.dp)) {
-            AlertConfigControls(initConfig = initConfig, onSave = { spf.save(it) })
-        }
-    }
+        },
+    )
 }
 
 // Per-rule Alert config row: same controls as the per-app one, inlined directly (no
