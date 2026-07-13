@@ -1,0 +1,7 @@
+SpamBlocker Extended 6.1.1
+
+New:
+- Rule Testing now supports testing Notification-type rules, with translations for all locales.
+
+Fixes:
+- Fixed the Play Store/F-Droid listing icon still showing the original upstream icon instead of this fork's icon (a leftover asset outside the app's build path, not visible in the app itself).
