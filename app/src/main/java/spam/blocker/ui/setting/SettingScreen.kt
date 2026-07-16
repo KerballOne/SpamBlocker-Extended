@@ -213,6 +213,7 @@ fun SettingScreen() {
 
                 // Number Rules
                 var numberRulesCollapsed by remember { mutableStateOf(sectionSpf.isNumberRulesCollapsed) }
+                G.NumberRuleVM.reloadOptions(ctx)
                 LaunchedEffect(true) { G.NumberRuleVM.reloadDbAndOptions(ctx) }
                 Section(
                     title = Str(R.string.label_number_rules),
@@ -245,6 +246,7 @@ fun SettingScreen() {
 
                 // Text Rules
                 var textRulesCollapsed by remember { mutableStateOf(sectionSpf.isTextRulesCollapsed) }
+                G.ContentRuleVM.reloadOptions(ctx)
                 LaunchedEffect(true) { G.ContentRuleVM.reloadDbAndOptions(ctx) }
                 Section(
                     title = Str(R.string.label_content_rules),
@@ -288,6 +290,7 @@ fun SettingScreen() {
                 ) {
                     Column {
                         // QuickCopy
+                        G.QuickCopyRuleVM.reloadOptions(ctx)
                         LaunchedEffect(true) { G.QuickCopyRuleVM.reloadDbAndOptions(ctx) }
                         RegexHeader(G.QuickCopyRuleVM)
                         AnimatedVisibleV(!G.QuickCopyRuleVM.listCollapsed.value) {
