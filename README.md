@@ -62,7 +62,7 @@ It works without replacing your call/SMS app.
     - No SMS permission needed.
   - Cons
     - Only sees what's in the notification's title/body, not the full message.
-    - The original app's own notification still briefly appears before this app can dismiss it.
+    - The original app's own notification may still briefly appear before this app can dismiss it.
 
 # Features:
 
@@ -97,7 +97,7 @@ It works without replacing your call/SMS app.
 - Local AI support: no plan
 - RCS support: no plan
 - Android 9- support: no plan
-- Notification Screening only sees notification title/body text, not the full message content, and can't prevent the original app's own notification from briefly appearing before it's dismissed.
+- Notification Screening only sees notification title/body text, not the full message content, and may not always prevent the original app's own notification from briefly appearing before it's dismissed.
 
 # FAQ
  - [Security warning from Google Play when installing this app](https://github.com/aj3423/SpamBlocker/issues/108)
