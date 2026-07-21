@@ -374,8 +374,9 @@ fun EditChannelDialog(
                         ),
                         onResult = { uri ->
                             if (uri != null) {
-                                val scaled = scaleIcon(ctx, uri)
-                                    ?: return@popupRead
+                                val raw = readDataFromUri(ctx, uri) ?: return@popupRead
+
+                                val scaled = scaleIcon(raw) ?: return@popupRead
 
                                 icon = scaled
                             }
