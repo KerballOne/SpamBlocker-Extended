@@ -28,7 +28,7 @@ Table of Contents
 # What makes this different
 
 - **Notification Screening**: screens notifications from chosen apps, including RCS, Signal, WhatsApp, email, and any other messaging app, through the same Number/Text Rules used for real calls/SMS, and dismisses the notification if the rule says "Block."
-- **Alerts**: a lightweight sound/vibration/flashlight/screen-wake chime, distinct from a full notification, for when Notification Screening *allows* a message. This avoids a duplicate notification when the app's own notification is already visible. Configurable per-app (Actions > Alerts) or per-rule (overrides the app default).
+- **Alerts**: a lightweight sound/vibration/flashlight/screen-wake chime, distinct from a full notification, for when Notification Screening *allows* a message. This avoids a duplicate notification when the app's own notification is already visible. Configurable per-app (Actions > Alerts) or per-rule (overrides the app default), and can optionally repeat until acknowledged so you don't miss anything important.
 - **Settings redesign**: collapsible card sections (Basic Rules, Number Rules, Text Rules, Advanced Rules, Actions, Integrations, Miscellaneous), a 4th bottom-nav tab for notification-screening-sourced history, right-aligned status icons/counters on section headers, and a toggle-chip "Apply to" selector (Calls/SMS/MMS/Title/Body) instead of a checkbox dropdown.
 
 See the [Core Features](https://github.com/KerballOne/SpamBlocker-Extended/wiki/Core-Features) wiki page for the regex rule engine, Query API workflows, Push Alert, SMS Alert, SMS Bomb, Spam Database, and more.
@@ -89,8 +89,9 @@ It works without replacing your call/SMS app.
 | Instant Query                 | Check the incoming number online in real time, querying multiple API endpoints simultaneously, such as the [PhoneBlock](https://phoneblock.net/).                                              |
 | Report Spam                   | Automatically or manually report the number to build our crowd-sourced databases, protecting others and yourself.                                                                              |
 | Notification Screening        | Screens notifications from chosen apps against Number/Text Rules with "Apply to: Title/Body" enabled.                                                                                          |
-| Alerts                        | A lightweight sound/vibration/flashlight/screen-wake chime for allowed screened notifications, per-app or per-rule.                                                                             |
+| Alerts                        | A lightweight sound/vibration/flashlight/screen-wake chime for allowed screened notifications, per-app or per-rule. Can optionally repeat until acknowledged.                                   |
 | Regex<br>(regular expression) | Check the [Wiki](https://github.com/KerballOne/SpamBlocker-Extended/wiki/Regex-Workflow-Templates) for examples.                                                                                |
+| Import & Export               | Back up and restore all rules, settings, and the spam database in one file, optionally including call/SMS history logs. A single rule can also be exported/imported on its own as JSON, e.g. to share it with someone else. |
 
 # Limitations
 - Auto clear SMS: no plan
@@ -123,6 +124,7 @@ It works without replacing your call/SMS app.
 | WRITE_SETTINGS                       | For customizing call ringtone                                          |
 | READ_LOG                             | For reporting bugs with logcat messages                                |
 | SYSTEM_ALERT_WINDOW                  | For the caller ID floating window                                      |
+| SCHEDULE_EXACT_ALARM                 | For repeating important notifications                                  |
 | VIBRATE / WAKE_LOCK / CAMERA         | For Alerts (vibration, screen-wake, flashlight)                        |
 
 # Privacy

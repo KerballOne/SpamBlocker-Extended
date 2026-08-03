@@ -1,0 +1,13 @@
+<resources>
+    <string name="repeat">Повтор</string>
+    <string name="repeat_interval_min">Интервал повтора (мин)</string>
+    <string name="help_repeat">
+        <![CDATA[
+        Повторяется до тех пор, пока не будет подтверждено, чтобы вы никогда не пропустили важные уведомления. <br>
+        <br>
+        <warn>Примечание</warn> <br>
+        Это неоднократно пробуждает телефон и может привести к повышенному потреблению заряда батареи.
+        ]]>
+    </string>
+    <string name="schedule_alarm">Запланировать будильник</string>
+</resources>

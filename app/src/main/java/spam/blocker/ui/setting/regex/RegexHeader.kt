@@ -24,8 +24,10 @@ import spam.blocker.ui.widgets.MenuButton
 import spam.blocker.ui.widgets.PopupDialog
 import spam.blocker.ui.widgets.ResIcon
 import spam.blocker.ui.widgets.Str
+import spam.blocker.ui.widgets.ConfigImportDialog
 import spam.blocker.util.Lambda
 import spam.blocker.util.Lambda1
+import spam.blocker.util.PermissiveJson
 
 // Just the "New" menu button (with its dialogs/presets/csv-import logic), with no
 // label/tooltip/collapse row of its own. Meant to be placed in an outer Section's
@@ -65,6 +67,20 @@ fun RegexHeaderMenuButton(
         )
     }
 
+    val importTrigger = remember { mutableStateOf(false) }
+    if (importTrigger.value) {
+        ConfigImportDialog(
+            trigger = importTrigger,
+        ) { configJson ->
+            val newRule = PermissiveJson.decodeFromString<RegexRule>(configJson).copy(id = 0)
+
+            // 1. add to db
+            vm.table.addNewRule(ctx, newRule)
+            // 2. reload UI
+            vm.reloadDb(ctx)
+        }
+    }
+
     val shortClickItems = remember {
         val ret = mutableListOf(
             LabelItem(
@@ -73,6 +89,12 @@ fun RegexHeaderMenuButton(
             ) {
                 initRule = null
                 addRuleTrigger.value = true
+            },
+            LabelItem(
+                label = ctx.getString(R.string.import_),
+                leadingIcon = { GreyIcon(R.drawable.ic_import) }
+            ) {
+                importTrigger.value = true
             },
             DividerItem(),
         )

@@ -1,7 +1,9 @@
 package spam.blocker.util
 
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_DEFAULT
@@ -32,7 +34,9 @@ import spam.blocker.db.Notification.CHANNEL_MEDIUM
 import spam.blocker.db.Notification.CHANNEL_NONE
 import spam.blocker.db.Notification.Channel
 import spam.blocker.db.Notification.ChannelTable
+import spam.blocker.db.Notification.DefaultRepeatInterval
 import spam.blocker.service.CopyToClipboardReceiver
+import spam.blocker.service.NotificationRepeatReceiver
 import kotlin.random.Random
 
 
@@ -224,6 +228,7 @@ object Notification {
             channel.sound.toUri()
     }
 
+    @SuppressLint("ScheduleExactAlarm")
     fun show(
         ctx: Context,
         showType: ShowType,
@@ -326,6 +331,29 @@ object Notification {
             // remove the notification group, previous notifications will appear again.
             val id = group.hashCode()
             mgr.notify(id, groupBuilder.build())
+        }
+
+        // repeat notification sound
+        if (channel.repeat && !channel.mute && Permission.scheduleAlarm.isGranted) {
+            val intervalMin = channel.repeatInterval ?: DefaultRepeatInterval
+
+            val intent = Intent(ctx, NotificationRepeatReceiver::class.java).apply {
+                putExtra("notificationId", notificationId)
+                putExtra("soundUri", channel.sound)
+                putExtra("intervalMin", intervalMin)
+            }
+            val pendingIntent = PendingIntent.getBroadcast(
+                ctx,
+                notificationId,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            val alarmManager = ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() + intervalMin * 60 * 1000L,
+                pendingIntent
+            )
         }
     }
 }

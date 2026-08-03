@@ -87,6 +87,7 @@ import spam.blocker.ui.widgets.AllowBlockCountBadge
 import spam.blocker.ui.widgets.Section
 import spam.blocker.ui.widgets.Str
 import spam.blocker.util.Lambda
+import spam.blocker.util.Permission
 import spam.blocker.util.Util.isFreshInstall
 import spam.blocker.util.spf
 
@@ -128,6 +129,10 @@ fun SettingScreen() {
     DisposableEffect(view) {
         val listener = ViewTreeObserver.OnWindowFocusChangeListener { hasFocus ->
             if (hasFocus) {
+                // Permissions can be revoked from system Settings while this app is
+                // backgrounded (e.g. "Draw over other apps"); refresh cached grant
+                // state now so UI relying on Permission.*.isGranted isn't stale.
+                Permission.init(ctx)
                 checkConflicts()
             }
         }

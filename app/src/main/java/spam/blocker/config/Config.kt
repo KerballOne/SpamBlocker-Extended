@@ -13,7 +13,9 @@ import spam.blocker.G
 import spam.blocker.R
 import spam.blocker.db.Bot
 import spam.blocker.db.BotTable
+import spam.blocker.db.CallTable
 import spam.blocker.db.ContentRegexTable
+import spam.blocker.db.HistoryRecord
 import spam.blocker.db.Notification.Channel
 import spam.blocker.db.Notification.ChannelTable
 import spam.blocker.db.NumberRegexTable
@@ -24,6 +26,7 @@ import spam.blocker.db.QuickCopyRegexTable
 import spam.blocker.db.RegexRule
 import spam.blocker.db.RegexTable
 import spam.blocker.db.ReportApi
+import spam.blocker.db.SmsTable
 import spam.blocker.db.SpamNumber
 import spam.blocker.db.SpamTable
 import spam.blocker.util.BotJson
@@ -59,6 +62,7 @@ class Global : IConfig {
     var collapsed = false
     var callEnabled = false
     var smsEnabled = false
+    var notificationScreeningEnabled = false
 
     // misc
     var isTestingIconClicked = false
@@ -69,6 +73,7 @@ class Global : IConfig {
         collapsed = spf.isCollapsed
         callEnabled = spf.isCallEnabled
         smsEnabled = spf.isSmsEnabled
+        notificationScreeningEnabled = spf.isNotificationScreeningEnabled
 
         isTestingIconClicked = spf.isTestIconClicked
     }
@@ -79,9 +84,71 @@ class Global : IConfig {
             isCollapsed = collapsed
             isCallEnabled = callEnabled
             isSmsEnabled = smsEnabled
+            isNotificationScreeningEnabled = notificationScreeningEnabled
 
             isTestIconClicked = isTestingIconClicked
         }
+    }
+}
+
+@Serializable
+class AppNotifications : IConfig {
+    var appList = ""
+
+    override fun load(ctx: Context) {
+        appList = spf.AppNotifications(ctx).appList
+    }
+
+    override fun apply(ctx: Context) {
+        spf.AppNotifications(ctx).appList = appList
+    }
+}
+
+@Serializable
+class VoicemailNotification : IConfig {
+    var isEnabled = false
+    var isCollapsed = false
+    var appList = ""
+    var applyToTitle = false
+    var applyToBody = true
+    var includeNumberTextRules = true
+    var allowIfCallAllowed = true
+
+    override fun load(ctx: Context) {
+        val spf = spf.VoicemailNotification(ctx)
+        isEnabled = spf.isEnabled
+        isCollapsed = spf.isCollapsed
+        appList = spf.appList
+        applyToTitle = spf.applyToTitle
+        applyToBody = spf.applyToBody
+        includeNumberTextRules = spf.includeNumberTextRules
+        allowIfCallAllowed = spf.allowIfCallAllowed
+    }
+
+    override fun apply(ctx: Context) {
+        val me = this
+        spf.VoicemailNotification(ctx).apply {
+            isEnabled = me.isEnabled
+            isCollapsed = me.isCollapsed
+            appList = me.appList
+            applyToTitle = me.applyToTitle
+            applyToBody = me.applyToBody
+            includeNumberTextRules = me.includeNumberTextRules
+            allowIfCallAllowed = me.allowIfCallAllowed
+        }
+    }
+}
+
+@Serializable
+class AllowedAlerts : IConfig {
+    var configListJson = "[]"
+
+    override fun load(ctx: Context) {
+        configListJson = spf.AllowedNotificationAlerts(ctx).configListJson
+    }
+
+    override fun apply(ctx: Context) {
+        spf.AllowedNotificationAlerts(ctx).configListJson = configListJson
     }
 }
 
@@ -764,6 +831,26 @@ class SpamNumbers : IConfig {
 }
 
 @Serializable
+class HistoryLogs : IConfig {
+    val calls = mutableListOf<HistoryRecord>()
+    val texts = mutableListOf<HistoryRecord>()
+
+    override fun load(ctx: Context) {
+        calls.clear()
+        calls.addAll(CallTable().listRecords(ctx))
+        texts.clear()
+        texts.addAll(SmsTable().listRecords(ctx))
+    }
+
+    override fun apply(ctx: Context) {
+        CallTable().clearAll(ctx)
+        CallTable().addAll(ctx, calls)
+        SmsTable().clearAll(ctx)
+        SmsTable().addAll(ctx, texts)
+    }
+}
+
+@Serializable
 class OAuth : IConfig {
     var phoneBlockToken = ""
     override fun load(ctx: Context) {
@@ -799,13 +886,17 @@ enum class Category(val labelId: Int) {
     WORKFLOWS(R.string.workflows),
     LANGUAGE(R.string.language),
     THEME(R.string.theme),
-    SPAM_NUMBERS(R.string.database)
+    SPAM_NUMBERS(R.string.database),
+    HISTORY_LOGS(R.string.history_logs)
 }
 
 @Serializable
 data class CategorySelection(
     val all: Set<Category> = Category.entries
-        .filter { it != Category.SPAM_NUMBERS }
+        .filter {
+            // exclude db numbers and call/sms history records
+            it != Category.SPAM_NUMBERS && it != Category.HISTORY_LOGS
+        }
         .toSet()
 ) {
     fun isSelected(category: Category): Boolean = category in all
@@ -849,6 +940,9 @@ class Configs {
     var categories : CategorySelection? = null
 
     var global : Global? = null
+    var appNotifications : AppNotifications? = null
+    var voicemailNotification : VoicemailNotification? = null
+    var allowedAlerts : AllowedAlerts? = null
     var historyOptions : HistoryOptions? = null
     var regexOptions : RegexOptions? = null
     var botOptions : BotOptions? = null
@@ -882,6 +976,8 @@ class Configs {
 
     var spamNumbers : SpamNumbers? = null
 
+    var historyLogs : HistoryLogs? = null
+
     var oauth : OAuth? = null
 
     var permissions : Permissions? = null
@@ -892,6 +988,9 @@ class Configs {
 
         if (categories.isSelected(Category.OTHERS)) {
             global = Global().also { it.load(ctx) }
+            appNotifications = AppNotifications().also { it.load(ctx) }
+            voicemailNotification = VoicemailNotification().also { it.load(ctx) }
+            allowedAlerts = AllowedAlerts().also { it.load(ctx) }
             historyOptions = HistoryOptions().also { it.load(ctx) }
             contacts = Contact().also { it.load(ctx) }
             stir = STIR().also { it.load(ctx) }
@@ -935,12 +1034,18 @@ class Configs {
         if (categories.isSelected(Category.SPAM_NUMBERS)) {
             spamNumbers = SpamNumbers().also { it.load(ctx) }
         }
+        if (categories.isSelected(Category.HISTORY_LOGS)) {
+            historyLogs = HistoryLogs().also { it.load(ctx) }
+        }
     }
 
     // This object has been full filled, apply the values to SharedPref/Database
     fun apply(ctx: Context, categories: CategorySelection) {
         if (categories.isSelected(Category.OTHERS)) {
             global?.apply(ctx)
+            appNotifications?.apply(ctx)
+            voicemailNotification?.apply(ctx)
+            allowedAlerts?.apply(ctx)
             historyOptions?.apply(ctx)
             contacts?.apply(ctx)
             stir?.apply(ctx)
@@ -984,6 +1089,9 @@ class Configs {
         }
         if (categories.isSelected(Category.SPAM_NUMBERS)) {
             spamNumbers?.apply(ctx)
+        }
+        if (categories.isSelected(Category.HISTORY_LOGS)) {
+            historyLogs?.apply(ctx)
         }
     }
 

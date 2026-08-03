@@ -3,11 +3,17 @@ package spam.blocker.db
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
+import android.os.Build
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
+import androidx.core.database.sqlite.transaction
+import kotlinx.serialization.Serializable
 import spam.blocker.def.Def
+import spam.blocker.def.Def.ANDROID_14
 import spam.blocker.util.Now
+import spam.blocker.util.loge
 
+@Serializable
 data class HistoryRecord(
     val id: Long = 0,
 
@@ -115,6 +121,69 @@ abstract class HistoryTable {
     fun listRecentRecords(ctx: Context, sinceMillis: Long): List<HistoryRecord> {
         val additional = " WHERE ${Db.COLUMN_TIME} >= ? ORDER BY time DESC"
         return _listRecordsByFilter(ctx, additional, arrayOf(sinceMillis.toString()))
+    }
+
+    fun addAll(
+        ctx: Context,
+        records: List<HistoryRecord>,
+    ): String? {
+        val db = Db.getInstance(ctx).writableDatabase
+
+        // Tested with 200k numbers in debug mode.
+        // - Batch insertion: 3 seconds
+        // - Single insertion: 9 seconds
+        db.transaction() {
+            return try {
+                val batchSize = if(Build.VERSION.SDK_INT >= ANDROID_14)
+                    1000
+                else
+                    200 // 250+ on android 10/11 would cause "Too many SQL variables"
+
+                records.chunked(batchSize).forEach { batch ->
+                    // Build placeholders: (?, ?, ?, ?) repeated for batch size
+                    val placeholders = (1..batch.size).joinToString(", ") { "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" }
+                    val stmt = compileStatement(
+                        """
+                            INSERT OR REPLACE INTO ${tableName()}
+                            (${Db.COLUMN_PEER}, ${Db.COLUMN_CNAP}, ${Db.COLUMN_TIME}, ${Db.COLUMN_RESULT},
+                            ${Db.COLUMN_REASON}, ${Db.COLUMN_SIM_SLOT}, ${Db.COLUMN_READ}, ${Db.COLUMN_IS_TEST},
+                            ${Db.COLUMN_EXTRA_INFO}, ${Db.COLUMN_EXPANDED}, ${Db.COLUMN_FULL_SCREENING_LOG}, ${Db.COLUMN_AUTO_REPORTING_LOG},
+                            ${Db.COLUMN_ANYTHING_WRONG_SCREENING}, ${Db.COLUMN_ANYTHING_WRONG_REPORTING}, ${Db.COLUMN_SOURCE})
+                            VALUES $placeholders
+                        """.trimIndent()
+                    )
+
+                    // Bind all params in sequence (15 per row)
+                    batch.forEachIndexed { index, rec ->
+                        val base = index * 15 + 1 // 1-based indexing
+                        stmt.bindString(base, rec.peer)
+                        rec.cnap?.let { stmt.bindString(base + 1, it) } ?: stmt.bindNull(base + 1)
+                        stmt.bindLong(base + 2, rec.time)
+                        stmt.bindLong(base + 3, rec.result.toLong())
+                        stmt.bindString(base + 4, rec.reason)
+                        rec.simSlot?.let { stmt.bindLong(base + 5, it.toLong()) } ?: stmt.bindNull(base + 5)
+                        stmt.bindLong(base + 6, if (rec.read) 1 else 0)
+                        stmt.bindLong(base + 7, if (rec.isTest) 1 else 0)
+                        rec.extraInfo?.let { stmt.bindString(base + 8, it) } ?: stmt.bindNull(base + 8)
+                        stmt.bindLong(base + 9, if (rec.expanded) 1 else 0)
+                        rec.fullScreeningLog?.let { stmt.bindString(base + 10, it) } ?: stmt.bindNull(base + 10)
+                        rec.autoReportingLog?.let { stmt.bindString(base + 11, it) } ?: stmt.bindNull(base + 11)
+                        stmt.bindLong(base + 12, if (rec.anythingWrongScreening) 1 else 0)
+                        stmt.bindLong(base + 13, if (rec.anythingWrongReporting) 1 else 0)
+                        stmt.bindLong(base + 14, rec.source.toLong())
+                    }
+
+                    stmt.execute() // No return value for multi-row
+                    stmt.close()
+                }
+                db.setTransactionSuccessful()
+
+                null
+            } catch (e: Exception) {
+                loge(e.toString())
+                e.toString()
+            }
+        }
     }
 
     fun addNewRecord(ctx: Context, r: HistoryRecord): Long {

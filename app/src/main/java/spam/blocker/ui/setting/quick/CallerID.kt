@@ -174,7 +174,14 @@ fun CallerID() {
     val ctx = LocalContext.current
     val spf = spf.CallerID(ctx)
 
-    var isEnabled by remember { mutableStateOf(spf.isEnabled && Permission.phoneState.isGranted && Permission.showOverlay.isGranted) }
+    // Re-derives on every recomposition, e.g. when Permission.showOverlay.isGranted
+    // flips after the user revokes it in system Settings and returns to the app.
+    val hasRequiredPermissions = Permission.phoneState.isGranted && Permission.showOverlay.isGranted
+    var isEnabled by remember { mutableStateOf(spf.isEnabled && hasRequiredPermissions) }
+    if (isEnabled && !hasRequiredPermissions) {
+        isEnabled = false
+        spf.isEnabled = false
+    }
 
     LabeledRow(
         R.string.caller_id,

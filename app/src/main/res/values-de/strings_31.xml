@@ -1,0 +1,13 @@
+<resources>
+    <string name="repeat">Wiederholen</string>
+    <string name="repeat_interval_min">Wiederholungsintervall (Min)</string>
+    <string name="help_repeat">
+        <![CDATA[
+        Wiederholt sich, bis die Benachrichtigung bestätigt wurde, damit Sie keine wichtigen Benachrichtigungen verpassen. <br>
+        <br>
+        <warn>Hinweis</warn> <br>
+        Dies weckt das Telefon wiederholt auf und kann zu einem höheren Batterieverbrauch führen.
+        ]]>
+    </string>
+    <string name="schedule_alarm">Alarm einplanen</string>
+</resources>

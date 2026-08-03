@@ -41,6 +41,7 @@ import spam.blocker.R
 import spam.blocker.db.ContentRegexTable
 import spam.blocker.db.Notification.Channel
 import spam.blocker.db.Notification.ChannelTable
+import spam.blocker.db.Notification.DefaultRepeatInterval
 import spam.blocker.db.NumberRegexTable
 import spam.blocker.ui.M
 import spam.blocker.ui.setting.LabeledRow
@@ -58,6 +59,7 @@ import spam.blocker.ui.widgets.HtmlText
 import spam.blocker.ui.widgets.InitFile
 import spam.blocker.ui.widgets.LabelItem
 import spam.blocker.ui.widgets.MIME_ICON
+import spam.blocker.ui.widgets.NumberInputBox
 import spam.blocker.ui.widgets.PopupDialog
 import spam.blocker.ui.widgets.ResIcon
 import spam.blocker.ui.widgets.RingtonePicker
@@ -77,6 +79,8 @@ import spam.blocker.util.Notification.isBuiltInChannel
 import spam.blocker.util.Notification.manager
 import spam.blocker.util.Notification.openChannelSettings
 import spam.blocker.util.Notification.reloadChannels
+import spam.blocker.util.Permission
+import spam.blocker.util.PermissionWrapper
 import spam.blocker.util.RingtoneUtil
 import spam.blocker.util.Util.scaleIcon
 import spam.blocker.util.spf
@@ -145,7 +149,8 @@ fun EditChannelDialog(
     var iconColor by remember { mutableStateOf<Int?>(initChannel.iconColor) }
     var led by remember { mutableStateOf(initChannel.led) }
     var ledColor by remember { mutableIntStateOf(initChannel.ledColor) }
-
+    var repeat by remember { mutableStateOf(initChannel.repeat && Permission.scheduleAlarm.isGranted) }
+    var repeatInterval by remember { mutableStateOf(initChannel.repeatInterval) }
 
     val isCreatingNewChannel by remember { mutableStateOf(initChannel.channelId == "") }
     val isBuiltin by remember(chId) { mutableStateOf(isBuiltInChannel(chId)) }
@@ -216,6 +221,8 @@ fun EditChannelDialog(
                         iconColor = iconColor,
                         led = led,
                         ledColor = ledColor,
+                        repeat = repeat,
+                        repeatInterval = repeatInterval,
                     )
                     // 1. create notification channel
                     createChannel(ctx, newCh)
@@ -320,7 +327,7 @@ fun EditChannelDialog(
                 }
             }
 
-            // Mute + Sound
+            // Mute + Sound + Repeat
             AnimatedVisibleV(importance >= IMPORTANCE_DEFAULT) {
                 Column {
                     // Mute + Sound
@@ -361,6 +368,43 @@ fun EditChannelDialog(
                                         openChannelSettings(ctx, chId)
                                     })
                                 }
+                            }
+                        }
+                    }
+
+                    // Repeat
+                    AnimatedVisibleV(!mute) {
+                        Column {
+                            // Repeat
+                            LabeledRow(
+                                R.string.repeat,
+                                helpTooltip = Str(R.string.help_repeat),
+                            ) {
+                                SwitchBox(repeat) { isTurningOn ->
+                                    if (isTurningOn) {
+                                        G.permissionChain.ask(ctx, listOf(
+                                            PermissionWrapper(Permission.scheduleAlarm)
+                                        )) { granted ->
+                                            if (granted) {
+                                                repeat = true
+                                            }
+                                        }
+                                    } else {
+                                        repeat = false
+                                    }
+                                }
+                            }
+                            // Repeat Interval
+                            AnimatedVisibleV(repeat) {
+                                NumberInputBox(
+                                    intValue = repeatInterval ?: DefaultRepeatInterval,
+                                    labelId = R.string.repeat_interval_min,
+                                    onValueChange = { newVal, hasError ->
+                                        if (!hasError) {
+                                            repeatInterval = newVal!!
+                                        }
+                                    }
+                                )
                             }
                         }
                     }

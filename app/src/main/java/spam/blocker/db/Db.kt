@@ -31,7 +31,7 @@ class Db private constructor(
 ) : SQLiteOpenHelper(ctx, DB_NAME, null, DB_VERSION) {
 
     companion object {
-        const val DB_VERSION = 52
+        const val DB_VERSION = 53
         const val DB_NAME = "spam_blocker.db"
 
         // ---- regex rule table ----
@@ -70,6 +70,8 @@ class Db private constructor(
         const val COLUMN_SOUND = "sound"
         const val COLUMN_LED = "led"
         const val COLUMN_LED_COLOR = "led_color"
+        const val COLUMN_REPEAT = "repeat"
+        const val COLUMN_REPEAT_INTERVAL = "repeat_interval"
 
         // ---- spam table ----
         const val TABLE_SPAM = "spam"
@@ -170,6 +172,8 @@ class Db private constructor(
                     "$COLUMN_ICON_COLOR INTEGER, " +
                     "$COLUMN_LED INTEGER, " +
                     "$COLUMN_LED_COLOR INTEGER, " +
+                    "$COLUMN_REPEAT INTEGER, " +
+                    "$COLUMN_REPEAT_INTERVAL INTEGER, " +
                     "$COLUMN_GROUP TEXT " +
                     ")"
         )
@@ -601,6 +605,12 @@ class Db private constructor(
             addColumnIfNotExist(db, TABLE_NUMBER_RULE, COLUMN_ALERT_CONFIG, "TEXT")
             addColumnIfNotExist(db, TABLE_CONTENT_RULE, COLUMN_ALERT_CONFIG, "TEXT")
             addColumnIfNotExist(db, TABLE_QUICK_COPY_RULE, COLUMN_ALERT_CONFIG, "TEXT")
+        }
+
+        // v5.14 added Notification.repeat
+        if ((newVersion >= 53) && (oldVersion < 53)) {
+            addColumnIfNotExist(db, TABLE_NOTIFICATION_CHANNEL, COLUMN_REPEAT, "INTEGER")
+            addColumnIfNotExist(db, TABLE_NOTIFICATION_CHANNEL, COLUMN_REPEAT_INTERVAL, "INTEGER")
         }
     }
 }

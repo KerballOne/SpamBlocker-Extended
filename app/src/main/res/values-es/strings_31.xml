@@ -1,0 +1,13 @@
+<resources>
+    <string name="repeat">Repetir</string>
+    <string name="repeat_interval_min">Intervalo de repetición (min)</string>
+    <string name="help_repeat">
+        <![CDATA[
+        Se repite hasta que se reconoce para que nunca te pierdas notificaciones importantes. <br>
+        <br>
+        <warn>Nota</warn> <br>
+        Despierta el teléfono repetidamente y puede causar un mayor consumo de batería.
+        ]]>
+    </string>
+    <string name="schedule_alarm">Programar alarma</string>
+</resources>
