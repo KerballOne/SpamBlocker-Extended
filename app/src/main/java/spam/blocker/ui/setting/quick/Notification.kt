@@ -1,5 +1,6 @@
 package spam.blocker.ui.setting.quick
 
+import android.annotation.SuppressLint
 import android.app.NotificationManager.IMPORTANCE_DEFAULT
 import android.app.NotificationManager.IMPORTANCE_HIGH
 import android.app.NotificationManager.IMPORTANCE_LOW
@@ -77,6 +78,7 @@ import spam.blocker.util.Notification.manager
 import spam.blocker.util.Notification.openChannelSettings
 import spam.blocker.util.Notification.reloadChannels
 import spam.blocker.util.RingtoneUtil
+import spam.blocker.util.Util.scaleIcon
 import spam.blocker.util.spf
 import spam.blocker.util.spf.AppAlertConfig
 import androidx.compose.material3.Text
@@ -121,6 +123,7 @@ fun ChannelIcons(
     }
 }
 
+@SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun EditChannelDialog(
     editTrigger: MutableState<Boolean>,
@@ -371,10 +374,10 @@ fun EditChannelDialog(
                         ),
                         onResult = { uri ->
                             if (uri != null) {
-                                val raw = readDataFromUri(ctx, uri)
+                                val scaled = scaleIcon(ctx, uri)
                                     ?: return@popupRead
 
-                                icon = raw
+                                icon = scaled
                             }
                         }
                     )
