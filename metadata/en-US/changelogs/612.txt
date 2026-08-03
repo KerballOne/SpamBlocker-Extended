@@ -1,0 +1,12 @@
+SpamBlocker Extended 6.1.2
+
+New:
+- Alerts can now optionally repeat until acknowledged, so important notifications aren't missed.
+- Regex rules can be exported/imported individually as JSON, e.g. to share a rule with someone else.
+- Backup/Restore can optionally include call/SMS history logs.
+- Backup/Restore now also captures Notification Screening's on/off state and app list, Voicemail Notification settings, and app-level Alert configs, which were previously missing from backups.
+- Added an "Ignore" option for the priority-conflict warning, and old-device-friendly regex section folding.
+
+Fixes:
+- Fixed a crash when opening the Caller ID preview after revoking the "draw over other apps" permission while Caller ID was enabled.
+- Caller ID now correctly re-checks required permissions when the app regains focus, instead of relying on stale state.
