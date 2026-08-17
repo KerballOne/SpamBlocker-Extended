@@ -1541,11 +1541,11 @@ class Checker { // for namespace only
                     return true
                 }
 
-                val tempRule = rule.apply {
-                    pattern = rule.patternExtra
+                val tempRule = rule.copy(
+                    pattern = rule.patternExtra,
                     patternFlags = rule.patternExtraFlags
-                }
-                return when(rule.patternExtraModeType) {
+                )
+                return when(tempRule.patternExtraModeType) {
                     ModeType.PhoneNumber -> Number(ctx, tempRule).doCheck(rawNumber)
                     ModeType.ContactName -> RegexContact(ctx, tempRule).doCheck(rawNumber)
                     ModeType.ContactGroup -> ContactGroup(ctx, tempRule).doCheck(rawNumber)
