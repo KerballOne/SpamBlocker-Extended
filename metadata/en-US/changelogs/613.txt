@@ -1,0 +1,7 @@
+SpamBlocker Extended 6.1.3
+
+Fixes (cherry-picked from upstream):
+- Fixed a bug where multiple SMS notifications arriving in quick succession could collide and only the last one would show.
+- Fixed a bug where checking a rule's "For number" condition could corrupt the rule's own content pattern in memory, causing inconsistent matching on subsequent messages.
+- Bot/workflow Formula result strategy no longer requires both positive and negative signature patterns to be configured, and no longer crashes on a malformed signature regex.
+- Fixed dialogs with text fields being obscured by the on-screen keyboard, with no way to scroll to the rest of the content.
