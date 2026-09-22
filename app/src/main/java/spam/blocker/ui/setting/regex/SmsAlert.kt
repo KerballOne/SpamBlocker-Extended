@@ -91,7 +91,7 @@ fun SmsAlert() {
 
     LabeledRow(
         labelId = R.string.sms_alert,
-        isCollapsed = collapsed,
+        isCollapsed = if (!isEnabled) null else collapsed,
         toggleCollapse = {
             collapsed = !collapsed
             spf.isCollapsed = collapsed
