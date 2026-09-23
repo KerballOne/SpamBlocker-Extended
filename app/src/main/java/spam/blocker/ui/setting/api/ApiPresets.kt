@@ -221,7 +221,7 @@ val ApiReportPresets by lazy {
                 addApiToDB(ctx, G.apiReportVM, newApi)
 
                 // Add a regex rule
-                ContentRegexTable().addNew(ctx, RegexRule(
+                ContentRegexTable().addNewRule(ctx, RegexRule(
                     pattern = ".*",
                     patternExtra = "7726",
                     description = ctx.getString(R.string.allow_7726),
