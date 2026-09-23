@@ -1,5 +1,6 @@
 package spam.blocker.ui.history
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
 import androidx.compose.foundation.layout.Arrangement
@@ -27,15 +28,19 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import spam.blocker.G
 import spam.blocker.R
+import spam.blocker.db.CallTable
+import spam.blocker.db.SmsTable
 import spam.blocker.def.Def
 import spam.blocker.service.bot.ActionContext
 import spam.blocker.service.bot.executeAll
 import spam.blocker.service.reporting.listReportableCallAPIs
 import spam.blocker.service.reporting.listReportableSmsAPIs
+import spam.blocker.service.reporting.updateRecordReportLog
 import spam.blocker.ui.M
 import spam.blocker.ui.widgets.FlowRowSpaced
 import spam.blocker.ui.widgets.GreyIcon16
@@ -45,7 +50,10 @@ import spam.blocker.ui.widgets.Str
 import spam.blocker.ui.widgets.StrInputBox
 import spam.blocker.ui.widgets.StrokeButton
 import spam.blocker.util.JetpackTextLogger
-import spam.blocker.util.logi
+import spam.blocker.util.MultiLogger
+import spam.blocker.util.SaveableLogger
+import spam.blocker.util.TimeUtils.formatTime
+import spam.blocker.util.getSaveableOutput
 
 
 const val tagCategory = "{category}"
@@ -54,9 +62,9 @@ const val tagComment = "{comment}"
 const val tagValid = "{valid}"
 const val tagOther = "{other}"
 const val tagFraud = "{fraud}"
-const val tagMarketing = "{marketing}"
+const val tagPromotional = "{promotional}"
 const val tagSurvey = "{survey}"
-const val tagPolitical = "{political}"
+const val tagReminder = "{reminder}"
 
 fun spamCategoryNamesMap(ctx: Context, forType: Int): Map<String, String> {
     return mapOf(
@@ -66,19 +74,21 @@ fun spamCategoryNamesMap(ctx: Context, forType: Int): Map<String, String> {
         }),
 
         tagFraud to ctx.getString(R.string.fraud),
-        tagMarketing to ctx.getString(R.string.marketing),
+        tagPromotional to ctx.getString(R.string.promotional),
         tagSurvey to ctx.getString(R.string.survey),
-        tagPolitical to ctx.getString(R.string.political),
+        tagReminder to ctx.getString(R.string.reminder),
 
         tagOther to ctx.getString(R.string.others), // the last one
     )
 }
 
+@SuppressLint("LocalContextGetResourceValueCall")
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ReportSpamDialog(
     trigger: MutableState<Boolean>,
     forType: Int,
+    recordId: Long,
     rawNumber: String,
     smsContent: String? = null
 ) {
@@ -119,25 +129,43 @@ fun ReportSpamDialog(
                     reportResult.value = buildAnnotatedString {  } // clear prev result
 
                     val apis = when (forType) {
-                        Def.ForNumber -> listReportableCallAPIs(ctx = ctx, rawNumber = rawNumber, domainFilter = null, isManualReport = true, blockReason = null)
-                        else -> listReportableSmsAPIs(ctx = ctx, isManualReport = true, blockReason = null)
+                        Def.ForNumber -> listReportableCallAPIs(ctx = ctx, rawNumber = rawNumber, domainFilter = null, isManualReport = true, checkResult = null)
+                        else -> listReportableSmsAPIs(ctx = ctx, isManualReport = true, checkResult = null)
                     }
-                    apis.forEach { api ->
-                        scope.launch {
-                            withContext(IO) {
-                                val aCtx = ActionContext(
-                                    scope = scope,
-                                    logger = JetpackTextLogger(reportResult),
-                                    rawNumber = rawNumber,
-                                    smsContent = smsContent,
-                                    tagCategoryValue = keyTag,
-                                    tagCommentValue = comment
-                                )
 
-                                val success = api.actions.executeAll(ctx, aCtx)
-                                logi("report to ${api.summary()}, success: $success")
-                            }
+                    val multiLogger = MultiLogger(listOf(
+                        JetpackTextLogger(reportResult),
+                        SaveableLogger()
+                    ))
+                    multiLogger.info(ctx.getString(R.string.manual_report))
+                    multiLogger.debug("${ctx.getString(R.string.executed_at)} ${formatTime(ctx, System.currentTimeMillis())}\n")
+
+                    val deferredResults = apis.map { api ->
+                        scope.async {
+                            val aCtx = ActionContext(
+                                scope = scope,
+                                logger = multiLogger,
+                                rawNumber = rawNumber,
+                                smsContent = smsContent,
+                                tagCategoryValue = keyTag,
+                                tagCommentValue = comment
+                            )
+
+                            val success = api.actions.executeAll(ctx, aCtx)
+                            success
                         }
+                    }
+                    scope.launch {
+                        val anythingWrong = deferredResults.awaitAll()
+                            .contains(false)
+                        val log = multiLogger.getSaveableOutput()?.serialize() ?: ""
+
+                        updateRecordReportLog(
+                            ctx,
+                            table = if (forType == Def.ForNumber) CallTable() else SmsTable(),
+                            vm = if(forType == Def.ForNumber) G.callVM else G.smsVM,
+                            recordId = recordId, log = log, anythingWrong = anythingWrong
+                        )
                     }
                 }
             }

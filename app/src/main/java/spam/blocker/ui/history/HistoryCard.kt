@@ -214,7 +214,7 @@ fun HistoryCard(
                             }
                         }
 
-                        // Auto Report Log
+                        // Auto/Manual Report Log
                         if (record.autoReportingLog != null) {
                             if (record.expanded) {
                                 val trigger = remember { mutableStateOf(false) }
@@ -240,7 +240,7 @@ fun HistoryCard(
                                 }
                                 Button(
                                     borderWidth = 0.5.dp,
-                                    borderColor = if (record.anythingWrongReporting) C.warning else C.textGrey,
+                                    borderColor = if (record.anythingWrongReporting) C.warning else C.success,
                                     shape = RoundedCornerShape(BUTTON_CORNER_RADIUS.dp),
                                     onClick = {
                                         trigger.value = true
@@ -248,14 +248,14 @@ fun HistoryCard(
                                     content = {
                                         ResIcon20(
                                             iconId = R.drawable.ic_upload_to_cloud,
-                                            color = if (record.anythingWrongReporting) C.warning else C.textGrey,
+                                            color = if (record.anythingWrongReporting) C.warning else C.success,
                                         )
                                     }
                                 )
                             } else {
                                 ResIcon20(
                                     iconId = R.drawable.ic_upload_to_cloud,
-                                    color = if (record.anythingWrongReporting) C.warning else C.textGrey,
+                                    color = if (record.anythingWrongReporting) C.warning else C.success,
                                 )
                             }
                         }

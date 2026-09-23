@@ -17,8 +17,8 @@ import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import spam.blocker.service.checker.CheckContext
 import spam.blocker.service.checker.ICheckResult
-import spam.blocker.util.BotJson
 import spam.blocker.util.ILogger
+import spam.blocker.util.MyJson
 import spam.blocker.util.PermissionWrapper
 
 // When adding a new IAction type, follow all the steps:
@@ -151,8 +151,6 @@ data class ActionContext(
     // for trigger `AfterCallScreening`
     var checkResult: ICheckResult? = null,
 
-    // Anything went wrong during executing actions, e.g. auto reporting failed due to network issue
-    var anythingWrong: Boolean = false,
 )
 
 interface IAction {
@@ -195,13 +193,13 @@ interface ITriggerAction : IAction {
 
 // Serialize self to json string
 fun ITriggerAction.serialize(): String {
-    return BotJson.encodeToString(PolymorphicSerializer(ITriggerAction::class), this)
+    return MyJson.encodeToString(PolymorphicSerializer(ITriggerAction::class), this)
 }
 
 // Generate a *concrete* ITriggerAction from json string.
 fun String.parseTrigger(): ITriggerAction {
 //    return try {
-    return BotJson.decodeFromString(PolymorphicSerializer(ITriggerAction::class), this)
+    return MyJson.decodeFromString(PolymorphicSerializer(ITriggerAction::class), this)
 //    } catch(_: Exception) {
 //        Manual()
 //    }
@@ -242,15 +240,15 @@ fun IAction.clone(): IAction {
 }
 
 fun IAction.serialize(): String {
-    return BotJson.encodeToString(PolymorphicSerializer(IAction::class), this)
+    return MyJson.encodeToString(PolymorphicSerializer(IAction::class), this)
 }
 
 fun String.parseAction(): IAction {
-    return BotJson.decodeFromString(PolymorphicSerializer(IAction::class), this)
+    return MyJson.decodeFromString(PolymorphicSerializer(IAction::class), this)
 }
 
 fun List<IAction>.serialize(): String {
-    return BotJson.encodeToString(ListSerializer(PolymorphicSerializer(IAction::class)), this)
+    return MyJson.encodeToString(ListSerializer(PolymorphicSerializer(IAction::class)), this)
 }
 
 fun List<IAction>.requiredPermissions(ctx: Context): List<PermissionWrapper> {
@@ -264,7 +262,7 @@ fun String.parseActions(): List<IAction> {
         return listOf()
 
     return try {
-        BotJson.decodeFromString(ListSerializer(PolymorphicSerializer(IAction::class)), this)
+        MyJson.decodeFromString(ListSerializer(PolymorphicSerializer(IAction::class)), this)
     } catch (_: Exception) {
         listOf()
     }

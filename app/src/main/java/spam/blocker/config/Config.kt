@@ -29,7 +29,7 @@ import spam.blocker.db.ReportApi
 import spam.blocker.db.SmsTable
 import spam.blocker.db.SpamNumber
 import spam.blocker.db.SpamTable
-import spam.blocker.util.BotJson
+import spam.blocker.util.MyJson
 import spam.blocker.util.Notification.createChannel
 import spam.blocker.util.Notification.deleteAllChannels
 import spam.blocker.util.Permission
@@ -44,7 +44,7 @@ import java.util.zip.GZIPOutputStream
 // ConfigJson is based on BotJson because backup files contain polymorphic bot/action/API objects,
 //   they require custom serializing modules that already registered in BotJson.
 @OptIn(ExperimentalSerializationApi::class)
-private val ConfigJson = Json(BotJson) {
+private val ConfigJson = Json(MyJson) {
     explicitNulls = false
 }
 
@@ -167,6 +167,7 @@ class HistoryOptions : IConfig {
     var initialSmsRowCount = 1
     var showTimeColor = false
     var timeColors = ""
+    var searchOnlineUrl = ""
 
     override fun load(ctx: Context) {
         val spf = spf.HistoryOptions(ctx)
@@ -183,6 +184,7 @@ class HistoryOptions : IConfig {
         initialSmsRowCount = spf.initialSmsRowCount
         showTimeColor = spf.showTimeColor
         timeColors = spf.timeColors
+        searchOnlineUrl = spf.searchOnlineUrl
     }
 
     override fun apply(ctx: Context) {
@@ -201,6 +203,7 @@ class HistoryOptions : IConfig {
             initialSmsRowCount = me.initialSmsRowCount
             showTimeColor = me.showTimeColor
             timeColors = me.timeColors
+            searchOnlineUrl = me.searchOnlineUrl
         }
     }
 }
@@ -887,7 +890,8 @@ enum class Category(val labelId: Int) {
     LANGUAGE(R.string.language),
     THEME(R.string.theme),
     SPAM_NUMBERS(R.string.database),
-    HISTORY_LOGS(R.string.history_logs)
+    HISTORY_LOGS(R.string.history_logs),
+    API_TOKENS(R.string.api_tokens)
 }
 
 @Serializable
@@ -926,9 +930,6 @@ data class CategorySelection(
     fun allSelected(): List<Category> = all.toList()
 
     fun allUnselected(): List<Category> = Category.entries.filter { it !in all }
-}
-val defaultCategorySelection by lazy {
-    CategorySelection()
 }
 val emptyCategorySelection by lazy {
     CategorySelection(emptySet())
@@ -1005,8 +1006,10 @@ class Configs {
             blockType = BlockType().also { it.load(ctx) }
             notification = Notification().also { it.load(ctx) }
             callerID = CallerID().also { it.load(ctx) }
-            oauth = OAuth().also { it.load(ctx) }
             permissions = Permissions().also { it.load(ctx) }
+        }
+        if (categories.isSelected(Category.API_TOKENS)) {
+            oauth = OAuth().also { it.load(ctx) }
         }
         if (categories.isSelected(Category.REGEX_RULES)) {
             regexOptions = RegexOptions().also { it.load(ctx) }
@@ -1039,7 +1042,7 @@ class Configs {
         }
     }
 
-    // This object has been full filled, apply the values to SharedPref/Database
+    // This object has been fulfilled, apply the values to SharedPref/Database
     fun apply(ctx: Context, categories: CategorySelection) {
         if (categories.isSelected(Category.OTHERS)) {
             global?.apply(ctx)
@@ -1060,8 +1063,10 @@ class Configs {
             blockType?.apply(ctx)
             notification?.apply(ctx)
             callerID?.apply(ctx)
-            oauth?.apply(ctx)
             permissions?.apply(ctx)
+        }
+        if (categories.isSelected(Category.API_TOKENS)) {
+            oauth?.apply(ctx)
         }
         if (categories.isSelected(Category.REGEX_RULES)) {
             regexOptions?.apply(ctx)

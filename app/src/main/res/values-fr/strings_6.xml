@@ -25,7 +25,6 @@
         ]]>
     </string>
     <string name="expiry">Expiration</string>
-    <string name="days">Jours</string>
     <string name="help_log_sms_content">
         <![CDATA[
         Lorsque cette option est activée, le contenu des SMS sera également enregistré dans la base de données et affiché dans cette liste, il ne sera pas enregistré dans la base de données lorsqu\'elle est désactivée.
@@ -94,4 +93,5 @@
     <string name="add_to_regex_rule">Ajouter à règle regex</string>
     <string name="edit_regex_rule">Modifier règle regex</string>
     <string name="add_to_db">Ajouter à la base</string>
+    <string name="days">Jours</string>
 </resources>

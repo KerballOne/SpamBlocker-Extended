@@ -25,7 +25,6 @@
         ]]>
     </string>
     <string name="expiry">انتهاء الصلاحية</string>
-    <string name="days">أيام</string>
     <string name="help_log_sms_content">
         <![CDATA[
         عند التمكين، سيتم أيضًا تسجيل محتوى الرسائل القصيرة في قاعدة البيانات وعرضه في هذه القائمة، ولن يتم تسجيله في قاعدة البيانات عند التعطيل.
@@ -92,4 +91,5 @@
         <item>استيراد .csv كقواعد متعددة</item>
     </string-array>
     <string name="open_settings">فتح الإعدادات</string>
+    <string name="days">أيام</string>
 </resources>

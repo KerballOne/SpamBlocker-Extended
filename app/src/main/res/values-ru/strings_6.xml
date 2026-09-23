@@ -25,7 +25,6 @@
         ]]>
     </string>
     <string name="expiry">Срок действия</string>
-    <string name="days">Дней</string>
     <string name="help_log_sms_content">
         <![CDATA[
         При включении содержание SMS также будет записываться в базу данных и отображаться в этом списке, при отключении оно не будет записываться в базу данных.
@@ -92,4 +91,5 @@
         <item>Импортировать .csv как несколько правил</item>
     </string-array>
     <string name="open_settings">Открыть настройки</string>
+    <string name="days">Дней</string>
 </resources>

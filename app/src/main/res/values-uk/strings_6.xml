@@ -25,7 +25,6 @@
         ]]>
     </string>
     <string name="expiry">Термін дії</string>
-    <string name="days">Дні</string>
     <string name="help_log_sms_content">
         <![CDATA[
         Якщо ввімкнено, вміст SMS також буде записано в базу даних і відображено в цьому списку, його не буде записано в базу даних, якщо вимкнено.
@@ -94,4 +93,5 @@
     <string name="add_to_regex_rule">Додати до правила виразу</string>
     <string name="edit_regex_rule">Змінити regex</string>
     <string name="add_to_db">Додати в базу</string>
+    <string name="days">Дні</string>
 </resources>

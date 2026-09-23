@@ -25,7 +25,6 @@
         ]]>
     </string>
     <string name="expiry">有効期限</string>
-    <string name="days">日</string>
     <string name="help_log_sms_content">
         <![CDATA[
         有効にした場合、SMSの内容もデータベースに記録され、このリストに表示されます。
@@ -95,4 +94,5 @@
     <string name="add_to_regex_rule">Regexルールに追加</string>
     <string name="edit_regex_rule">Regexルールを編集</string>
     <string name="add_to_db">DBに追加</string>
+    <string name="days">日</string>
 </resources>

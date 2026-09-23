@@ -9,5 +9,4 @@
         It wakes up the phone repeatedly and can cause more battery consumption.
         ]]>
     </string>
-    <string name="schedule_alarm">Schedule Alarm</string>
 </resources>

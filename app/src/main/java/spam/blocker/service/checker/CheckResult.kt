@@ -111,7 +111,7 @@ fun ExtraInfoWithDivider(text: AnnotatedString, maxLines: Int) {
 }
 
 interface ICheckResult {
-    val type: Int
+    val byType: Int
 
     // Used in the notification
     fun resultReasonStr(ctx: Context): String
@@ -145,7 +145,7 @@ interface ICheckResult {
                 Spacer(modifier = M.padding(vertical = 4.dp))
 
                 val reportTrigger = remember { mutableStateOf(false) }
-                ReportSpamDialog(trigger = reportTrigger, forType = forType, rawNumber = record.peer, smsContent = record.extraInfo)
+                ReportSpamDialog(trigger = reportTrigger, forType = forType, rawNumber = record.peer, smsContent = record.extraInfo, recordId = record.id)
                 StrokeButton(
                     label = Str(if (forType == Def.ForNumber) R.string.report_number else R.string.report_sms),
                     icon = { ResIcon(R.drawable.ic_upload_to_cloud, color = C.warning) },
@@ -182,7 +182,7 @@ interface ICheckResult {
     }
 
     fun shouldBlock(): Boolean {
-        return Def.isBlocked(type)
+        return Def.isBlocked(byType)
     }
 
     // For "Answer + Hang up", returns the delay before "Hang Up"
@@ -219,8 +219,9 @@ interface ICheckResult {
 }
 
 // passed by default
+@Serializable
 class ByDefault(
-    override val type: Int = RESULT_ALLOWED_BY_DEFAULT,
+    override val byType: Int = RESULT_ALLOWED_BY_DEFAULT,
 ) : ICheckResult {
     override fun resultReasonStr(ctx: Context): String {
         return ctx.getString(R.string.passed_by_default)
@@ -228,8 +229,9 @@ class ByDefault(
 }
 
 // allowed by emergency incoming call
+@Serializable
 class ByEmergencyCall(
-    override val type: Int = RESULT_ALLOWED_BY_EMERGENCY_CALL,
+    override val byType: Int = RESULT_ALLOWED_BY_EMERGENCY_CALL,
 ) : ICheckResult {
     override fun resultReasonStr(ctx: Context): String {
         return ctx.getString(R.string.emergency_call)
@@ -237,8 +239,9 @@ class ByEmergencyCall(
 }
 
 // allowed by the Emergency in quick settings
+@Serializable
 class ByEmergencySituation(
-    override val type: Int = RESULT_ALLOWED_BY_EMERGENCY_SITUATION,
+    override val byType: Int = RESULT_ALLOWED_BY_EMERGENCY_SITUATION,
 ) : ICheckResult {
     override fun resultReasonStr(ctx: Context): String {
         return ctx.getString(R.string.emergency_situation)
@@ -246,8 +249,9 @@ class ByEmergencySituation(
 }
 
 // allowed by contact, or blocked by non-contact
+@Serializable
 class ByContact(
-    override val type: Int = RESULT_ALLOWED_BY_CONTACT,
+    override val byType: Int = RESULT_ALLOWED_BY_CONTACT,
     private val contactName: String? = null,
 ) : ICheckResult {
     override fun reasonToDb(): String {
@@ -259,8 +263,9 @@ class ByContact(
     }
 }
 
+@Serializable
 class ByNonContact(
-    override val type: Int = RESULT_BLOCKED_BY_NON_CONTACT,
+    override val byType: Int = RESULT_BLOCKED_BY_NON_CONTACT,
 ) : ICheckResult {
     override fun resultReasonStr(ctx: Context): String {
         return ctx.getString(R.string.non_contact)
@@ -269,9 +274,10 @@ class ByNonContact(
 
 
 // allowed by recent apps
+@Serializable
 class ByRecentApp(
     private val pkgName: String,
-    override val type: Int = RESULT_ALLOWED_BY_RECENT_APP,
+    override val byType: Int = RESULT_ALLOWED_BY_RECENT_APP,
 ) : ICheckResult {
 
     override fun reasonToDb(): String {
@@ -292,9 +298,10 @@ class ByRecentApp(
 }
 
 // blocked by meeting mode
+@Serializable
 class ByMeetingMode(
     private val pkgName: String,
-    override val type: Int = RESULT_BLOCKED_BY_MEETING_MODE,
+    override val byType: Int = RESULT_BLOCKED_BY_MEETING_MODE,
 ) : ICheckResult {
 
     override fun reasonToDb(): String {
@@ -315,8 +322,9 @@ class ByMeetingMode(
 }
 
 // allowed by repeated call
+@Serializable
 class ByRepeatedCall(
-    override val type: Int = RESULT_ALLOWED_BY_REPEATED,
+    override val byType: Int = RESULT_ALLOWED_BY_REPEATED,
 ) : ICheckResult {
     override fun resultReasonStr(ctx: Context): String {
         return ctx.getString(R.string.repeated_call)
@@ -324,8 +332,9 @@ class ByRepeatedCall(
 }
 
 // allowed by dialed number
+@Serializable
 class ByDialedNumber(
-    override val type: Int = RESULT_ALLOWED_BY_DIALED,
+    override val byType: Int = RESULT_ALLOWED_BY_DIALED,
 ) : ICheckResult {
     override fun resultReasonStr(ctx: Context): String {
         return ctx.getString(R.string.dialed_number)
@@ -333,8 +342,9 @@ class ByDialedNumber(
 }
 
 // allowed by answered number
+@Serializable
 class ByAnsweredNumber(
-    override val type: Int = RESULT_ALLOWED_BY_ANSWERED,
+    override val byType: Int = RESULT_ALLOWED_BY_ANSWERED,
 ) : ICheckResult {
     override fun resultReasonStr(ctx: Context): String {
         return ctx.getString(R.string.answered_number)
@@ -348,7 +358,7 @@ class ByAnsweredNumber(
 //  is just a wrapper that also shows that original reason, not a bespoke reason of its own.
 class ByAllowedCall(
     private val originalResult: ICheckResult? = null,
-    override val type: Int = RESULT_ALLOWED_BY_RECENT_CALL,
+    override val byType: Int = RESULT_ALLOWED_BY_RECENT_CALL,
 ) : ICheckResult {
     // This is saved in history log db
     @Serializable
@@ -360,7 +370,7 @@ class ByAllowedCall(
     override fun reasonToDb(): String {
         val original = originalResult ?: return ""
         return Json.encodeToString(
-            DbData(original.type, original.reasonToDb())
+            DbData(original.byType, original.reasonToDb())
         )
     }
 
@@ -370,8 +380,9 @@ class ByAllowedCall(
 }
 
 // allowed by off time
+@Serializable
 class ByOffTime(
-    override val type: Int = RESULT_ALLOWED_BY_OFF_TIME,
+    override val byType: Int = RESULT_ALLOWED_BY_OFF_TIME,
 ) : ICheckResult {
     override fun resultReasonStr(ctx: Context): String {
         return ctx.getString(R.string.off_time)
@@ -379,11 +390,12 @@ class ByOffTime(
 }
 
 // blocked by spam db
+@Serializable
 class BySpamDb(
     // Because it checks both rawNumber and clearNumber(rawNumber), this value stores the matched one,
     //  for later reporting purpose.
     val matchedNumber: String,
-    override val type: Int = RESULT_BLOCKED_BY_SPAM_DB,
+    override val byType: Int = RESULT_BLOCKED_BY_SPAM_DB,
 ) : ICheckResult {
     override fun resultReasonStr(ctx: Context): String {
         return ctx.getString(R.string.database)
@@ -394,8 +406,9 @@ class BySpamDb(
 }
 
 // allowed/blocked by stir/shaken
+@Serializable
 class BySTIR(
-    override val type: Int,
+    override val byType: Int,
     private val stirResult: Int,
 ) : ICheckResult {
     override fun reasonToDb(): String {
@@ -438,8 +451,9 @@ data class ApiQueryResultDetail(
 )
 
 // allowed/blocked by api query
+@Serializable
 class ByApiQuery(
-    override val type: Int,
+    override val byType: Int,
     val detail: ApiQueryResultDetail,
 ) : ICheckResult {
     @Composable
@@ -486,8 +500,9 @@ class ByApiQuery(
 }
 
 // allowed/blocked by regex rule
+@Serializable
 class ByRegexRule(
-    override val type: Int,
+    override val byType: Int,
     val rule: RegexRule?, // null: the rule is deleted
     val details: String? = null,
 ) : ICheckResult {
@@ -542,7 +557,7 @@ class ByRegexRule(
         when(forType) {
             Def.ForSms -> {
                 val smsContent = record.extraInfo
-                val isBySmsRule = type in listOf(
+                val isBySmsRule = byType in listOf(
                     RESULT_ALLOWED_BY_CONTENT_REGEX,
                     RESULT_BLOCKED_BY_CONTENT_REGEX
                 )
@@ -575,7 +590,7 @@ class ByRegexRule(
     override fun resultReasonStr(ctx: Context): String {
         val summary = ruleSummary(ctx)
 
-        return when (type) {
+        return when (byType) {
             RESULT_ALLOWED_BY_NUMBER_REGEX, RESULT_BLOCKED_BY_NUMBER_REGEX -> ctx.getString(R.string.regex_pattern) + ": $summary"
             RESULT_ALLOWED_BY_CONTACT_GROUP_REGEX, RESULT_BLOCKED_BY_CONTACT_GROUP_REGEX -> {
                 ctx.getString(R.string.contact_group) + ": $summary"
@@ -622,8 +637,9 @@ data class PushAlertDetail(
     val body: String,
 )
 // allowed by push alert
+@Serializable
 class ByPushAlert(
-    override val type: Int = RESULT_ALLOWED_BY_PUSH_ALERT,
+    override val byType: Int = RESULT_ALLOWED_BY_PUSH_ALERT,
     val detail: PushAlertDetail,
 ) : ICheckResult {
     override fun resultReasonStr(ctx: Context): String {
@@ -653,8 +669,9 @@ class ByPushAlert(
 }
 
 // allowed by sms alert
+@Serializable
 class BySmsAlert(
-    override val type: Int = RESULT_ALLOWED_BY_SMS_ALERT,
+    override val byType: Int = RESULT_ALLOWED_BY_SMS_ALERT,
 ) : ICheckResult {
     override fun resultReasonStr(ctx: Context): String {
         return ctx.getString(R.string.sms_alert)
@@ -662,8 +679,9 @@ class BySmsAlert(
 }
 
 // blocked by sms bomb
+@Serializable
 class BySmsBomb(
-    override val type: Int = RESULT_BLOCKED_BY_SMS_BOMB,
+    override val byType: Int = RESULT_BLOCKED_BY_SMS_BOMB,
 ) : ICheckResult {
     override fun resultReasonStr(ctx: Context): String {
         return ctx.getString(R.string.sms_bomb)

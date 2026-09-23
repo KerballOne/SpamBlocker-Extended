@@ -24,7 +24,6 @@
         ]]>
     </string>
     <string name="expiry">过期</string>
-    <string name="days">天</string>
     <string name="help_log_sms_content">
         <![CDATA[
         启用后，短信内容会记录到数据库并显示在此列表中；禁用后将不再记录。
@@ -93,4 +92,5 @@
     <string name="add_to_regex_rule">添加到正则规则</string>
     <string name="edit_regex_rule">编辑正则规则</string>
     <string name="add_to_db">添加到数据库</string>
+    <string name="days">天</string>
 </resources>

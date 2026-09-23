@@ -1021,6 +1021,10 @@ class Checker { // for namespace only
                             )
                             val success = api.actions.executeAll(ctx, aCtx)
 
+                            if (!success) {
+                                cCtx.anythingWrong = true
+                            }
+
                             val result = aCtx.racingResult
                             if (success && result?.determined == true) {
                                 result
@@ -1049,7 +1053,7 @@ class Checker { // for namespace only
                     )
 
                 return ByApiQuery(
-                    type = if (result.isSpam) Def.RESULT_BLOCKED_BY_API_QUERY else Def.RESULT_ALLOWED_BY_API_QUERY,
+                    byType = if (result.isSpam) Def.RESULT_BLOCKED_BY_API_QUERY else Def.RESULT_ALLOWED_BY_API_QUERY,
                     detail = ApiQueryResultDetail(
                         apiSummary = winnerApi.summary(),
                         apiDomain = winnerApi.domain()!!,
@@ -1158,7 +1162,7 @@ class Checker { // for namespace only
                     )
 
                 return ByRegexRule(
-                    type = if (block) Def.RESULT_BLOCKED_BY_NUMBER_REGEX else Def.RESULT_ALLOWED_BY_NUMBER_REGEX,
+                    byType = if (block) Def.RESULT_BLOCKED_BY_NUMBER_REGEX else Def.RESULT_ALLOWED_BY_NUMBER_REGEX,
                     rule = rule,
                 )
             }
@@ -1199,7 +1203,7 @@ class Checker { // for namespace only
                     )
 
                 return ByRegexRule(
-                    type = if (block) Def.RESULT_BLOCKED_BY_CNAP_REGEX else Def.RESULT_ALLOWED_BY_CNAP_REGEX,
+                    byType = if (block) Def.RESULT_BLOCKED_BY_CNAP_REGEX else Def.RESULT_ALLOWED_BY_CNAP_REGEX,
                     rule = rule,
                 )
             }
@@ -1245,7 +1249,7 @@ class Checker { // for namespace only
                     )
 
                 return ByRegexRule(
-                    type = if (block) Def.RESULT_BLOCKED_BY_GEO_LOCATION_REGEX else Def.RESULT_ALLOWED_BY_GEO_LOCATION_REGEX,
+                    byType = if (block) Def.RESULT_BLOCKED_BY_GEO_LOCATION_REGEX else Def.RESULT_ALLOWED_BY_GEO_LOCATION_REGEX,
                     rule = rule,
                 )
             }
@@ -1289,7 +1293,7 @@ class Checker { // for namespace only
                     )
 
                 return ByRegexRule(
-                    type = if (block) Def.RESULT_BLOCKED_BY_CARRIER_REGEX else Def.RESULT_ALLOWED_BY_CARRIER_REGEX,
+                    byType = if (block) Def.RESULT_BLOCKED_BY_CARRIER_REGEX else Def.RESULT_ALLOWED_BY_CARRIER_REGEX,
                     rule = rule,
                 )
             }
@@ -1338,7 +1342,7 @@ class Checker { // for namespace only
                     )
 
                 return ByRegexRule(
-                    type = if (block) Def.RESULT_BLOCKED_BY_CONTACT_REGEX else Def.RESULT_ALLOWED_BY_CONTACT_REGEX,
+                    byType = if (block) Def.RESULT_BLOCKED_BY_CONTACT_REGEX else Def.RESULT_ALLOWED_BY_CONTACT_REGEX,
                     rule = rule,
                 )
             }
@@ -1385,7 +1389,7 @@ class Checker { // for namespace only
                     )
 
                 return ByRegexRule(
-                    type = if (block) Def.RESULT_BLOCKED_BY_CONTACT_GROUP_REGEX else Def.RESULT_ALLOWED_BY_CONTACT_GROUP_REGEX,
+                    byType = if (block) Def.RESULT_BLOCKED_BY_CONTACT_GROUP_REGEX else Def.RESULT_ALLOWED_BY_CONTACT_GROUP_REGEX,
                     rule = rule,
                 )
             }
@@ -1436,7 +1440,7 @@ class Checker { // for namespace only
                     )
 
                 return ByRegexRule(
-                    type = if (block) Def.RESULT_BLOCKED_BY_CONTACT_PREFIX_REGEX else Def.RESULT_ALLOWED_BY_CONTACT_PREFIX_REGEX,
+                    byType = if (block) Def.RESULT_BLOCKED_BY_CONTACT_PREFIX_REGEX else Def.RESULT_ALLOWED_BY_CONTACT_PREFIX_REGEX,
                     rule = rule,
                     details = contactInfo.name
                 )
@@ -1489,7 +1493,7 @@ class Checker { // for namespace only
                     )
 
                 return ByRegexRule(
-                    type = if (block) Def.RESULT_BLOCKED_BY_DATABASE_PREFIX_REGEX else Def.RESULT_ALLOWED_BY_DATABASE_PREFIX_REGEX,
+                    byType = if (block) Def.RESULT_BLOCKED_BY_DATABASE_PREFIX_REGEX else Def.RESULT_ALLOWED_BY_DATABASE_PREFIX_REGEX,
                     rule = rule,
                     details = firstNumber.peer
                 )
@@ -1572,7 +1576,7 @@ class Checker { // for namespace only
                     )
 
                 return ByRegexRule(
-                    type = if (block) Def.RESULT_BLOCKED_BY_CONTENT_REGEX else Def.RESULT_ALLOWED_BY_CONTENT_REGEX,
+                    byType = if (block) Def.RESULT_BLOCKED_BY_CONTENT_REGEX else Def.RESULT_ALLOWED_BY_CONTENT_REGEX,
                     rule = rule,
                 )
             }

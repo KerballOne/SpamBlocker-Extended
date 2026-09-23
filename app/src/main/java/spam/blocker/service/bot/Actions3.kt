@@ -30,8 +30,9 @@ import spam.blocker.db.CallTable
 import spam.blocker.db.RegexRule
 import spam.blocker.db.reScheduleBot
 import spam.blocker.def.Def
+import spam.blocker.service.checker.ICheckResult
 import spam.blocker.service.reporting.listReportableCallAPIs
-import spam.blocker.service.reporting.updateRecordAutoReportLog
+import spam.blocker.service.reporting.updateRecordReportLog
 import spam.blocker.ui.darken
 import spam.blocker.ui.history.tagValid
 import spam.blocker.ui.setting.LabeledRow
@@ -238,7 +239,9 @@ class InterceptCall(
             PermissionWrapper(
                 Permission.phoneState,
                 prompt = ctx.getString(R.string.auto_detect_cc_permission)
-            )
+            ),
+            // it's necessary for checking if the call is allowed later due to repeat.
+            PermissionWrapper(Permission.callLog)
         )
     }
 
@@ -675,7 +678,7 @@ class ParseQueryResult(
                     }
                     .filterNot { it.isNullOrEmpty() }
                     .map {
-                        // Map "1", "2" to human readable "Fraud", "Political" if it's configured
+                        // Map "1", "2" to human-readable "Fraud", "Reminder" if it's configured
                         //  in the CategoryMapping, otherwise keep it as is.
                         mapping.getOrDefault(it, it) as String
                     }
@@ -1056,7 +1059,7 @@ class CategoryConfig(
                 Placeholder(
                     """
                 {
-                  "{marketing}": "gym",
+                  "{promotional}": "gym",
                   "{other}": "bitcoin",
                   ...
                 }
@@ -1082,7 +1085,7 @@ class CategoryConfig(
 class ScheduledAutoReportNumber(
     val rawNumber: String,
     val asTagCategory: String,
-    val blockReason: Int?,
+    val checkResult: ICheckResult?,
     val recordId: Long? = null,
     val domainFilter: List<String>? = null // only report to APIs that matches these domains
 ) : IAction {
@@ -1100,7 +1103,7 @@ class ScheduledAutoReportNumber(
         // Report
         val scope = CoroutineScope(IO)
         val apis = listReportableCallAPIs(
-            ctx = ctx, rawNumber = rawNumber, domainFilter = domainFilter, blockReason = blockReason
+            ctx = ctx, rawNumber = rawNumber, domainFilter = domainFilter, checkResult = checkResult
         )
         val logger = SaveableLogger()
         logger.info(ctx.getString(R.string.auto_report))
@@ -1114,17 +1117,17 @@ class ScheduledAutoReportNumber(
                     rawNumber = rawNumber,
                     tagCategoryValue = asTagCategory,
                 )
-                api.actions.executeAll(ctx, aCtx)
-                aCtx.anythingWrong // returns a boolean
+                val success = api.actions.executeAll(ctx, aCtx)
+                success
             }
         }
 
         scope.launch {
             val anythingWrong = deferredResults.awaitAll()
-                .contains(true)
+                .contains(false)
             val log = logger.output.serialize()
 
-            updateRecordAutoReportLog(
+            updateRecordReportLog(
                 ctx, table = CallTable(), vm = G.callVM, recordId = recordId,
                 log = log, anythingWrong = anythingWrong
             )

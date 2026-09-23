@@ -18,10 +18,7 @@ import spam.blocker.db.ReportApi
 import spam.blocker.db.SmsTable
 import spam.blocker.db.SpamTable
 import spam.blocker.def.Def
-import spam.blocker.def.Def.RESULT_BLOCKED_BY_NON_CONTACT
-import spam.blocker.def.Def.RESULT_BLOCKED_BY_NUMBER_REGEX
 import spam.blocker.def.Def.RESULT_BLOCKED_BY_SPAM_DB
-import spam.blocker.def.Def.RESULT_BLOCKED_BY_STIR
 import spam.blocker.service.bot.ActionContext
 import spam.blocker.service.bot.Delay
 import spam.blocker.service.bot.HttpRequest
@@ -46,7 +43,7 @@ import spam.blocker.util.Util.getHistoryCallsByNumber
 import spam.blocker.util.logi
 import java.util.UUID
 
-fun updateRecordAutoReportLog(
+fun updateRecordReportLog(
     ctx: Context,
     table: HistoryTable,
     vm: HistoryViewModel,
@@ -70,14 +67,14 @@ fun updateRecordAutoReportLog(
 }
 
 // ------------ For SMS --------------
-fun autoReportSMS(
+fun maybeAutoReportSMS(
     ctx: Context,
-    r: ICheckResult,
+    checkResult: ICheckResult,
     rawNumber: String,
     smsContent: String,
     recordId: Long?,
 ) {
-    val apis = listReportableSmsAPIs(ctx, blockReason = r.type)
+    val apis = listReportableSmsAPIs(ctx, checkResult = checkResult)
 
     // Skip entirely (including logging) if no reporting API is enabled/applicable,
     //  otherwise the History detail would show a misleading "Auto Report / Executed at"
@@ -99,16 +96,16 @@ fun autoReportSMS(
                 smsContent = smsContent,
                 tagCategoryValue = tagOther,
             )
-            api.actions.executeAll(ctx, aCtx)
-            aCtx.anythingWrong // returns a boolean
+            val success = api.actions.executeAll(ctx, aCtx)
+            success
         }
     }
     scope.launch {
         val anythingWrong = deferredResults.awaitAll()
-            .contains(true)
+            .contains(false)
         val log = logger.output.serialize()
 
-        updateRecordAutoReportLog(
+        updateRecordReportLog(
             ctx, table = SmsTable(), vm = G.smsVM, recordId = recordId,
             log = log, anythingWrong = anythingWrong
         )
@@ -117,7 +114,7 @@ fun autoReportSMS(
 
 fun listReportableSmsAPIs(
     ctx: Context,
-    blockReason: Int?, // null for ManualReport
+    checkResult: ICheckResult? = null, // null for ManualReport
     isManualReport: Boolean = false,
 ): List<IApi> {
     return G.apiReportVM.table.listAll(ctx)
@@ -130,46 +127,46 @@ fun listReportableSmsAPIs(
             if (isManualReport)
                 true
             else
-                (it as ReportApi).enabledForBlockReason(blockReason!!)
+                (it as ReportApi).enabledForBlockReason(checkResult!!)
         }
 }
 
 // ------------ For Call --------------
-fun autoReportSpamCall(
+fun maybeAutoReportCall(
     ctx: Context,
-    r: ICheckResult,
+    checkResult: ICheckResult,
     recordId: Long?,
     rawNumber: String,
     isTest: Boolean,
 ) {
-    if (shouldReportImmediately(r)) {
-        reportImmediately(ctx, r, recordId, rawNumber)
+    if (shouldReportImmediately(checkResult)) {
+        reportImmediately(ctx, checkResult, recordId, rawNumber)
     } else {
-        scheduleReporting(
-            ctx, r = r, rawNumber = rawNumber, isTesting = isTest, recordId = recordId)
+        scheduleReportingCall(
+            ctx, checkResult = checkResult, rawNumber = rawNumber, isTesting = isTest, recordId = recordId)
     }
 }
 
 private fun shouldReportImmediately(
-    r: ICheckResult,
+    checkResult: ICheckResult,
 ) : Boolean {
-    return r.type == RESULT_BLOCKED_BY_SPAM_DB
+    return checkResult.byType == RESULT_BLOCKED_BY_SPAM_DB
 }
 
 //  Report immediately if it's blocked by db and the number is originally blocked by API
 private fun reportImmediately(
     ctx: Context,
-    r: ICheckResult,
+    checkResult: ICheckResult,
     recordId: Long?,
     rawNumber: String,
 ) {
     // 0. if blocked by API or spam db that originally blocked by API
-    val domain: String? = when(r.type) {
+    val domain: String? = when(checkResult.byType) {
         RESULT_BLOCKED_BY_SPAM_DB -> {
             // Only report if it originally blocked by API query, such as:
             //   ApiQuery -> block -> AddToSpamDb
             // When adding to Spam db, the url domain will be saved as the `importReasonExtra`
-            val record = SpamTable.findByNumber(ctx, (r as BySpamDb).matchedNumber)
+            val record = SpamTable.findByNumber(ctx, (checkResult as BySpamDb).matchedNumber)
             if (record?.importReason == ImportDbReason.ByAPI) {
                 record.importReasonExtra // the url domain
             } else {
@@ -185,7 +182,7 @@ private fun reportImmediately(
     // Report
     val scope = CoroutineScope(IO)
     val apis = listReportableCallAPIs(
-        ctx, rawNumber = rawNumber, domainFilter = listOf(domain), blockReason = r.type, isDbApi = true
+        ctx, rawNumber = rawNumber, domainFilter = listOf(domain), checkResult = checkResult, isDbApi = true
     )
     val logger = SaveableLogger()
     logger.info(ctx.getString(R.string.auto_report))
@@ -199,46 +196,37 @@ private fun reportImmediately(
                 rawNumber = rawNumber,
                 tagCategoryValue = tagOther,
             )
-            api.actions.executeAll(ctx, aCtx)
-            aCtx.anythingWrong // returns a boolean
+            val success = api.actions.executeAll(ctx, aCtx)
+            success
         }
     }
     scope.launch {
         val anythingWrong = deferredResults.awaitAll()
-            .contains(true)
+            .contains(false)
         val log = logger.output.serialize()
 
-        updateRecordAutoReportLog(
+        updateRecordReportLog(
             ctx, table = CallTable(), vm = G.callVM, recordId = recordId, log = log, anythingWrong = anythingWrong
         )
     }
 }
 
-// Schedule a report task if it's blocked by local filters
-private fun scheduleReporting(
+private fun scheduleReportingCall(
     ctx: Context,
-    r: ICheckResult,
+    checkResult: ICheckResult,
     recordId: Long?,
     rawNumber: String,
     isTesting: Boolean,
 ) {
     // 1. Skip if no reporting api is enabled
     val anyApiEnabled = G.apiReportVM.table.listAll(ctx).any {
-        it.enabled && (it as ReportApi).enabledForBlockReason(r.type)
+        it.enabled && (it as ReportApi).enabledForBlockReason(checkResult)
     }
     if (!anyApiEnabled)
         return
 
-    // 2. Skip if it isn't blocked by local filters
-    val isBlockedByLocalFilter = when(r.type) {
-        RESULT_BLOCKED_BY_NON_CONTACT, RESULT_BLOCKED_BY_STIR, RESULT_BLOCKED_BY_NUMBER_REGEX -> true
-        else -> false
-    }
-    if (!isBlockedByLocalFilter)
-        return
-
     // 3. Skip if call log permission is disabled, it's necessary for checking
-    //  if the call is repeated or allowed later.
+    //  if the call is allowed later due to repeat.
     val canReadCalls = Permission.callLog.isGranted
     if (!canReadCalls)
         return
@@ -259,7 +247,7 @@ private fun scheduleReporting(
                     rawNumber = rawNumber,
                     asTagCategory = tagOther,
                     recordId = recordId,
-                    blockReason = r.type
+                    checkResult = checkResult
                 )
             ).serialize(),
             workTag = UUID.randomUUID().toString(),
@@ -287,15 +275,15 @@ private fun isNumberAllowedLater(ctx: Context, rawNumber: String) : Boolean {
 }
 
 // It checks:
-// 0. if the number has repeated later
-// 1. if the api is enabled
-// 2. remove duplicated apis
-// 3. filter by domain(for reporting to a specific api after query or blocked by SpamDB)
+// 1. if the number has repeated later
+// 2. if the api is enabled
+// 3. remove duplicated apis
+// 4. filter by domain(for reporting to a specific api after query or blocked by SpamDB)
 fun listReportableCallAPIs(
     ctx: Context,
     rawNumber: String,
     domainFilter: List<String>?,
-    blockReason: Int?, // null for ManualReport
+    checkResult: ICheckResult?, // null for ManualReport
     isManualReport: Boolean = false,
     isDbApi: Boolean = false, // if the number is blocked by DB and was auto added by API query
 ): List<IApi> {
@@ -322,34 +310,25 @@ fun listReportableCallAPIs(
     var apis = G.apiReportVM.table.listAll(ctx)
         .filter { it.enabled }
         .filter { it.actions.firstOrNull() is InterceptCall }
-        .filter { // it must contain at least 1 HttpRequest
-            val https = it.actions.filterIsInstance<HttpRequest>()
-            https.isNotEmpty()
-        }
+
 
     // 3. When auto-reporting, remove APIs that disabled this blockReason.
     if (!isManualReport) {
         if (!isDbApi) { // if isDbApi, no need to filter by blockReason
             apis = apis.filter {
-                (it as ReportApi).enabledForBlockReason(blockReason!!)
+                (it as ReportApi).enabledForBlockReason(checkResult!!)
             }
         }
     }
 
-    // 4. Remove duplicated APIs that have same domain name
-    //  (user might have added multiple instances)
-    apis = apis.distinctBy {
-        val http = it.actions.find { it is HttpRequest }
-        val url = (http as HttpRequest).url
-        val domain = domainFromUrl(url)
-        domain
-    }
-
-    // 5. Remove api that doesn't match the domain filter
+    // 4. Remove api that doesn't match the domain filter
     if (domainFilter != null) {
         apis = apis.filter {
-            val http = it.actions.find { it is HttpRequest }
-            val url = (http as HttpRequest).url
+            // APIs without an HttpRequest (e.g. the 7726 SMS workflow) have no domain to match.
+            //  (Upstream's `?: false` + `as HttpRequest` would throw ClassCastException here.)
+            val http = it.actions.firstOrNull { it is HttpRequest } as? HttpRequest
+                ?: return@filter false
+            val url = http.url
             val domain = domainFromUrl(url)
             domainFilter.contains(domain)
         }

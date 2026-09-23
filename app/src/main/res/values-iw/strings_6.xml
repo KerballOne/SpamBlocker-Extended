@@ -25,7 +25,6 @@
         ]]>
     </string>
     <string name="expiry">תפוגה</string>
-    <string name="days">ימים</string>
     <string name="help_log_sms_content">
         <![CDATA[
         כאשר מופעל, תוכן ההודעות יירשם גם במסד הנתונים ויוצג ברשימה זו, הוא לא יירשם במסד הנתונים כאשר מושבת.
@@ -92,4 +91,5 @@
         <item>ייבא קובץ .csv כמספר חוקים</item>
     </string-array>
     <string name="open_settings">פתח הגדרות</string>
+    <string name="days">ימים</string>
 </resources>

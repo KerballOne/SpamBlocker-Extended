@@ -25,7 +25,6 @@
         ]]>
     </string>
     <string name="expiry">有效期限</string>
-    <string name="days">天</string>
     <string name="help_log_sms_content">
         <![CDATA[
         啟用時，簡訊內容也會記錄在資料庫中並顯示在此清單中，停用時則不會記錄在資料庫中。
@@ -92,4 +91,5 @@
         <item>將 CSV 匯入為多個規則</item>
     </string-array>
     <string name="open_settings">開啟設定</string>
+    <string name="days">天</string>
 </resources>

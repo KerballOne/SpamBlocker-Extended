@@ -13,7 +13,7 @@ import spam.blocker.def.Def
 import spam.blocker.service.checker.Checker
 import spam.blocker.service.checker.IChecker
 import spam.blocker.service.checker.ICheckResult
-import spam.blocker.service.reporting.autoReportSMS
+import spam.blocker.service.reporting.maybeAutoReportSMS
 import spam.blocker.ui.NotificationTrampolineActivity
 import spam.blocker.util.Contacts
 import spam.blocker.util.ILogger
@@ -133,7 +133,7 @@ open class SmsReceiver : BroadcastReceiver() {
                     ctx, HistoryRecord(
                         peer = rawNumber,
                         time = System.currentTimeMillis(),
-                        result = r.type,
+                        result = r.byType,
                         reason = r.reasonToDb(),
                         simSlot = simSlot,
                         extraInfo = if (spfHistory.isLogSmsContentEnabled) messageBody else null,
@@ -224,8 +224,8 @@ open class SmsReceiver : BroadcastReceiver() {
             if (r.shouldBlock() &&
                 (!isTest || BuildConfig.DEBUG)
             ) {
-                autoReportSMS(
-                    ctx, r = r, rawNumber = rawNumber, smsContent = messageBody, recordId = recordId
+                maybeAutoReportSMS(
+                    ctx, checkResult = r, rawNumber = rawNumber, smsContent = messageBody, recordId = recordId
                 )
             }
 

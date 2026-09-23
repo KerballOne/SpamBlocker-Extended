@@ -25,7 +25,6 @@
         ]]>
     </string>
     <string name="expiry">Ablauf</string>
-    <string name="days">Tage</string>
     <string name="help_log_sms_content">
         <![CDATA[
         Wenn aktiviert, wird der SMS-Inhalt ebenfalls in der Datenbank protokolliert und in dieser Liste angezeigt, er wird nicht in der Datenbank protokolliert, wenn er deaktiviert ist.
@@ -94,4 +93,5 @@
     <string name="add_to_regex_rule">Zu Regex-Regel hinzufügen</string>
     <string name="edit_regex_rule">Regex-Regel bearbeiten</string>
     <string name="add_to_db">Zur Datenbank hinzufügen</string>
+    <string name="days">Tage</string>
 </resources>

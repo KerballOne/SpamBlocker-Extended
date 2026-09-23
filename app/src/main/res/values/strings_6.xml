@@ -23,7 +23,6 @@
         ]]>
     </string>
     <string name="expiry">Expiry</string>
-    <string name="days">Days</string>
     <string name="help_log_sms_content">
         <![CDATA[
         When enabled, the SMS content will also be logged in the database and displayed in this list, it will not be logged in database when disabled.
@@ -89,4 +88,5 @@
         <item>Import .csv as multiple rules</item>
     </string-array>
     <string name="open_settings">Open Settings</string>
+    <string name="days">Days</string>
 </resources>

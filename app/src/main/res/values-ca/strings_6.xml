@@ -25,7 +25,6 @@
         ]]>
     </string>
     <string name="expiry"><translate>Caducitat</translate></string>
-    <string name="days"><translate>Dies</translate></string>
     <string name="help_log_sms_content">
         <![CDATA[
         Quan estigui activat, el contingut del SMS també es registrarà a la base de dades i es mostrarà en aquesta llista, no es registrarà a la base de dades quan estigui desactivat.
@@ -92,4 +91,5 @@
         <item>Importa .csv com a múltiples regles</item>
     </string-array>
     <string name="open_settings"><translate>Obre la configuració</translate></string>
+    <string name="days"><translate>Dies</translate></string>
 </resources>
