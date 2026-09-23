@@ -1,0 +1,21 @@
+SpamBlocker Extended 6.1.4
+
+New (from upstream):
+- Auto-report can be limited to specific regex rules, matched by rule description.
+- Manual reports are now saved to history and can be reviewed later.
+- "Search Online" in the history menu.
+- API tokens can be entered manually, and are now a separate backup category so they can be left out of shared backups.
+- Report categories updated: Marketing/Political replaced by Promotional/Reminder. Existing settings are migrated automatically.
+
+Fixes:
+- SMS report results were saved to the call history and couldn't be reviewed.
+- A short, fast sideways flick while scrolling could delete a history record.
+- Canceling the backup export file picker no longer shows "Exported successfully".
+- 7726 preset: replies from 7726 are no longer flagged as spam, and the spam number is now reported too.
+- Auto-report now works for workflows without an HTTP request, such as 7726.
+- Layout fixes under large system font sizes (bottom bar badge, buttons, SIM number).
+
+Improvements:
+- Workflow actions are reordered only by their drag handle, so scrolling a workflow no longer rearranges it.
+- Successful reports are shown in green.
+- Updated phone number library.
