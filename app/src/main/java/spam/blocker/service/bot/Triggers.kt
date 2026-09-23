@@ -1166,9 +1166,10 @@ fun ReplyRuleEditDialog(
 @Composable
 fun RingtoneRuleCard(
     rule: RingtoneRule,
-    modifier: Modifier
+    cardModifier: Modifier,
+    dragModifier: Modifier
 ) {
-    OutlineCard(containerBg = G.palette.dialogBg, modifier = modifier) {
+    OutlineCard(containerBg = G.palette.dialogBg, modifier = cardModifier) {
         RowVCenterSpaced(
             4,
             modifier = M.fillMaxSize().padding(horizontal = 10.dp, vertical = 8.dp)
@@ -1185,7 +1186,7 @@ fun RingtoneRuleCard(
             }
 
             // Reorder icon
-            GreyIcon16(iconId = R.drawable.ic_reorder)
+            GreyIcon16(iconId = R.drawable.ic_reorder, modifier = dragModifier)
         }
     }
 }
@@ -1355,11 +1356,11 @@ class Ringtone(
 
                     RingtoneRuleCard(
                         rule = rule,
-                        modifier = M
+                        cardModifier = M
                             .clickable {
                                 editTrigger.value = true
-                            }
-                            .draggableHandle() // make it reorderable
+                            },
+                        dragModifier = M.draggableHandle() // make it reorderable
                     )
                 }
             }
