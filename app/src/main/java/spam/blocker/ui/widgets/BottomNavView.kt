@@ -5,10 +5,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -79,7 +79,7 @@ fun BottomBar(vm: BottomBarViewModel) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = M
-            .height(BottomNavHeight.dp)
+            .heightIn(min = BottomNavHeight.dp)
             .fillMaxWidth()
             .background(C.dialogBg)
             .onGloballyPositioned {
@@ -95,22 +95,21 @@ fun BottomBar(vm: BottomBarViewModel) {
             }
     ) {
         RowVCenter(
-            modifier = M.fillMaxSize(),
+            modifier = M.padding(vertical = 6.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             // 3 tab items
             vm.tabItems.forEach { tab ->
                 Surface( // for the round clicking ripple
                     shape = RoundedCornerShape(30.dp),
-                    modifier = M.fillMaxHeight()
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
                         modifier = M
-                            .fillMaxHeight()
                             .width(itemWidth.dp)
                             .background(C.dialogBg)
+                            .padding(vertical = 4.dp)
                             .clickable {
                                 val currentRoute = vm.tabItems.firstOrNull { it.isSelected.value }?.route
 
@@ -135,11 +134,16 @@ fun BottomBar(vm: BottomBarViewModel) {
                         BadgedBox(
                             badge = {
                                 badgeText?.let {
-                                    Badge(
-                                        containerColor = C.error,
-                                        contentColor = White
+                                    CompositionLocalProvider( // lock the badge size regardless of system font scaling
+                                        LocalDensity provides Density(density = LocalDensity.current.density, fontScale = 1f)
                                     ) {
-                                        Text(text = badgeText)
+                                        Badge(
+                                            modifier = M.offset(x = 8.dp, y = (-2).dp),
+                                            containerColor = C.error,
+                                            contentColor = White
+                                        ) {
+                                            Text(text = badgeText)
+                                        }
                                     }
                                 }
                             }
@@ -147,9 +151,7 @@ fun BottomBar(vm: BottomBarViewModel) {
                             // icon
                             ResIcon(
                                 iconId = tab.icon,
-                                modifier = M
-                                    .size(24.dp)
-                                    .offset(y = 4.dp),
+                                modifier = M.size(24.dp),
                                 color = if (tab.isSelected.value) C.infoBlue else C.textGrey
                             )
                         }
