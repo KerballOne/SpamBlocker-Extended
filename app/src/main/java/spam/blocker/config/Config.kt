@@ -727,7 +727,7 @@ abstract class PatternRules : IConfig {
         val tbl = table()
         tbl.clearAll(ctx)
         rules.forEach {
-            tbl.addRuleWithId(ctx, it)
+            tbl.addWithId(ctx, it)
         }
     }
 }
@@ -771,7 +771,7 @@ class ApiQuery : IConfig {
         val table = G.apiQueryVM.table
         table.clearAll(ctx)
         apis.forEach {
-            table.addRecordWithId(ctx, it)
+            table.addWithId(ctx, it)
         }
         val spf = spf.ApiQueryOptions(ctx)
         spf.isListCollapsed = listCollapsed
@@ -793,7 +793,7 @@ class ApiReport : IConfig {
         val table = G.apiReportVM.table
         table.clearAll(ctx)
         apis.forEach {
-            table.addRecordWithId(ctx, it)
+            table.addWithId(ctx, it)
         }
         spf.ApiReportOptions(ctx).isListCollapsed = listCollapsed
     }
@@ -811,7 +811,7 @@ class Bots : IConfig {
     override fun apply(ctx: Context) {
         BotTable.clearAll(ctx)
         bots.forEach {
-            BotTable.addRecordWithId(ctx, it)
+            BotTable.addWithId(ctx, it)
         }
     }
 }

@@ -129,7 +129,7 @@ open class SmsReceiver : BroadcastReceiver() {
             val isLogEnabled = spfHistory.isLoggingEnabled
 
             val recordId = if (isLogEnabled) {
-                SmsTable().addNewRecord(
+                SmsTable().addNew(
                     ctx, HistoryRecord(
                         peer = rawNumber,
                         time = System.currentTimeMillis(),
