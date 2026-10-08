@@ -1170,7 +1170,7 @@ class Checker { // for namespace only
             return null
         }
         fun doCheck(rawNumber: String): Boolean {
-            return rule.pattern.regexMatchesNumber(rawNumber, rule.patternFlags)
+            return rule.pattern.regexMatchesNumber(ctx, rawNumber, rule.patternFlags)
         }
     }
 
@@ -1214,7 +1214,7 @@ class Checker { // for namespace only
             if (cnap == null) {
                 return false
             }
-            return rule.pattern.regexMatchesNumber(cnap, rule.patternFlags)
+            return rule.pattern.regexMatchesNumber(ctx, cnap, rule.patternFlags)
         }
     }
 
@@ -1450,7 +1450,7 @@ class Checker { // for namespace only
         fun doCheck(rawNumber: String): ContactInfo? {
             // Both the incoming number and the contact number should match this regex,
             //   check the incoming number here.
-            if (!rule.pattern.regexMatchesNumber(rawNumber, rule.patternFlags)) {
+            if (!rule.pattern.regexMatchesNumber(ctx, rawNumber, rule.patternFlags)) {
                 return null
             }
             return Contacts.findContactByNumberPrefix(ctx, rawNumber, rule.pattern, rule.patternFlags)
@@ -1503,7 +1503,7 @@ class Checker { // for namespace only
         fun doCheck(rawNumber: String) : List<SpamNumber> {
             // Both the incoming number and the database number should match this regex,
             //   check the incoming number here.
-            if (!rule.pattern.regexMatchesNumber(rawNumber, rule.patternFlags)) {
+            if (!rule.pattern.regexMatchesNumber(ctx, rawNumber, rule.patternFlags)) {
                 return listOf()
             }
 

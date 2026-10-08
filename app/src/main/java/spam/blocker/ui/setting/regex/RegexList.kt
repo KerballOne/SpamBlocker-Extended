@@ -2,10 +2,13 @@ package spam.blocker.ui.setting.regex
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -16,6 +19,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,9 +39,14 @@ import spam.blocker.G
 import spam.blocker.R
 import spam.blocker.db.RegexRule
 import spam.blocker.db.ruleTableForType
+import spam.blocker.def.Def.ForNumber
+import spam.blocker.def.Def.ForQuickCopy
+import spam.blocker.def.Def.ForSms
 import spam.blocker.ui.M
 import spam.blocker.ui.maxScreenHeight
 import spam.blocker.ui.screenHeightDp
+import spam.blocker.ui.slightDiff
+import spam.blocker.ui.widgets.ColumnSpaced
 import spam.blocker.ui.widgets.ConfigExportDialog
 import spam.blocker.ui.widgets.DividerItem
 import spam.blocker.ui.widgets.DropdownWrapper
@@ -55,7 +64,11 @@ import spam.blocker.ui.widgets.SnackBar
 import spam.blocker.ui.widgets.Str
 import spam.blocker.ui.widgets.StrokeButton
 import spam.blocker.ui.widgets.SwipeInfo
+import spam.blocker.ui.widgets.simpleLazyScrollbar
+import spam.blocker.util.Lambda1
+import spam.blocker.util.Lambda2
 import spam.blocker.util.PermissivePrettyNoDefaultsJson
+import spam.blocker.util.regexMatches
 import spam.blocker.util.spf
 
 
@@ -233,7 +246,7 @@ fun RegexList(
         trigger = confirmDeleteDuplicated,
         scrollEnabled = false,
         content = {
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            ColumnSpaced(10) {
                 duplicatedRules.clear()
                 duplicatedRules.addAll(vm.table.listDuplicated(ctx))
 
@@ -374,9 +387,9 @@ fun RegexList(
             }
         }
     } else { // normal column
-        Column(
+        ColumnSpaced(
+            space = 4,
             modifier = M.nestedScroll(DisableNestedScrolling()),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             vm.rules.forEachIndexed { i, rule ->
                 key(rule.id) {

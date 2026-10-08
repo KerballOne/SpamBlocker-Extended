@@ -46,6 +46,7 @@ import spam.blocker.ui.SizedBox
 import spam.blocker.ui.setting.LabeledRow
 import spam.blocker.ui.setting.regex.DisableNestedScrolling
 import spam.blocker.ui.setting.regex.RegexMode.ModeType
+import spam.blocker.ui.setting.regex.RegexRuleFilterField
 import spam.blocker.ui.widgets.AnimatedVisibleV
 import spam.blocker.ui.widgets.BalloonQuestionMark
 import spam.blocker.ui.widgets.CheckBox
@@ -397,7 +398,7 @@ class SmsEvent(
         if (!Permission.receiveSMS.isGranted || !enabled)
             return false
 
-        if (!number.regexMatchesNumber(rawNumber, numberFlags)) {
+        if (!number.regexMatchesNumber(ctx, rawNumber, numberFlags)) {
             return false
         }
         if (!content.regexMatches(smsContent, contentFlags)) {
@@ -527,7 +528,7 @@ class CallEvent(
             return false
         }
 
-        if (!number.regexMatchesNumber(rawNumber, numberFlags)) {
+        if (!number.regexMatchesNumber(ctx, rawNumber, numberFlags)) {
             return false
         }
 
@@ -808,7 +809,7 @@ class SmsThrottling(
                         rule.matches(groupName)
                     } != null
             } else {
-                rule.pattern.regexMatchesNumber(rawNumber, rule.patternFlags)
+                rule.pattern.regexMatchesNumber(ctx, rawNumber, rule.patternFlags)
             }
         }
 
@@ -920,20 +921,10 @@ class SmsThrottling(
         )
 
         // Target rule desc
-        val flagsState = remember { mutableIntStateOf(targetRuleDescFlags) }
-        RegexInputBox(
-            regexStr = targetRuleDesc,
-            label = { Text(Str(R.string.target_rule_desc)) },
-            regexFlags = flagsState,
-            helpTooltipId = R.string.help_target_rule_desc,
-            onRegexStrChange = { newVal, hasError ->
-                if (!hasError) {
-                    targetRuleDesc = newVal
-                }
-            },
-            onFlagsChange = {
-                flagsState.intValue = it
-                targetRuleDescFlags = it
+        RegexRuleFilterField(
+            pattern = targetRuleDesc,
+            onPatternChange = { newVal ->
+                targetRuleDesc = newVal
             }
         )
     }

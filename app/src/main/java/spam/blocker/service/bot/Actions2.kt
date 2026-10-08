@@ -1,15 +1,25 @@
 package spam.blocker.service.bot
 
 import android.content.Context
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.json.JSONObject
@@ -23,10 +33,20 @@ import spam.blocker.db.SpamNumber
 import spam.blocker.db.SpamTable
 import spam.blocker.db.ruleTableForType
 import spam.blocker.def.Def
+import spam.blocker.def.Def.ForNumber
+import spam.blocker.def.Def.ForQuickCopy
+import spam.blocker.def.Def.ForSms
 import spam.blocker.service.checker.Checker
 import spam.blocker.service.checker.Checker.RegexRuleChecker
+import spam.blocker.ui.M
 import spam.blocker.ui.darken
+import spam.blocker.ui.screenHeightDp
 import spam.blocker.ui.setting.LabeledRow
+import spam.blocker.ui.setting.regex.RegexCard
+import spam.blocker.ui.setting.regex.RegexRuleFilterField
+import spam.blocker.ui.setting.regex.RegexSelectionList
+import spam.blocker.ui.slightDiff
+import spam.blocker.ui.setting.regex.EditRegexDialog
 import spam.blocker.ui.widgets.ComboBox
 import spam.blocker.ui.widgets.GreyIcon
 import spam.blocker.ui.widgets.LabelItem
@@ -35,9 +55,12 @@ import spam.blocker.ui.widgets.PriorityBox
 import spam.blocker.ui.widgets.RadioGroup
 import spam.blocker.ui.widgets.RadioItem
 import spam.blocker.ui.widgets.RegexInputBox
+import spam.blocker.ui.widgets.ResIcon20
 import spam.blocker.ui.widgets.Str
 import spam.blocker.ui.widgets.StrInputBox
+import spam.blocker.ui.widgets.StrokeButton
 import spam.blocker.ui.widgets.SummaryLabel
+import spam.blocker.ui.widgets.simpleLazyScrollbar
 import spam.blocker.util.A
 import spam.blocker.util.PermissiveJson
 import spam.blocker.util.Util.domainFromUrl
@@ -723,26 +746,13 @@ class FindRules(
 
     @Composable
     override fun Options() {
-        val flagsState = remember { mutableIntStateOf(flags) }
-        RegexInputBox(
-            label = { Text(Str(R.string.description)) },
-            placeholder = {
-                Placeholder(
-                    Str(R.string.regex_pattern) + "\n"
-                            + Str(R.string.for_example) + "\n"
-                            + ".*"
-                )
-            },
-            regexStr = pattern,
-            onRegexStrChange = { newVal, hasErr ->
-                if (!hasErr) {
-                    pattern = newVal
-                }
-            },
-            regexFlags = flagsState,
-            onFlagsChange = {
-                flagsState.intValue = it
-                flags = it
+        var patternState by remember { mutableStateOf(pattern) }
+
+        RegexRuleFilterField(
+            pattern = patternState,
+            onPatternChange = { newVal ->
+                pattern = newVal
+                patternState = newVal
             }
         )
     }
@@ -878,12 +888,62 @@ class ModifyRules(
 
     @Composable
     override fun Options() {
+        val C = G.palette
+
+        val editTrigger = remember { mutableStateOf(false) }
+
+        val actions = LocalActions.current
+        val myIndex = actions.indexOf(this)
+        val prevAction = if (myIndex > 0) actions[myIndex - 1] else null // get the prev action `FindRules`
+
+        if (editTrigger.value) {
+            // Find the target rule in the previous action `Find Rules`
+            val baseRule = remember(prevAction) {
+                if (prevAction is FindRules) {
+                    val matchingRule = listOf(G.NumberRuleVM.rules, G.ContentRuleVM.rules, G.QuickCopyRuleVM.rules)
+                        .firstNotNullOfOrNull { rules ->
+                            rules.firstOrNull { rule ->
+                                prevAction.pattern.regexMatches(rule.description, prevAction.flags)
+                            }
+                        }
+                    matchingRule ?: RegexRule()
+                } else {
+                    RegexRule()
+                }
+            }
+
+            val initRule = try {
+                val baseMap = JSONObject(PermissiveJson.encodeToString(baseRule)).toMap()
+                val cfgMap = JSONObject(config).toMap()
+                PermissiveJson.decodeFromString<RegexRule>(JSONObject(baseMap + cfgMap).toString())
+            } catch (e: Exception) {
+                baseRule
+            }
+
+            EditRegexDialog(
+                trigger = editTrigger,
+                forType = ForNumber,
+                initRule = initRule,
+                onSave = { updatedRule ->
+                    val defaultMap = JSONObject(PermissiveJson.encodeToString(baseRule)).toMap()
+                    val updatedMap = JSONObject(PermissiveJson.encodeToString(updatedRule)).toMap()
+                    val diff = updatedMap.filter { (k, v) -> defaultMap[k] != v }
+                    config = JSONObject(diff).toString()
+                }
+            )
+        }
+
         StrInputBox(
             label = { Text(Str(R.string.config_text)) },
             placeholder = { Placeholder(Str(R.string.action_modify_rules_placeholder)) },
             text = config,
             onValueChange = {
                 config = it
+            },
+            leadingIcon = {
+                ResIcon20(R.drawable.ic_note, color = C.infoBlue, modifier = M.clickable {
+                    editTrigger.value = true
+                })
             }
         )
     }

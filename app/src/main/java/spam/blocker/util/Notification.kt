@@ -4,6 +4,7 @@ package spam.blocker.util
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlarmManager
+import android.app.Notification.EXTRA_PREFER_SMALL_ICON
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_DEFAULT
@@ -276,6 +277,7 @@ object Notification {
             .setSound(sound)
             .setLights(channel.ledColor, 1000, 1000)
             .apply {
+                extras.putBoolean(EXTRA_PREFER_SMALL_ICON, true)
                 if (icon is Int) {
                     setSmallIcon(icon)
                 } else {
@@ -320,6 +322,7 @@ object Notification {
                 .setSound(sound)
                 .setLights(channel.ledColor, 1000, 1000)
                 .apply {
+                    extras.putBoolean(EXTRA_PREFER_SMALL_ICON, true)
                     if (icon is Int) {
                         setSmallIcon(icon)
                     } else {

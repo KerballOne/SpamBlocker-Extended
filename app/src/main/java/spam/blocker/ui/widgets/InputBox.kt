@@ -473,6 +473,7 @@ fun TestRegexDialog(
     regexFlags: Int,
 ) {
     val C = G.palette
+    val ctx = LocalContext.current
 
     val result: MutableState<Boolean?> = remember { mutableStateOf(null) }
 
@@ -489,7 +490,7 @@ fun TestRegexDialog(
                     label = Str(R.string.test),
                     color = C.teal200,
                     onClick = {
-                        result.value = regexStr.regexMatchesNumber(regexTestString.value, regexFlags)
+                        result.value = regexStr.regexMatchesNumber(ctx, regexTestString.value, regexFlags)
                     }
                 )
             }
@@ -549,6 +550,14 @@ fun RegexInputBox(
     var state by remember {
         mutableStateOf(
             TextFieldValue(text = regexStr)
+        )
+    }
+    // update state when the text is changed from other places rather typing in the textbox itself.
+    LaunchedEffect(regexStr) {
+        val oldSelection = state.selection
+        state = TextFieldValue(
+            text = regexStr,
+            selection = oldSelection
         )
     }
     // Last String value that either text field was recomposed with or updated in the onValueChange

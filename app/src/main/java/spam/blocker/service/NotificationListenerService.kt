@@ -238,11 +238,11 @@ class NotificationListenerService : NotificationListenerService() {
 
             val matchedNumber = notifTitleNumberRules?.firstNotNullOfOrNull { rule ->
                 titleCandidates.firstOrNull { candidate ->
-                    rule.pattern.regexMatchesNumber(candidate, rule.patternFlags)
+                    rule.pattern.regexMatchesNumber(this, candidate, rule.patternFlags)
                 }
             } ?: notifBodyNumberRules?.firstNotNullOfOrNull { rule ->
                 bodyCandidates.firstOrNull { candidate ->
-                    rule.pattern.regexMatchesNumber(candidate, rule.patternFlags)
+                    rule.pattern.regexMatchesNumber(this, candidate, rule.patternFlags)
                 }
             }
 

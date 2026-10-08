@@ -49,6 +49,7 @@ import spam.blocker.def.Def.ANDROID_13
 import java.util.Locale
 import java.util.UUID
 import java.util.regex.Pattern
+import java.util.regex.PatternSyntaxException
 import androidx.core.graphics.scale
 import java.io.ByteArrayOutputStream
 
@@ -115,10 +116,10 @@ val PermissivePrettyNoDefaultsJson =  Json {
 }
 
 // Apply all regex flags to the rawNumber, return the result string
-fun String.applyRegexFlags(regexFlags: Int): String {
+fun String.applyRegexFlags(ctx: Context, regexFlags: Int): String {
     // 1. Strip leading +CC if "Ignore Country Code" is enabled
     var num = if (regexFlags.hasFlag(Def.FLAG_REGEX_IGNORE_CC)) {
-        val intn = Util.parseInternationalNumber(this) // it returns Pair<CC, Phone>?
+        val intn = Util.parseInternationalNumber(ctx, this) // it returns Pair<CC, Phone>?
         intn?.second ?: this
     } else {
         this
@@ -131,9 +132,9 @@ fun String.applyRegexFlags(regexFlags: Int): String {
     return num
 }
 
-// For matching phone number only, it handles all regex flags like: RawMode/IgnoreCC
-fun String.regexMatchesNumber(rawNumber: String, regexFlags: Int): Boolean {
-    val num = rawNumber.applyRegexFlags(regexFlags)
+// For matching phone numbers only, it handles all regex flags like: RawNumber/IgnoreCC
+fun String.regexMatchesNumber(ctx: Context, rawNumber: String, regexFlags: Int): Boolean {
+    val num = rawNumber.applyRegexFlags(ctx, regexFlags)
 
     val opts = Util.flagsToRegexOptions(regexFlags)
     return try {
@@ -145,6 +146,7 @@ fun String.regexMatchesNumber(rawNumber: String, regexFlags: Int): Boolean {
 // For matching anything other than phone number, it won't raise exception.
 // Honors FLAG_REGEX_IMPLIED_CONTAINS: when set, the pattern doesn't need to match the
 // whole string, it's wrapped as `.*(pattern).*` and matches anywhere within targetStr.
+// An invalid pattern never matches, rules can get in through imports without being validated.
 fun String.regexMatches(targetStr: String, regexFlags: Int = Def.DefaultRegexFlags): Boolean {
     val opts = Util.flagsToRegexOptions(regexFlags)
     val effectivePattern = if (regexFlags.hasFlag(Def.FLAG_REGEX_IMPLIED_CONTAINS)) {
@@ -152,7 +154,12 @@ fun String.regexMatches(targetStr: String, regexFlags: Int = Def.DefaultRegexFla
     } else {
         this
     }
-    return effectivePattern.toRegex(opts).matches(targetStr)
+    return try {
+        effectivePattern.toRegex(opts).matches(targetStr)
+    } catch (e: PatternSyntaxException) {
+        logw("invalid regex, treated as no match: ${e.description} at index ${e.index}")
+        false
+    }
 }
 
 // Unlike `regexMatches`, this doesn't require the whole `targetStr` to match,
@@ -228,26 +235,51 @@ object Util {
         }
     }
 
-    fun isInternationalNumber(number: String): Boolean {
-        return "^\\+\\d+$".toRegex().matches(number)
+    // Returns Pair<CC, Domestic> if it's an international number, or null if it's not
+    fun parseInternationalNumber(ctx: Context, rawNumber: String): Pair<String, String>? {
+        return if (rawNumber.startsWith("+")) { // if it starts with "+", parse it using a juicy regex
+            val number = rawNumber.substring(1)
+
+            val matcher =
+                Pattern.compile("^([17]|2[07]|3[0123469]|4[013456789]|5[12345678]|6[0123456]|8[1246]|9[0123458]|\\d{3})\\d*?(\\d{4,6})$")
+                    .matcher(number);
+            if (!matcher.find()) {
+                return null
+            }
+            val cc = matcher.group(1) ?: return null
+
+            Pair(cc, number.substring(cc.length))
+        } else { // there's no leading "+", check if it starts with local country code, e.g. 12223334444
+            val cc = CountryCode.current(ctx)?.toString()
+            if (cc == null || !rawNumber.startsWith(cc)) {
+                null
+            } else if (isLocalCcPrefixed(ctx, rawNumber, cc)) {
+                Pair(cc, rawNumber.substring(cc.length))
+            } else {
+                null
+            }
+        }
     }
 
-    fun parseInternationalNumber(rawNumber: String): Pair<String, String>? {
-        if (!isInternationalNumber(rawNumber))
-            return null
-        val number = rawNumber.substring(1)
+    // A leading local CC without "+" is ambiguous: it can also be the start of a domestic number,
+    //  e.g. Italian mobiles 39x..., Indian mobiles 91x..., or Brazil's area code 55.
+    // Only treat it as a CC when "+<rawNumber>" has a possible length, and the digits as given
+    //  don't parse to a different valid domestic number.
+    // Possible rather than valid, spoofed spam numbers often use unassigned ranges, e.g. +1 222...
+    private fun isLocalCcPrefixed(ctx: Context, rawNumber: String, cc: String): Boolean {
+        return try {
+            val phoneUtil = PhoneNumberUtil.getInstance()
 
-        val matcher =
-            Pattern.compile("^([17]|2[07]|3[0123469]|4[013456789]|5[12345678]|6[0123456]|8[1246]|9[0123458]|\\d{3})\\d*?(\\d{4,6})$")
-                .matcher(number);
-        if (!matcher.find()) {
-            return null
+            val intl = phoneUtil.parse("+$rawNumber", "ZZ")
+            if (intl.countryCode.toString() != cc || !phoneUtil.isPossibleNumber(intl))
+                return false
+
+            val domestic = phoneUtil.parse(rawNumber, CountryCode.alpha2(ctx))
+            !phoneUtil.isValidNumber(domestic) ||
+                    phoneUtil.getNationalSignificantNumber(domestic) == phoneUtil.getNationalSignificantNumber(intl)
+        } catch (_: Exception) {
+            false
         }
-        val cc = matcher.group(1) ?: return null
-
-        val phone = number.substring(cc.length)
-
-        return Pair(cc, phone)
     }
 
 
