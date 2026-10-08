@@ -1,0 +1,11 @@
+SpamBlocker Extended 6.1.5
+
+New (from upstream):
+- Workflows: "Find Rules" can pick rules from a list instead of typing their descriptions.
+- Workflows: "Modify Rules" has a visual rule editor; only the changed fields are saved.
+
+Fixes:
+- Answer + Hang Up could be delayed for minutes on some devices.
+- A rule with an invalid regex (e.g. from a CSV or workflow import) crashed SMS screening.
+- "Ignore Country Code" now also handles numbers without "+", e.g. 12223334444, while keeping local numbers that happen to start with the country code digits.
+- Notification icon on Android 17.
