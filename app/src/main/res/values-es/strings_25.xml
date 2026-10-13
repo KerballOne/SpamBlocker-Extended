@@ -81,39 +81,23 @@
     <string name="faq"><short>Preg.</short></string>
     <string name="faq_priority">
     <![CDATA[
-        Cada filtro tiene su valor de prioridad, como indica el término, determina el orden en que se verifica la llamada. <br>
+        Las reglas se comprueban de la prioridad <b>más alta</b> a la más baja. La primera regla que coincide decide: permitir o bloquear. <br>
         <br>
-        Por defecto, <br>
+        <title><b>Valores predeterminados</b></title> <br>
+        &ensp; <priority>20</priority> <title>Modo Reunión</title> <br>
+        &ensp; <priority>10</priority> Reglas de <highlight>Permitir</highlight>: Contactos, Llamada repetida, Aplicaciones recientes… <br>
+        &ensp; <priority>0</priority> Reglas de <error>Bloquear</error>: No contactos, STIR, Base de datos <br>
+        &ensp; <priority>-1</priority> <title>Consulta instantánea</title>, solo después de superar todas las reglas locales <br>
         <br>
-        - <highlight>Reglas de lista blanca</highlight> tienen prioridad <priority>10</priority> <br>
-        &ensp; <sample>Ej.: Contactos, LlamadaRepetida, AplicacionesRecientes, etc </sample><br>
+        Así que, por defecto, permitir gana a bloquear. <br>
+        Las Reglas de Número y de Mensaje pueden usar cualquier prioridad. <br>
         <br>
-        - <error>Reglas de lista negra</error> tienen prioridad <priority>0</priority> <br>
-        &ensp; <sample>Ej.: STIR, Base de datos, etc </sample> <br>
+        <title><b>Consejos</b></title> <br>
+        - <sample>Bloquear un número aunque llame dos veces</sample>: prioridad mayor que <priority>10</priority>. <br>
+        - <sample>Permitir un número incluso en una reunión</sample>: mayor que <priority>20</priority>. <br>
+        - <sample>Probar una regla nueva</sample>: <priority>999</priority>, para que nada más interfiera. <br>
         <br>
-        Cuando ambas están habilitadas, las reglas de lista blanca sobrescribirán a las de lista negra ya que 10 > 0. <br>
-        <br>
-        Para reglas regex, la prioridad puede establecerse en cualquier número entre <priority>-2147483648</priority>
-          y <priority>2147483647</priority>. <br>
-        Reglas diferentes pueden tener la misma prioridad siempre que sean del mismo tipo, sin embargo,
-          <warn><b>nunca asignes la misma prioridad a ambas
-          reglas de lista blanca y lista negra</b></warn>, puede causar un comportamiento aleatorio. <br>
-        <br>
-        La función <title>Modo de Reunión</title> tiene prioridad <priority>20</priority> por defecto,
-          porque debe bloquear cualquier llamada durante una reunión. <br>
-        Y <priority>-1</priority> para <title>Consulta Instantánea</title>,
-          por lo que solo se verifica después de que la llamada haya pasado todos los filtros locales. <br>
-        <br>
-        <b>Casos de uso</b> de personalizar la prioridad: <br>
-        <br>
-        - <sample>Bloquear siempre un número concreto, sin importar si se repite</sample> <br>
-         &ensp; Establece una regla con prioridad > 10 para sobrescribir <title>Llamada Repetida</title>. <br>
-        <br>
-        - <sample>Permitir siempre un número</sample> <br>
-         &ensp; Establécelo en > 20 para sobrescribir <title>Modo de Reunión</title>. <br>
-        <br>
-        - <sample>Probar una regla regex</sample> <br>
-         &ensp; Establécelo en 999 para sobrescribir todos los demás filtros y no tener que desactivarlos temporalmente uno por uno.
+        <warn><b>Nunca des la misma prioridad a una regla de permitir y a una de bloquear</b></warn>, el resultado es impredecible.
     ]]>
     </string>
 </resources>

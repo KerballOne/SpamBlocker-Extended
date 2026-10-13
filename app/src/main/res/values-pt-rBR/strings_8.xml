@@ -7,13 +7,13 @@
 
     <string name="help_spam_db">
         <![CDATA[
-        Os números nesta base de dados serão bloqueados.<br>
+        Os números neste banco de dados serão bloqueados.<br>
         <br>
-        Você pode integrar qualquer banco de dados público, ou até múltiplos bancos de dados, você também pode importar números de arquivos locais.<br>
+        Você pode integrar qualquer banco de dados público, ou até vários, e também importar números de arquivos locais.<br>
         <br>
-        Verifique a seção \"Automação\" abaixo para saber como agendar uma tarefa de importação automática.<br>
+        Veja a seção \"Automação\" abaixo para saber como agendar uma tarefa de importação automática.<br>
         <br>
-        Aplica-se a chamadas e mensagens SMS.<br>
+        Escolha a que se aplica nas configurações: Chamadas, SMS, MMS e números encontrados no Título ou Corpo de uma notificação (todos ativados por padrão).<br>
         <br>
         <priority><b>Prioridade Padrão: 0</b></priority>
         ]]>

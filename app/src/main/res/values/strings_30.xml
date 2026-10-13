@@ -7,6 +7,8 @@
         Number Rules and Text Rules with <b>Title</b> / <b>Body</b> enabled under <b>Apply to Notifications</b> are checked against the notification, the same way as a real incoming SMS. <br>
         If the result is <b>Block</b>, the notification is dismissed. <br>
         <br>
+        Phone numbers in the notification\'s <b>Title</b> / <b>Body</b> are also checked by the Basic Rules <b>Contacts</b> (when blocking non-contacts) and <b>Database</b>, if <b>Title</b> / <b>Body</b> is on in their settings, without needing a Number Rule. <br>
+        <br>
         This works independently of the <b>SMS</b> switch above, and requires <b>Notification Access</b> permission. <br>
         <br>
         Some apps\' notifications may not be dismissed quickly enough to avoid a brief alert (sound/vibration) from the original app before <b>SpamBlocker Extended</b> can act. <br>
@@ -59,4 +61,55 @@
         ]]>
     </string>
     <string name="api_tokens">API Tokens</string>
+    <string name="wiki">Wiki</string>
+    <string name="faq_calls">
+        <![CDATA[
+        Turn on <b>Screening</b> > <b>Calls</b> and allow <b>SpamBlocker Extended</b> as the call screening app. <br>
+        <br>
+        <title><b>On each incoming call</b></title> <br>
+        1. Rules are checked by <b>priority</b>: Basic Rules (Contacts, Database, STIR, Repeated Call…), then <b>Number Rules</b> on the number and <b>Text Rules</b> on the caller name. <br>
+        2. The first rule that matches decides. <br>
+        3. No match: the call rings as usual. <br>
+        <br>
+        <title><b>When blocked</b></title> <br>
+        The call is handled by the <b>Block Type</b>: <b>Reject</b>, <b>Silence</b> or <b>Hang Up</b>. <br>
+        It is logged in the <b>Call</b> tab, so you can review it and create a rule from it. <br>
+        <br>
+        <title><b>Tip</b></title> <br>
+        Use <b>Test</b> in Settings to see which rule a number would hit.
+        ]]>
+    </string>
+    <string name="faq_sms">
+        <![CDATA[
+        Turn on <b>Screening</b> > <b>SMS/MMS</b>. <b>SpamBlocker Extended</b> does not need to be the default SMS app. <br>
+        <br>
+        <title><b>On each incoming SMS</b></title> <br>
+        1. <b>Number Rules</b> check the sender and <b>Text Rules</b> check the message, together with Basic Rules (Contacts, Database…), by <b>priority</b>. <br>
+        2. <highlight>Allowed</highlight>: <b>SpamBlocker Extended</b> shows the notification. <br>
+        3. <error>Blocked</error>: no notification, or a silent one, as set in the rule. <br>
+        <br>
+        <warn>Note</warn> <br>
+        - The message still stays in your SMS app, it is only filtered, not deleted. <br>
+        - Turn off your SMS app\'s notifications to avoid getting them twice. <br>
+        - <b>MMS</b> (also group messages) are checked by text only. <br>
+        - RCS / chat messages are not SMS: screen them with <b>Notifications</b> instead.
+        ]]>
+    </string>
+    <string name="faq_notifications">
+        <![CDATA[
+        Turn on <b>Screening</b> > <b>Notifications</b>, grant <b>Notification Access</b>, and pick the apps with the icon next to the switch. <br>
+        <br>
+        <title><b>On each notification from those apps</b></title> <br>
+        1. <b>Number</b> and <b>Text Rules</b> with <b>Title</b> / <b>Body</b> on are checked against it. <br>
+        2. Phone numbers found in the Title / Body are checked by <b>Contacts</b> and <b>Database</b>, per their Title / Body settings. <br>
+        3. The first match by <b>priority</b> decides. A contact in the Title (allow, <priority>10</priority>) beats a spam number in the Body (block, <priority>0</priority>). <br>
+        4. <error>Blocked</error>: the notification is dismissed. The message itself stays in the app. <br>
+        <br>
+        <title><b>Voicemail</b></title> <br>
+        <b>Voicemail Notification</b> takes the caller\'s number out of a voicemail app\'s notification and checks it like a call. <br>
+        <br>
+        <title><b>Tip</b></title> <br>
+        To hear only wanted notifications, turn off the app\'s own sound and use <b>Alerts</b> for <highlight>allowed</highlight> ones.
+        ]]>
+    </string>
 </resources>

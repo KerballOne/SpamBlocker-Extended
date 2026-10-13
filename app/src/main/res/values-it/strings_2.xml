@@ -6,7 +6,8 @@
         <![CDATA[
         Consenti i numeri dei contatti. <br>
         <br>
-        Si applica sia alle chiamate che ai messaggi SMS. <br>
+        Scegli a cosa si applica nelle sue impostazioni, separatamente per Consenti e Blocca: chiamate, SMS, MMS e numeri trovati nel titolo o nel corpo di una notifica. <br>
+        Tutto è attivo per impostazione predefinita, tranne il corpo per il blocco dei non contatti: un numero nel corpo di un messaggio di solito ne è il contenuto, non il mittente. <br>
         <br>
         <priority><b>Priorità predefinita</b></priority>: <br>
         &ensp; Consenti: <priority><b>10</b></priority> <br>

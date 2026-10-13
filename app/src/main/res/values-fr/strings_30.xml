@@ -1,0 +1,73 @@
+<resources>
+    <string name="calls">Appels</string>
+    <string name="notifications">Notifications</string>
+    <string name="apply_to_notifications">Appliquer aux notifications</string>
+    <string name="title_short">Titre</string>
+    <string name="body_short">Corps</string>
+    <string name="help_notification_screening">
+        <![CDATA[
+        Filtre les notifications des applications choisies avec le sélecteur d\'icônes à droite. <br>
+        <br>
+        Les règles de numéros et de messages dont <b>Titre</b> / <b>Corps</b> est activé sous <b>Appliquer aux notifications</b> sont vérifiées sur la notification, comme pour un vrai SMS entrant. <br>
+        Si le résultat est <b>Bloquer</b>, la notification est supprimée. <br>
+        <br>
+        Les numéros de téléphone dans le <b>Titre</b> / <b>Corps</b> de la notification sont aussi vérifiés par les règles de base <b>Contacts</b> (lors du blocage des non-contacts) et <b>Base de données</b>, si <b>Titre</b> / <b>Corps</b> est activé dans leurs paramètres, sans avoir besoin d\'une règle de numéro. <br>
+        <br>
+        Cela fonctionne indépendamment de l\'interrupteur <b>SMS</b> ci-dessus et nécessite l\'autorisation <b>Accès aux notifications</b>. <br>
+        <br>
+        Les notifications de certaines applications peuvent ne pas être supprimées assez vite pour éviter une brève alerte (son/vibration) de l\'application d\'origine avant que <b>SpamBlocker Extended</b> puisse agir. <br>
+        Si cela vous gêne, désactivez les notifications de cette application dans les paramètres système, puis utilisez plutôt les <b>Alertes</b> pour n\'être averti que des notifications explicitement <b>autorisées</b>.
+        ]]>
+    </string>
+    <string name="faq_calls">
+        <![CDATA[
+        Activez <b>Filtrage</b> > <b>Appels</b> et autorisez <b>SpamBlocker Extended</b> comme application de filtrage des appels. <br>
+        <br>
+        <title><b>À chaque appel entrant</b></title> <br>
+        1. Les règles sont vérifiées par <b>priorité</b> : règles de base (Contacts, Base de données, STIR, Appel répété…), puis les <b>règles de numéros</b> sur le numéro et les <b>règles de messages</b> sur le nom de l\'appelant. <br>
+        2. La première règle qui correspond décide. <br>
+        3. Aucune correspondance : l\'appel sonne normalement. <br>
+        <br>
+        <title><b>En cas de blocage</b></title> <br>
+        L\'appel est traité selon le <b>Type de blocage</b> : <b>Rejeter</b>, <b>Mettre en silence</b> ou <b>Raccrocher</b>. <br>
+        Il est enregistré dans l\'onglet <b>Appel</b>, pour que vous puissiez le consulter et en créer une règle. <br>
+        <br>
+        <title><b>Astuce</b></title> <br>
+        Utilisez <b>Tester</b> dans les Paramètres pour voir quelle règle un numéro déclencherait.
+        ]]>
+    </string>
+    <string name="faq_sms">
+        <![CDATA[
+        Activez <b>Filtrage</b> > <b>SMS/MMS</b>. <b>SpamBlocker Extended</b> n\'a pas besoin d\'être l\'application SMS par défaut. <br>
+        <br>
+        <title><b>À chaque SMS entrant</b></title> <br>
+        1. Les <b>règles de numéros</b> vérifient l\'expéditeur et les <b>règles de messages</b> le message, avec les règles de base (Contacts, Base de données…), par <b>priorité</b>. <br>
+        2. <highlight>Autorisé</highlight> : <b>SpamBlocker Extended</b> affiche la notification. <br>
+        3. <error>Bloqué</error> : aucune notification, ou une notification silencieuse, selon la règle. <br>
+        <br>
+        <warn>Remarque</warn> <br>
+        - Le message reste dans votre application SMS, il est seulement filtré, pas supprimé. <br>
+        - Désactivez les notifications de votre application SMS pour ne pas les recevoir en double. <br>
+        - Les <b>MMS</b> (y compris les messages de groupe) sont vérifiés uniquement par le texte. <br>
+        - Les messages RCS / de chat ne sont pas des SMS : filtrez-les plutôt avec <b>Notifications</b>.
+        ]]>
+    </string>
+    <string name="faq_notifications">
+        <![CDATA[
+        Activez <b>Filtrage</b> > <b>Notifications</b>, accordez l\'<b>Accès aux notifications</b> et choisissez les applications avec l\'icône à côté de l\'interrupteur. <br>
+        <br>
+        <title><b>À chaque notification de ces applications</b></title> <br>
+        1. Les <b>règles de numéros</b> et <b>de messages</b> dont <b>Titre</b> / <b>Corps</b> est activé sont vérifiées sur celle-ci. <br>
+        2. Les numéros de téléphone trouvés dans le titre / corps sont vérifiés par <b>Contacts</b> et <b>Base de données</b>, selon leurs paramètres Titre / Corps. <br>
+        3. La première correspondance par <b>priorité</b> décide. Un contact dans le titre (autoriser, <priority>10</priority>) l\'emporte sur un numéro de spam dans le corps (bloquer, <priority>0</priority>). <br>
+        4. <error>Bloqué</error> : la notification est supprimée. Le message lui-même reste dans l\'application. <br>
+        <br>
+        <title><b>Messagerie vocale</b></title> <br>
+        <b>Notification de messagerie vocale</b> extrait le numéro de l\'appelant de la notification d\'une application de messagerie vocale et le vérifie comme un appel. <br>
+        <br>
+        <title><b>Astuce</b></title> <br>
+        Pour n\'entendre que les notifications voulues, coupez le son propre de l\'application et utilisez les <b>Alertes</b> pour les notifications <highlight>autorisées</highlight>.
+        ]]>
+    </string>
+    <string name="wiki">Wiki</string>
+</resources>

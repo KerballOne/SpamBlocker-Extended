@@ -13,6 +13,7 @@ import spam.blocker.def.Def
 import spam.blocker.service.checker.Checker
 import spam.blocker.service.checker.IChecker
 import spam.blocker.service.checker.ICheckResult
+import spam.blocker.service.checker.NotificationField
 import spam.blocker.service.reporting.maybeAutoReportSMS
 import spam.blocker.ui.NotificationTrampolineActivity
 import spam.blocker.util.Contacts
@@ -111,17 +112,28 @@ open class SmsReceiver : BroadcastReceiver() {
             isMms: Boolean = false,
             source: Int = Def.SOURCE_SMS,
             checkers: List<IChecker>? = null,
+            // Which part of a notification `rawNumber` was found in (see CheckContext).
+            notificationField: NotificationField? = null,
+            // Skip checking and use this result instead, for callers that already ran
+            //  `Checker.checkSms` themselves, e.g. the Notification test (one per field).
+            checkResult: Triple<ICheckResult, String?, Boolean>? = null,
+            // Override what the shown notification displays, without affecting what's logged.
+            notificationTitle: String? = null,
+            notificationBody: String? = null,
         ): ICheckResult {
             logi("process Sms")
 
-            val (r, fullScreeningLog, anythingWrong) = if (checkers != null) {
+            val (r, fullScreeningLog, anythingWrong) = if (checkResult != null) {
+                checkResult
+            } else if (checkers != null) {
                 Checker.checkSms(
                     ctx, rawNumber = rawNumber, messageBody = messageBody, simSlot = simSlot, logger = logger, isMms = isMms,
-                    isNotificationScreening = source == Def.SOURCE_NOTIFICATION, checkers = checkers)
+                    isNotificationScreening = source == Def.SOURCE_NOTIFICATION, notificationField = notificationField,
+                    checkers = checkers)
             } else {
                 Checker.checkSms(
                     ctx, rawNumber = rawNumber, messageBody = messageBody, simSlot = simSlot, logger = logger, isMms = isMms,
-                    isNotificationScreening = source == Def.SOURCE_NOTIFICATION)
+                    isNotificationScreening = source == Def.SOURCE_NOTIFICATION, notificationField = notificationField)
             }
 
             // 1. log to history db
@@ -156,65 +168,10 @@ open class SmsReceiver : BroadcastReceiver() {
 
             // 4. show notification
             if (showNotification) {
-                val showName = Contacts.findContactByRawNumber(ctx, rawNumber)?.name ?: rawNumber
-
-                if (r.shouldBlock()) {
-
-                    val intent = Intent(ctx, NotificationTrampolineActivity::class.java).apply {
-                        putExtra("type", "sms")
-                        putExtra("blocked", true)
-                    }.setAction("action_sms_block")
-
-                    val toCopy = Checker.checkQuickCopy(
-                        ctx, rawNumber, messageBody, isCall = false, isBlocked = true
-                    )
-
-                    Notification.show(
-                        ctx,
-                        showType = ShowType.SPAM_SMS,
-                        channel = r.getNotificationChannel(ctx, showType = ShowType.SPAM_SMS),
-                        title = showName,
-                        body = messageBody,
-                        intent = intent,
-                        toCopy = toCopy,
-                    )
-
-                } else { // passed
-
-                    // handle clicking of the notification body:
-                    //  - launch sms app, open conversation with that number
-                    //  - cancel all notifications
-                    val intent = Intent(ctx, NotificationTrampolineActivity::class.java).apply {
-                        putExtra("type", "sms")
-                        putExtra("blocked", false)
-                        putExtra("rawNumber", rawNumber)
-                    }.setAction("action_sms_non_block")
-
-                    val toCopy = Checker.checkQuickCopy(
-                        ctx, rawNumber, messageBody, false, false
-                    )
-
-
-                    // silence it for active SMS chat
-                    val isActiveSmsChat = !isDeviceLocked(ctx) && isSmsAppInForeground(ctx)
-
-                    Notification.show(
-                        ctx,
-                        showType = ShowType.VALID_SMS,
-                        channel = if (isActiveSmsChat) {
-                            val activeChannelId = spf.Notification(ctx).smsChatChannelId
-
-                            ChannelTable.findByChannelId(ctx, activeChannelId)
-                                ?: missingChannel()
-                        } else {
-                            r.getNotificationChannel(ctx, ShowType.VALID_SMS)
-                        },
-                        title = showName,
-                        body = messageBody,
-                        intent = intent,
-                        toCopy = toCopy,
-                    )
-                }
+                showResultNotification(
+                    ctx, r, rawNumber = rawNumber,
+                    messageBody = notificationBody ?: messageBody, title = notificationTitle,
+                )
             }
 
             // 5. Report SMS when:
@@ -230,6 +187,78 @@ open class SmsReceiver : BroadcastReceiver() {
             }
 
             return r
+        }
+
+        // Shows the blocked/passed notification for an already-checked message.
+        //  `title` overrides the default title (contact name or number), e.g. for the
+        //  Notification test, which shows the entered Title like the real notification.
+        fun showResultNotification(
+            ctx: Context,
+            r: ICheckResult,
+            rawNumber: String,
+            messageBody: String,
+            title: String? = null,
+        ) {
+            val showName = title
+                ?: Contacts.findContactByRawNumber(ctx, rawNumber)?.name ?: rawNumber
+
+            if (r.shouldBlock()) {
+
+                val intent = Intent(ctx, NotificationTrampolineActivity::class.java).apply {
+                    putExtra("type", "sms")
+                    putExtra("blocked", true)
+                }.setAction("action_sms_block")
+
+                val toCopy = Checker.checkQuickCopy(
+                    ctx, rawNumber, messageBody, isCall = false, isBlocked = true
+                )
+
+                Notification.show(
+                    ctx,
+                    showType = ShowType.SPAM_SMS,
+                    channel = r.getNotificationChannel(ctx, showType = ShowType.SPAM_SMS),
+                    title = showName,
+                    body = messageBody,
+                    intent = intent,
+                    toCopy = toCopy,
+                )
+
+            } else { // passed
+
+                // handle clicking of the notification body:
+                //  - launch sms app, open conversation with that number
+                //  - cancel all notifications
+                val intent = Intent(ctx, NotificationTrampolineActivity::class.java).apply {
+                    putExtra("type", "sms")
+                    putExtra("blocked", false)
+                    putExtra("rawNumber", rawNumber)
+                }.setAction("action_sms_non_block")
+
+                val toCopy = Checker.checkQuickCopy(
+                    ctx, rawNumber, messageBody, false, false
+                )
+
+
+                // silence it for active SMS chat
+                val isActiveSmsChat = !isDeviceLocked(ctx) && isSmsAppInForeground(ctx)
+
+                Notification.show(
+                    ctx,
+                    showType = ShowType.VALID_SMS,
+                    channel = if (isActiveSmsChat) {
+                        val activeChannelId = spf.Notification(ctx).smsChatChannelId
+
+                        ChannelTable.findByChannelId(ctx, activeChannelId)
+                            ?: missingChannel()
+                    } else {
+                        r.getNotificationChannel(ctx, ShowType.VALID_SMS)
+                    },
+                    title = showName,
+                    body = messageBody,
+                    intent = intent,
+                    toCopy = toCopy,
+                )
+            }
         }
     }
 

@@ -10,56 +10,45 @@
     <string name="import_numbers">Importar números</string>
     <string name="faq_import_numbers">
     <![CDATA[
-        Importa números de fitxers locals o remots mitjançant fluxos de treball. <br>
+        Importa números d\'un fitxer o URL a la <b>Base de dades</b> o a una <b>Regla de número</b> amb un flux de treball. <br>
         <br>
-        <title><b>Una configuració típica</b></title>: <br>
+        <title><b>Passos</b></title> <br>
+        1. <minor><b>Llegir fitxer</b></minor> o <minor><b>Sol·licitud HTTP</b></minor>: obtenir el contingut. <br>
+        2. <minor><b>Analitzar CSV</b></minor>, <minor><b>Analitzar XML</b></minor> o <minor><b>Extreure amb Regex</b></minor>: obtenir els números. <br>
+        3. <minor><b>Substituir Número</b></minor> (opcional): corregir el format, p. ex. <b>123#####</b> → <b>123.*</b> <br>
+        4. <minor><b>Importar a la base de dades de correu brossa</b></minor> o <minor><b>Importar a la regla Regex</b></minor>. <br>
         <br>
-        1. <minor><b>Llegir fitxer</b></minor> / <minor><b>Petició HTTP</b></minor> <br>
-          &ensp; Obté el contingut del fitxer. <br>
-          <br>
-        2. <minor><b>Analitzar CSV</b></minor> / <minor><b>Analitzar XML</b></minor> / <minor><b>Extreure Regex</b></minor> <br>
-          &ensp; Analitza\'ls i obté una llista de números. <br>
-          <br>
-        3. <minor><b>Reemplaçar número</b></minor> (opcional) <br>
-          &ensp; Modifica el format del número <br>
-          &ensp; Cas d\'ús: <br>
-          <sample>
-            &emsp; En migrar números d\'altres aplicacions, converteix formats com <b>123#####</b> a l\'expressió regular <b>123.....</b> o <b>123.*</b> <br>
-          </sample>
-          <br>
-        4. <minor><b>Importar a la base de dades de spam</b></minor> / <minor><b>Importar a la regla Regex</b></minor> <br>
+        Afegeix un activador de <b>Programació</b> per mantenir la llista actualitzada. <br>
         <br>
-        <br>
-        <title><b>Exemples</b></title>: <br>
-          - La predefinició <no_translate><b>FTC-DNC</b></no_translate> <br>
-        <br>
-        Més exemples en línia: <br>
-          - <a href=\"%s\">Text pla</a> <br>
-          - <a href=\"%s\">CSV</a> <br>
-          - <a href=\"%s\">XML</a> <br>
-          - <a href=\"%s\">JSON</a> - JsonPath encara no és compatible, utilitza <minor><b>Regex Extract</b></minor> en el seu lloc.
+        <title><b>Exemples</b></title> <br>
+        &ensp; La plantilla <no_translate><b>FTC-DNC</b></no_translate> <br>
+        &ensp; <a href=\"%s\">Text pla</a> · <a href=\"%s\">CSV</a> · <a href=\"%s\">XML</a> · <a href=\"%s\">JSON</a> <br>
+        &ensp; (JSON: fes servir <minor><b>Extreure amb Regex</b></minor>, JsonPath no és compatible.)
     ]]>
     </string>
     <string name="faq_regex">
     <![CDATA[
-        Un tutorial d\'expressions regulars per a no programadors. <br>
+        Les regles fan servir regex per coincidir amb números i text. <br>
         <br>
-        <title><b>Nivell inicial - Comodí</b></title> <br>
-        &ensp; Sempre que vulguis utilitzar un comodí <sample><b>*</b></sample>, posa un punt <sample><b>.</b></sample> abans, com <sample><b>.*</b></sample>, això hauria de cobrir la majoria de casos d\'ús. <br>
+        <title><b>Conceptes bàsics</b></title> <br>
+        &ensp; <sample><b>.*</b></sample> qualsevol cosa: <sample>1800.*</sample> comença per 1800 <br>
+        &ensp; <sample><b>|</b></sample> o: <sample>.*(prize|winner).*</sample> <br>
+        &ensp; <sample><b>\\d</b></sample> un dígit: <sample>\\d{6}</sample> sis dígits <br>
+        &ensp; <sample><b>\\.</b></sample> un punt literal, <sample><b>\\+</b></sample> un més literal <br>
         <br>
-        <title><b>Avançat - Utilitzant IA</b></title> <br>
-        &ensp; Per exemple, per obtenir la següent expressió regular per a verificacions SMS: <br>
-        &ensp; <sample>.*(verification|validation).*code.*\\d{5,6}.*</sample> <br>
+        Una regla ha de coincidir amb el número o missatge <b>sencer</b>, així que envolta les paraules amb <sample>.*</sample> o activa l\'opció <b>Conté</b>. <br>
+        No es distingeix entre majúscules i minúscules tret que <b>Sensible a majúscules i minúscules</b> estigui activat. <br>
+        Fes servir <b>Prova</b> a la Configuració per provar una regla abans de confiar-hi. <br>
         <br>
-        Pregunta a la IA: <br>
+        <title><b>Deixa que la IA l\'escrigui</b></title> <br>
+        Prompt d\'exemple: <br>
         <sample>
         %s
         </sample>
         <br>
         <br>
-        <highlight><b>Prova-ho en línia</b></highlight> <br>
-          &ensp; 1. <a href=\"copy\"><big>Copia el prompt anterior</big></a> <br>
-          &ensp; 2. <a href=\"try_it\"><big>Inicia la IA en línia</big></a> <br>
+        &ensp; 1. <a href=\"copy\"><big>Copia el prompt</big></a> <br>
+        &ensp; 2. <a href=\"try_it\"><big>Obre la IA en línia</big></a> <br>
     ]]>
     </string>
     <string name="ai_regex_prompt">

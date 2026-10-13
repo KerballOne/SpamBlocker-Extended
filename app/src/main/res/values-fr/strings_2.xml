@@ -6,7 +6,8 @@
         <![CDATA[
         Autoriser les numéros de contact. <br>
         <br>
-        Cela s\'applique aux appels et aux messages SMS. <br>
+        Choisissez à quoi cela s\'applique dans ses paramètres, séparément pour Autoriser et Bloquer : appels, SMS, MMS et numéros trouvés dans le titre ou le corps d\'une notification. <br>
+        Tout est activé par défaut, sauf le corps pour le blocage des non-contacts : un numéro dans le corps d\'un message en est généralement le contenu, pas l\'expéditeur. <br>
         <br>
         <priority><b>Priorité par défaut</b></priority>: <br>
         &ensp; Autoriser: <priority><b>10</b></priority> <br>

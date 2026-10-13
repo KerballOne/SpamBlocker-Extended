@@ -1,0 +1,73 @@
+<resources>
+    <string name="calls">通话</string>
+    <string name="notifications">通知</string>
+    <string name="apply_to_notifications">应用于通知</string>
+    <string name="title_short">标题</string>
+    <string name="body_short">正文</string>
+    <string name="help_notification_screening">
+        <![CDATA[
+        筛选通过右侧图标选择的应用的通知。 <br>
+        <br>
+        在 <b>应用于通知</b> 下启用了 <b>标题</b> / <b>正文</b> 的号码规则和文本规则会对通知进行检查，方式与真实收到的短信相同。 <br>
+        如果结果为 <b>阻止</b>，该通知将被移除。 <br>
+        <br>
+        如果基本规则 <b>联系人</b>（阻止非联系人时）和 <b>数据库</b> 的设置中开启了 <b>标题</b> / <b>正文</b>，它们也会检查通知 <b>标题</b> / <b>正文</b> 中的电话号码，无需号码规则。 <br>
+        <br>
+        此功能独立于上方的 <b>短信</b> 开关，并且需要 <b>通知访问权限</b>。 <br>
+        <br>
+        某些应用的通知可能无法足够快地移除，在 <b>SpamBlocker Extended</b> 处理之前，原应用可能会短暂提醒（声音/振动）。 <br>
+        如果觉得困扰，可以在系统设置中关闭该应用自身的通知，然后改用 <b>提醒</b>，仅在通知被明确<b>允许</b>时收到提醒。
+        ]]>
+    </string>
+    <string name="faq_calls">
+        <![CDATA[
+        开启 <b>筛选</b> > <b>通话</b>，并允许 <b>SpamBlocker Extended</b> 作为来电筛选应用。 <br>
+        <br>
+        <title><b>每次来电时</b></title> <br>
+        1. 按<b>优先级</b>检查规则：基本规则（联系人、数据库、STIR、重复呼叫…），然后是检查号码的<b>号码规则</b>和检查来电者名称的<b>文本规则</b>。 <br>
+        2. 第一条匹配的规则决定结果。 <br>
+        3. 没有匹配：来电照常响铃。 <br>
+        <br>
+        <title><b>被阻止时</b></title> <br>
+        来电按<b>阻止类型</b>处理：<b>拒接</b>、<b>静音</b>或<b>挂断</b>。 <br>
+        它会记录在 <b>通话</b> 标签页中，您可以查看并据此创建规则。 <br>
+        <br>
+        <title><b>提示</b></title> <br>
+        在设置中使用 <b>测试</b> 查看某个号码会命中哪条规则。
+        ]]>
+    </string>
+    <string name="faq_sms">
+        <![CDATA[
+        开启 <b>筛选</b> > <b>短信/彩信</b>。<b>SpamBlocker Extended</b> 无需设为默认短信应用。 <br>
+        <br>
+        <title><b>每次收到短信时</b></title> <br>
+        1. <b>号码规则</b>检查发送者，<b>文本规则</b>检查消息，并与基本规则（联系人、数据库…）一起按<b>优先级</b>检查。 <br>
+        2. <highlight>已允许</highlight>：由 <b>SpamBlocker Extended</b> 显示通知。 <br>
+        3. <error>已阻止</error>：不显示通知，或按规则设置显示静默通知。 <br>
+        <br>
+        <warn>注意</warn> <br>
+        - 消息仍保留在您的短信应用中，只是被过滤，并未删除。 <br>
+        - 关闭短信应用自身的通知，以免收到两次。 <br>
+        - <b>彩信</b>（包括群组消息）仅按文本检查。 <br>
+        - RCS / 聊天消息不是短信：请改用 <b>通知</b> 筛选。
+        ]]>
+    </string>
+    <string name="faq_notifications">
+        <![CDATA[
+        开启 <b>筛选</b> > <b>通知</b>，授予 <b>通知访问权限</b>，并通过开关旁的图标选择应用。 <br>
+        <br>
+        <title><b>来自这些应用的每条通知</b></title> <br>
+        1. 开启了 <b>标题</b> / <b>正文</b> 的<b>号码规则</b>和<b>文本规则</b>会对其进行检查。 <br>
+        2. 标题 / 正文中的电话号码会由 <b>联系人</b> 和 <b>数据库</b> 按各自的标题 / 正文设置进行检查。 <br>
+        3. 按<b>优先级</b>第一个匹配的规则决定结果。标题中的联系人（允许，<priority>10</priority>）优先于正文中的垃圾号码（阻止，<priority>0</priority>）。 <br>
+        4. <error>已阻止</error>：通知被移除。消息本身仍保留在应用中。 <br>
+        <br>
+        <title><b>语音信箱</b></title> <br>
+        <b>语音信箱通知</b> 会从语音信箱应用的通知中提取来电者号码，并像来电一样进行检查。 <br>
+        <br>
+        <title><b>提示</b></title> <br>
+        若只想听到需要的通知，请关闭该应用自身的声音，并对<highlight>允许</highlight>的通知使用 <b>提醒</b>。
+        ]]>
+    </string>
+    <string name="wiki">维基</string>
+</resources>

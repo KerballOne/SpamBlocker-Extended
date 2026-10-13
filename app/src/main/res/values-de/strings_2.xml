@@ -4,12 +4,13 @@
     <string name="contact_name">Kontaktname</string>
     <string name="help_contacts">
         <![CDATA[
-        Erlaube Kontaktnummern. <br>
+        Nummern von Kontakten zulassen. <br>
         <br>
-        Gilt für Anrufe und SMS-Nachrichten. <br>
+        Wählen Sie in den Einstellungen, worauf es angewendet wird, getrennt für Zulassen und Blockieren: Anrufe, SMS, MMS und Nummern im Titel oder Text einer Benachrichtigung. <br>
+        Alles ist standardmäßig aktiv, außer Text beim Blockieren von Nichtkontakten: Eine Nummer im Text einer Nachricht ist meist deren Inhalt, nicht der Absender. <br>
         <br>
         <priority><b>Standardpriorität</b></priority>: <br>
-        &ensp; Erlauben: <priority><b>10</b></priority> <br>
+        &ensp; Zulassen: <priority><b>10</b></priority> <br>
         &ensp; Blockieren: <priority><b>0</b></priority>
         ]]>
     </string>

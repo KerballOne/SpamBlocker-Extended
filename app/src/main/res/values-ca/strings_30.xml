@@ -1,0 +1,73 @@
+<resources>
+    <string name="calls">Trucades</string>
+    <string name="notifications">Notificacions</string>
+    <string name="apply_to_notifications">Aplica a notificacions</string>
+    <string name="title_short">Títol</string>
+    <string name="body_short">Cos</string>
+    <string name="help_notification_screening">
+        <![CDATA[
+        Filtra les notificacions de les aplicacions triades amb el selector d\'icones de la dreta. <br>
+        <br>
+        Les Regles de número i de missatge amb <b>Títol</b> / <b>Cos</b> activat a <b>Aplica a notificacions</b> es comproven amb la notificació, igual que amb un SMS entrant real. <br>
+        Si el resultat és <b>Bloquejar</b>, la notificació es descarta. <br>
+        <br>
+        Els números de telèfon del <b>Títol</b> / <b>Cos</b> de la notificació també es comproven amb les Regles bàsiques <b>Contactes</b> (en bloquejar no contactes) i <b>Base de dades</b>, si <b>Títol</b> / <b>Cos</b> està activat a la seva configuració, sense necessitat d\'una Regla de número. <br>
+        <br>
+        Això funciona independentment de l\'interruptor <b>SMS</b> de dalt i requereix el permís <b>Accés a Notificacions</b>. <br>
+        <br>
+        És possible que les notificacions d\'algunes aplicacions no es descartin prou ràpid per evitar un breu avís (so/vibració) de l\'aplicació original abans que <b>SpamBlocker Extended</b> pugui actuar. <br>
+        Si et molesta, pots desactivar les notificacions d\'aquesta aplicació a la configuració del sistema i fer servir <b>Alertes</b> per rebre avisos només de les notificacions <b>permeses</b> explícitament.
+        ]]>
+    </string>
+    <string name="faq_calls">
+        <![CDATA[
+        Activa <b>Filtratge</b> > <b>Trucades</b> i permet <b>SpamBlocker Extended</b> com a aplicació de filtratge de trucades. <br>
+        <br>
+        <title><b>A cada trucada entrant</b></title> <br>
+        1. Les regles es comproven per <b>prioritat</b>: Regles bàsiques (Contactes, Base de dades, STIR, Trucada repetida…), després les <b>Regles de número</b> sobre el número i les <b>Regles de missatge</b> sobre el nom de qui truca. <br>
+        2. La primera regla que coincideix decideix. <br>
+        3. Sense coincidència: la trucada sona com sempre. <br>
+        <br>
+        <title><b>Quan es bloqueja</b></title> <br>
+        La trucada es gestiona segons el <b>Tipus de bloqueig</b>: <b>Rebutjar</b>, <b>Silenciar</b> o <b>Penjar</b>. <br>
+        Queda registrada a la pestanya <b>Trucada</b>, perquè la puguis revisar i crear-ne una regla. <br>
+        <br>
+        <title><b>Consell</b></title> <br>
+        Fes servir <b>Prova</b> a la Configuració per veure quina regla afectaria un número.
+        ]]>
+    </string>
+    <string name="faq_sms">
+        <![CDATA[
+        Activa <b>Filtratge</b> > <b>SMS/MMS</b>. <b>SpamBlocker Extended</b> no cal que sigui l\'aplicació d\'SMS predeterminada. <br>
+        <br>
+        <title><b>A cada SMS entrant</b></title> <br>
+        1. Les <b>Regles de número</b> comproven el remitent i les <b>Regles de missatge</b> el missatge, juntament amb les Regles bàsiques (Contactes, Base de dades…), per <b>prioritat</b>. <br>
+        2. <highlight>Permès</highlight>: <b>SpamBlocker Extended</b> mostra la notificació. <br>
+        3. <error>Bloquejat</error>: cap notificació, o una de silenciosa, segons la regla. <br>
+        <br>
+        <warn>Nota</warn> <br>
+        - El missatge continua a la teva aplicació d\'SMS, només es filtra, no s\'elimina. <br>
+        - Desactiva les notificacions de la teva aplicació d\'SMS per no rebre-les dues vegades. <br>
+        - Els <b>MMS</b> (també els missatges de grup) només es comproven pel text. <br>
+        - Els missatges RCS / de xat no són SMS: filtra\'ls amb <b>Notificacions</b>.
+        ]]>
+    </string>
+    <string name="faq_notifications">
+        <![CDATA[
+        Activa <b>Filtratge</b> > <b>Notificacions</b>, concedeix <b>Accés a Notificacions</b> i tria les aplicacions amb la icona al costat de l\'interruptor. <br>
+        <br>
+        <title><b>A cada notificació d\'aquestes aplicacions</b></title> <br>
+        1. Les <b>Regles de número</b> i <b>de missatge</b> amb <b>Títol</b> / <b>Cos</b> activat es comproven amb ella. <br>
+        2. Els números de telèfon trobats al Títol / Cos es comproven amb <b>Contactes</b> i <b>Base de dades</b>, segons la seva configuració de Títol / Cos. <br>
+        3. Decideix la primera coincidència per <b>prioritat</b>. Un contacte al Títol (permetre, <priority>10</priority>) guanya a un número de correu brossa al Cos (bloquejar, <priority>0</priority>). <br>
+        4. <error>Bloquejat</error>: la notificació es descarta. El missatge en si continua a l\'aplicació. <br>
+        <br>
+        <title><b>Bústia de veu</b></title> <br>
+        <b>Notificació de bústia de veu</b> extreu el número de qui truca de la notificació d\'una aplicació de bústia de veu i el comprova com una trucada. <br>
+        <br>
+        <title><b>Consell</b></title> <br>
+        Per sentir només les notificacions desitjades, desactiva el so propi de l\'aplicació i fes servir <b>Alertes</b> per a les <highlight>permeses</highlight>.
+        ]]>
+    </string>
+    <string name="wiki">Wiki</string>
+</resources>

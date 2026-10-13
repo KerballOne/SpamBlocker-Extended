@@ -1,5 +1,6 @@
 package spam.blocker.service
 
+import android.app.Notification
 import android.content.Context
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
@@ -12,12 +13,16 @@ import spam.blocker.def.Def
 import spam.blocker.service.checker.ByRegexRule
 import spam.blocker.service.checker.Checker
 import spam.blocker.service.checker.ICheckResult
+import spam.blocker.service.checker.IChecker
+import spam.blocker.service.checker.NotificationField
+import spam.blocker.service.checker.NumberCandidate
 import spam.blocker.service.checker.numberRuleToChecker
 import spam.blocker.util.CountryCode
 import spam.blocker.util.Permission
 import spam.blocker.util.PermissiveJson
 import spam.blocker.util.SaveableLogger
 import spam.blocker.util.Util
+import spam.blocker.util.getSaveableOutput
 import spam.blocker.util.spf.AppAlertConfig
 import spam.blocker.util.regexFind
 import spam.blocker.util.regexMatches
@@ -30,16 +35,34 @@ import spam.blocker.util.spf
 //  own pattern via `regexMatchesNumber`, the same way a real call/SMS number is matched.
 private val phoneNumberCandidateRegex = Regex("""\+?[\s().-]*(?:\d[\s().-]*){3,15}""")
 
-private fun findNumberCandidates(title: String): List<String> {
+fun findNumberCandidates(title: String): List<String> {
     return phoneNumberCandidateRegex.findAll(title)
         // The regex's leading `[\s().-]*` can capture stray whitespace/punctuation
         //  before the first digit (e.g. a leading space from "from 5551234567"),
         //  which would otherwise reach Basic Rule checkers (e.g. Spam Database) as
         //  part of `rawNumber` and break their exact-match lookups. The old Number
         //  Rule gate never hit this because `regexMatchesNumber` normalizes first.
-        .map { it.value.trim().trimStart('(', ')', '-', '.') }
+        // A leading "(" is kept when it opens an area code, e.g. "(555) 123-4567",
+        //  otherwise stripping it would leave the unbalanced "555) 123-4567".
+        .map { match ->
+            val c = match.value.trim()
+            val opensAreaCode = c.startsWith('(') && c.contains(')')
+            val start = if (opensAreaCode) c else c.trimStart('(', ')', '-', '.')
+            val closesAreaCode = start.endsWith(')') && start.contains('(')
+            val end = if (closesAreaCode) start else start.trimEnd('(', ')', '-', '.')
+            // Parentheses around the whole number, e.g. "(5551234567)", aren't part of it.
+            if (end.startsWith('(') && end.endsWith(')') && end.count { it == '(' } == 1)
+                end.substring(1, end.length - 1).trim()
+            else end
+        }
         .filter { candidate -> candidate.count { it.isDigit() } in 3..15 }
         .toList()
+}
+
+// Whether a candidate is long enough to be a phone number rather than e.g. a short code,
+//  a verification code or an order number.
+fun isPhoneLength(candidate: String): Boolean {
+    return candidate.count { it.isDigit() } >= MIN_LOCAL_NUMBER_LENGTH
 }
 
 // Basic Rule checkers (e.g. Spam Database) match `rawNumber` as an exact string
@@ -199,6 +222,160 @@ To solve this, make `CallScreeningService` asynchronous using a coroutine and de
   so that all notifications would've been processed during this period.
 */
 
+// Whether a notification's Title names the sender by phone number: the whole Title, as
+//  messaging apps show an unsaved sender, e.g. "+1 555-123-4567", or after "from" at its end,
+//  e.g. "Voicemail from +1 555-123-4567". Rather than text containing a number, e.g.
+//  "Order 12345678 shipped".
+private val senderNumberTitleRegex = Regex("""(?:.*\bfrom\b\s*:?\s*)?(\+?[\d\s().-]+)""", RegexOption.IGNORE_CASE)
+fun isSenderNumberTitle(text: String): Boolean {
+    val number = senderNumberTitleRegex.matchEntire(text.trim())?.groupValues?.get(1) ?: return false
+    return isPhoneLength(number)
+}
+
+// At most this many of the Body's numbers are checked, so a notification listing many
+//  numbers can't hold up the screening (e.g. with Instant Query).
+private const val MAX_BODY_NUMBERS = 2
+
+// How Notification Screening checks one notification: the numbers (with the parts they're
+//  in and the text checked along with them), and the rules.
+// Shared by the screening and the Test screen, so a test does what the screening does.
+class NotificationScreeningPlan(
+    val candidates: List<NumberCandidate>,
+    val checkers: List<IChecker>,
+    // A Number/Text Rule matched, so all rules apply. Otherwise only the Basic Rules that
+    //  can block apply, and only a block is acted on.
+    val anyRuleMatches: Boolean,
+)
+
+// null: nothing applies, the notification is left alone.
+// `senderNumber`: the Test screen's Phone Number, used as the Title's number.
+fun planNotificationScreening(
+    ctx: Context,
+    title: String,
+    text: String,
+    isVoicemailApp: Boolean = false,
+    senderNumber: String? = null,
+): NotificationScreeningPlan? {
+    ensureNotificationScreeningCache(ctx)
+
+    // Extract phone-number-shaped substrings from the title/body (tolerating
+    //  dashes/spaces/parens/+), then test each against every Number Rule using
+    //  the same matching logic used for real numbers, which normalizes formatting
+    //  per the rule's own Raw Number/Ignore Country Code flags before comparing.
+    // A Number Rule can independently target the title and/or the body, e.g. a
+    //  voicemail notification like "New voicemail from: 5551234567" has the
+    //  number in the body, not the title.
+    val sender = senderNumber?.takeIf { it.isNotEmpty() }
+    val titleCandidates = sender?.let { listOf(it) } ?: findNumberCandidates(title)
+    val bodyCandidates = findNumberCandidates(text)
+
+    val matchedTitleNumber = notifTitleNumberRules?.firstNotNullOfOrNull { rule ->
+        titleCandidates.firstOrNull { candidate ->
+            rule.pattern.regexMatchesNumber(ctx, candidate, rule.patternFlags)
+        }
+    }
+    val matchedBodyNumber = if (matchedTitleNumber != null) null else
+        notifBodyNumberRules?.firstNotNullOfOrNull { rule ->
+            bodyCandidates.firstOrNull { candidate ->
+                rule.pattern.regexMatchesNumber(ctx, candidate, rule.patternFlags)
+            }
+        }
+
+    // Or each Content/Message Rule (applies to Notification Title and/or Body)
+    //  against the corresponding field. Since `Checker.checkSms` re-validates
+    //  Content Rules with a full-string match against whatever `messageBody` it's
+    //  given, the field that actually matched must be the one passed onward,
+    //  otherwise the downstream re-check fails against the wrong field.
+    val titleContentMatches = notifTitleContentRules
+        ?.any { rule -> rule.pattern.regexFind(title, rule.patternFlags) != null } == true
+    val bodyContentMatches = notifBodyContentRules
+        ?.any { rule -> rule.pattern.regexFind(text, rule.patternFlags) != null } == true
+
+    val anyRuleMatches = matchedTitleNumber != null || matchedBodyNumber != null ||
+            titleContentMatches || bodyContentMatches
+
+    // Basic Rules that can block (Contacts' Block non-contacts, Database) with the Title
+    //  and/or Body "Apply to" options on: phone numbers found in those parts are checked,
+    //  without needing a Number/Text Rule to match first.
+    // Contacts' Allow alone can only allow, which is already the default, so it's skipped.
+    // Non-Contacts only blocks a Title naming the sender by number, not a number inside
+    //  other text (an order number, a date...).
+    // For apps chosen in Voicemail Notification, that feature applies the Basic Rules
+    //  itself (with its own Title/Body choice), so they're not applied here a second time.
+    val titlePhoneNumber = titleCandidates.firstOrNull { isPhoneLength(it) }
+    val titleIsNumber = sender != null || isSenderNumberTitle(title)
+    val bodyPhoneNumbers = bodyCandidates.filter { isPhoneLength(it) }.distinct().take(MAX_BODY_NUMBERS)
+    val contacts = spf.Contact(ctx)
+    val spamDb = spf.SpamDB(ctx)
+    val blocksNonContacts = contacts.isEnabled && contacts.isStrict && !isVoicemailApp
+    val spamDbApplies = spamDb.isEnabled && !isVoicemailApp
+    val basicRulesForTitle = titlePhoneNumber != null &&
+            ((blocksNonContacts && contacts.blockForTitle && titleIsNumber) ||
+                    (spamDbApplies && spamDb.forTitle))
+    val basicRulesForBody = bodyPhoneNumbers.isNotEmpty() &&
+            ((blocksNonContacts && contacts.blockForBody) || (spamDbApplies && spamDb.forBody))
+
+    return when {
+        anyRuleMatches -> {
+            // All rules apply, decided by priority across the Title (its number, with
+            //  its text) and the Body (each of its numbers, with its text), so e.g. a
+            //  contact's number in the Title (Contacts Allow, 10) wins over a Number Rule
+            //  blocking a number mentioned in the Body (0), and a rule for only one part
+            //  only checks that part. Content Rules re-validate against the text of the
+            //  part they apply to, so each part keeps its own text.
+            // A Body without a number is still checked (by Text Rules) with the Title's
+            //  number, or the raw title, as the number, but as the Title's number for the
+            //  Basic and Number Rules' Title/Body options.
+            // Contact/Non-Contact ignore a number that isn't phone-number-like.
+            val titleNumber = matchedTitleNumber ?: titlePhoneNumber ?: title
+            val bodyNumbers = (listOfNotNull(matchedBodyNumber) + bodyPhoneNumbers)
+                .distinct().take(MAX_BODY_NUMBERS)
+            val candidates = buildList {
+                add(NumberCandidate(titleNumber, NotificationField.Title, title,
+                    isLooseNumber = !titleIsNumber))
+                if (bodyNumbers.isNotEmpty()) {
+                    bodyNumbers.forEach { add(NumberCandidate(it, NotificationField.Body, text)) }
+                } else if (text.isNotEmpty()) {
+                    add(NumberCandidate(titleNumber, NotificationField.Body, text,
+                        numberField = NotificationField.Title, isLooseNumber = !titleIsNumber))
+                }
+            }
+            NotificationScreeningPlan(candidates, Checker.defaultSmsCheckers(ctx), true)
+        }
+        basicRulesForTitle || basicRulesForBody -> {
+            // Only those Basic Rules apply, not every Basic Rule (e.g. Off Time or
+            //  Instant Query on every notification). The title's number (the sender,
+            //  in most apps) is checked first, then the body's, if their options are on.
+            val candidates = buildList {
+                titlePhoneNumber?.let {
+                    add(NumberCandidate(it, NotificationField.Title, title, isLooseNumber = !titleIsNumber))
+                }
+                if (basicRulesForBody) {
+                    bodyPhoneNumbers.forEach { add(NumberCandidate(it, NotificationField.Body, text)) }
+                }
+            }
+            NotificationScreeningPlan(candidates, Checker.basicNotificationCheckers(ctx), false)
+        }
+        else -> null
+    }
+}
+
+// Checks all candidate numbers found in a notification together (with the part each was found
+//  in, see CheckContext.notificationField), so the notification is decided by rule priority
+//  across all of them, and logged to history once with the deciding number.
+private fun checkNumberCandidates(
+    ctx: Context,
+    candidates: List<Pair<String, NotificationField?>>,
+    messageBody: String,
+    checkers: List<IChecker>,
+): Pair<String, Triple<ICheckResult, String?, Boolean>> {
+    val (candidate, check) = Checker.checkNotificationNumbers(
+        ctx, candidates.map { (number, field) -> NumberCandidate(number, field, messageBody) },
+        logger = SaveableLogger(), checkers = checkers,
+    )
+    return candidate.number to check
+}
+
 class NotificationListenerService : NotificationListenerService() {
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         super.onNotificationPosted(sbn)
@@ -219,78 +396,64 @@ class NotificationListenerService : NotificationListenerService() {
         val contentKey = "$pkgName|$title|$text"
         val alreadyScreened = screenedNotifications.contains(contentKey)
 
+        // A group summary (e.g. Google Messages' "2 new messages") only repeats its group's
+        //  own notifications, which are screened individually. Dismissing it would also
+        //  dismiss every notification in the group, including allowed ones.
+        val isGroupSummary = sbn.notification.flags and Notification.FLAG_GROUP_SUMMARY != 0
+
         ensureNotificationScreeningCache(this)
+
+        // The Notification Screening result for this notification, if it was screened (and
+        //  logged to history) by it, so Voicemail Notification doesn't log it a second time.
+        var screeningResult: ICheckResult? = null
 
         if (spfGlobal.isNotificationScreeningEnabled &&
             Permission.notificationAccess.isGranted &&
             notificationScreeningPkgs?.contains(pkgName) == true &&
-            !alreadyScreened
+            !alreadyScreened &&
+            !isGroupSummary
         ) {
-            // Extract phone-number-shaped substrings from the title/body (tolerating
-            //  dashes/spaces/parens/+), then test each against every Number Rule using
-            //  the same matching logic used for real numbers, which normalizes formatting
-            //  per the rule's own Raw Number/Ignore Country Code flags before comparing.
-            // A Number Rule can independently target the title and/or the body, e.g. a
-            //  voicemail notification like "New voicemail from: 5551234567" has the
-            //  number in the body, not the title.
-            val titleCandidates = findNumberCandidates(title)
-            val bodyCandidates = findNumberCandidates(text)
+            ensureVoicemailNotificationCache(this)
+            val isVoicemailApp = voicemailNotificationEnabled == true &&
+                    voicemailNotificationPkgs?.contains(pkgName) == true
+            val plan = planNotificationScreening(this, title, text, isVoicemailApp)
 
-            val matchedNumber = notifTitleNumberRules?.firstNotNullOfOrNull { rule ->
-                titleCandidates.firstOrNull { candidate ->
-                    rule.pattern.regexMatchesNumber(this, candidate, rule.patternFlags)
-                }
-            } ?: notifBodyNumberRules?.firstNotNullOfOrNull { rule ->
-                bodyCandidates.firstOrNull { candidate ->
-                    rule.pattern.regexMatchesNumber(this, candidate, rule.patternFlags)
-                }
-            }
-
-            // Or each Content/Message Rule (applies to Notification Title and/or Body)
-            //  against the corresponding field. Since `Checker.checkSms` re-validates
-            //  Content Rules with a full-string match against whatever `messageBody` it's
-            //  given, the field that actually matched must be the one passed onward,
-            //  otherwise the downstream re-check fails against the wrong field.
-            val titleContentMatches = notifTitleContentRules
-                ?.any { rule -> rule.pattern.regexFind(title, rule.patternFlags) != null } == true
-            val bodyContentMatches = notifBodyContentRules
-                ?.any { rule -> rule.pattern.regexFind(text, rule.patternFlags) != null } == true
-
-            if (matchedNumber != null || titleContentMatches || bodyContentMatches) {
+            if (plan != null) {
                 screenedNotifications.add(contentKey)
 
-                // Prefer the number extracted from the title/body; if only the message
-                //  content matched, fall back to the raw title as the number passed onward.
-                val rawNumber = matchedNumber ?: title
-
-                // Pass whichever field triggered the Content Rule match as `messageBody`,
-                //  so the downstream full-match re-check succeeds against the same text.
-                // If it matched via the title, use the title; otherwise use the body as usual.
-                val messageBodyForCheck = if (titleContentMatches) title else text
-
-                val result = SmsReceiver.processSms(
-                    ctx = this,
-                    rawNumber = rawNumber,
-                    messageBody = messageBodyForCheck,
-                    simSlot = null,
-                    isTest = false,
-                    logger = SaveableLogger(),
-                    showNotification = false,
-                    source = Def.SOURCE_NOTIFICATION,
+                val (decisive, check) = Checker.checkNotificationNumbers(
+                    this, plan.candidates, logger = SaveableLogger(), checkers = plan.checkers,
                 )
-                if (result.shouldBlock()) {
-                    cancelNotification(sbn.key)
-                } else {
-                    // Prefer the matched rule's own alert config, if it set one;
-                    // otherwise fall back to the app-level default.
-                    val ruleAlertJson = (result as? ByRegexRule)
-                        ?.rule?.alertConfigJson?.takeIf { it.isNotEmpty() }
+                // With only the Basic Rules, a notification they let through is left alone,
+                //  without a history record: only a block is acted on.
+                if (plan.anyRuleMatches || check.first.shouldBlock()) {
+                    val result = SmsReceiver.processSms(
+                        ctx = this,
+                        rawNumber = decisive.number,
+                        // Logged as the history record's content: the message itself.
+                        messageBody = text.ifEmpty { title },
+                        simSlot = null,
+                        isTest = false,
+                        showNotification = false,
+                        source = Def.SOURCE_NOTIFICATION,
+                        checkResult = check,
+                    )
+                    screeningResult = result
+                    if (result.shouldBlock()) {
+                        cancelNotification(sbn.key)
+                    } else {
+                        // The allowed-notification alert is for Number/Text Rule matches.
+                        // Prefer the matched rule's own alert config, if it set one;
+                        // otherwise fall back to the app-level default.
+                        val ruleAlertJson = (result as? ByRegexRule)
+                            ?.rule?.alertConfigJson?.takeIf { it.isNotEmpty() }
 
-                    val config = ruleAlertJson
-                        ?.let { runCatching { PermissiveJson.decodeFromString<AppAlertConfig>(it) }.getOrNull() }
-                        ?: spf.AllowedNotificationAlerts(this).find(pkgName)
+                        val config = ruleAlertJson
+                            ?.let { runCatching { PermissiveJson.decodeFromString<AppAlertConfig>(it) }.getOrNull() }
+                            ?: spf.AllowedNotificationAlerts(this).find(pkgName)
 
-                    config?.let { fireAllowedNotificationAlert(this, it) }
+                        config?.let { fireAllowedNotificationAlert(this, it) }
+                    }
                 }
             }
         }
@@ -313,12 +476,18 @@ class NotificationListenerService : NotificationListenerService() {
             if (voicemailNotificationEnabled == true &&
                 Permission.notificationAccess.isGranted &&
                 voicemailNotificationPkgs?.contains(pkgName) == true &&
-                !voicemailAlreadyScreened
+                !voicemailAlreadyScreened &&
+                !isGroupSummary &&
+                // Already dismissed by Notification Screening (app selected for both).
+                screeningResult?.shouldBlock() != true
             ) {
+                // Only phone-length numbers, judged before the country-code variants are
+                //  added, so a verification code like "482913" can't pass as the phone
+                //  number "1482913" and get blocked as a Non-Contact.
                 val rawCandidates = buildList {
                     if (voicemailNotificationApplyToTitle == true) addAll(findNumberCandidates(title))
                     if (voicemailNotificationApplyToBody == true) addAll(findNumberCandidates(text))
-                }.distinct()
+                }.filter { isPhoneLength(it) }.distinct()
                 val candidates = withCountryCodeVariants(this, rawCandidates)
 
                 if (candidates.isNotEmpty()) {
@@ -345,30 +514,34 @@ class NotificationListenerService : NotificationListenerService() {
                         }
                     }
 
-                    // Dismiss if ANY candidate is blocked by any of the checkers above.
-                    var blocked = false
-                    var allowResult: ICheckResult? = null
+                    // Decided by rule priority across all candidates (e.g. a contact match on one
+                    //  country-code variant beats Non-Contact on another), logged once.
+                    // The part each number was found in is left open (null): this feature picks
+                    //  its own parts to search, so a Basic Rule applies here if either its Title
+                    //  or Body option is on.
+                    val (decisiveNumber, decisiveCheck) = checkNumberCandidates(
+                        this, candidates.map { it to null }, messageBody = text, checkers = checkers,
+                    )
 
-                    for (candidate in candidates) {
-                        val result = SmsReceiver.processSms(
-                            ctx = this,
-                            rawNumber = candidate,
-                            messageBody = text,
-                            simSlot = null,
-                            isTest = false,
-                            logger = SaveableLogger(),
-                            showNotification = false,
-                            source = Def.SOURCE_NOTIFICATION,
-                            checkers = checkers,
-                        )
-                        if (result.shouldBlock()) {
-                            blocked = true
-                            break
-                        }
-                        if (allowResult == null) {
-                            allowResult = result
-                        }
+                    // Already allowed (and logged, and alerted) by Notification Screening (app
+                    //  selected for both): only a block here changes anything, so only that
+                    //  gets logged, instead of a second record and alert for the same notification.
+                    if (screeningResult != null && !decisiveCheck.first.shouldBlock()) {
+                        return@run
                     }
+
+                    val result = SmsReceiver.processSms(
+                        ctx = this,
+                        rawNumber = decisiveNumber,
+                        messageBody = text,
+                        simSlot = null,
+                        isTest = false,
+                        showNotification = false,
+                        source = Def.SOURCE_NOTIFICATION,
+                        checkResult = decisiveCheck,
+                    )
+                    val blocked = result.shouldBlock()
+                    val allowResult: ICheckResult? = if (blocked) null else result
 
                     if (blocked) {
                         cancelNotification(sbn.key)

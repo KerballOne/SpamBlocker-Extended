@@ -13,9 +13,9 @@
         <br>
         請檢視下方「自動化」段落了解如何排程自動匯入任務。<br>
         <br>
-        適用於通話和簡訊。<br>
+        可在其設定中選擇套用範圍：通話、簡訊、MMS，以及通知標題或內文中的號碼（預設全部開啟）。<br>
         <br>
-        <priority><b>優先順序：0</b></priority>
+        <priority><b>預設優先順序：0</b></priority>
         ]]>
     </string>
     <string name="help_spam_db_ttl">

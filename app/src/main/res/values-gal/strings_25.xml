@@ -80,37 +80,23 @@
     <string name="faq"><short>PMF</short></string>
     <string name="faq_priority">
     <![CDATA[
-        Cada filtro ten o seu valor de prioridade, como indica o termo, determina a orde na que se verifica a chamada. <br>
+        As regras compróbanse desde a prioridade <b>máis alta</b> ata a máis baixa. A primeira regra que coincide decide: permitir ou bloquear. <br>
         <br>
-        Por defecto, <br>
+        <title><b>Valores predeterminados</b></title> <br>
+        &ensp; <priority>20</priority> <title>Modo de Reunión</title> <br>
+        &ensp; <priority>10</priority> Regras de <highlight>permitir</highlight>: Contactos, Chamada repetida, Aplicacións recentes… <br>
+        &ensp; <priority>0</priority> Regras de <error>bloquear</error>: Non contactos, STIR, Base de datos <br>
+        &ensp; <priority>-1</priority> <title>Consulta instantánea</title>, só despois de pasar todas as regras locais <br>
         <br>
-        - <highlight>Reglas da lista branca</highlight> teñen prioridade <priority>10</priority> <br>
-        &ensp; <sample>Por exemplo. Contactos, Chamada Repetida, Aplicacións Recentes, etc </sample><br>
+        Así que, por defecto, permitir gaña a bloquear. <br>
+        As regras de número e de mensaxe poden usar calquera prioridade. <br>
         <br>
-        - <error>Reglas da lista negra</error> teñen prioridade <priority>0</priority> <br>
-        &ensp; <sample>Por exemplo. STIR, Base de datos, etc </sample> <br>
+        <title><b>Consellos</b></title> <br>
+        - <sample>Bloquear un número aínda que chame dúas veces</sample>: prioridade superior a <priority>10</priority>. <br>
+        - <sample>Permitir un número aínda en reunión</sample>: superior a <priority>20</priority>. <br>
+        - <sample>Probar unha regra nova</sample>: <priority>999</priority>, para que nada máis interfira. <br>
         <br>
-        Cando están ambas activas, as regras da lista branca sobrescribirán as regras da lista negra xa que 10 > 0. <br>
-        <br>
-        Para as regras regex, a prioridade pode establecerse a calquera número entre <priority>-2147483648</priority>
-          e <priority>2147483647</priority>. <br>
-        As diferentes regras poden ter a mesma prioridade sempre que sexan do mesmo tipo, pero <warn><b>nunca asignes a mesma prioridade tanto ás regras da lista branca como ás da lista negra</b></warn>, pois pode causar un comportamento aleatorio. <br>
-        <br>
-        A funcionalidade <title>Modo Reunión</title> ten prioridade <priority>20</priority> por defecto,
-          porque supón bloquear calquera chamada durante unha reunión. <br>
-        E <priority>-1</priority> para <title>Consulta Instantánea</title>,
-          polo que só se verifica despois de que a chamada pase todos os filtros locais. <br>
-        <br>
-        <b>Casos de uso</b> da personalización da prioridade: <br>
-        <br>
-        - <sample>Bloquear sempre un número concreto, sen importar se se repite</sample> <br>
-         &ensp; Establece unha regra con prioridade > 10 para sobrescribir <title>Chamada Repetida</title>. <br>
-        <br>
-        - <sample>Permitir sempre un número</sample> <br>
-         &ensp; Estabeléceo en > 20 para sobrescribir o <title>Modo Reunión</title>. <br>
-        <br>
-        - <sample>Probar unha regra regex</sample> <br>
-         &ensp; Estabeléceo en 999 para sobrescribir todos os outros filtros de modo que non teñas que desactivalos temporalmente un a un.
+        <warn><b>Nunca deas a mesma prioridade a unha regra de permitir e a unha de bloquear</b></warn>, o resultado é imprevisible.
     ]]>
     </string>
 </resources>

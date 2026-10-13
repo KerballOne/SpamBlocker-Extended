@@ -1,0 +1,73 @@
+<resources>
+    <string name="calls">Chamadas</string>
+    <string name="notifications">Notificacións</string>
+    <string name="apply_to_notifications">Aplicar ás notificacións</string>
+    <string name="title_short">Título</string>
+    <string name="body_short">Corpo</string>
+    <string name="help_notification_screening">
+        <![CDATA[
+        Filtra as notificacións das aplicacións escollidas co selector de iconas da dereita. <br>
+        <br>
+        As regras de número e de mensaxe con <b>Título</b> / <b>Corpo</b> activado en <b>Aplicar ás notificacións</b> compróbanse contra a notificación, igual que cun SMS entrante real. <br>
+        Se o resultado é <b>Bloquear</b>, a notificación descártase. <br>
+        <br>
+        Os números de teléfono do <b>Título</b> / <b>Corpo</b> da notificación tamén os comproban as regras básicas <b>Contactos</b> (ao bloquear non contactos) e <b>Base de datos</b>, se <b>Título</b> / <b>Corpo</b> está activado na súa configuración, sen necesidade dunha regra de número. <br>
+        <br>
+        Isto funciona independentemente do interruptor <b>SMS</b> de arriba e require o permiso <b>Acceso a Notificacións</b>. <br>
+        <br>
+        As notificacións dalgunhas aplicacións poden non descartarse o bastante rápido para evitar un breve aviso (son/vibración) da aplicación orixinal antes de que <b>SpamBlocker Extended</b> poida actuar. <br>
+        Se isto che molesta, podes desactivar as notificacións propias desa aplicación na configuración do sistema e usar <b>Alertas</b> para recibir avisos só das notificacións explicitamente <b>permitidas</b>.
+        ]]>
+    </string>
+    <string name="faq_calls">
+        <![CDATA[
+        Activa <b>Filtrado</b> > <b>Chamadas</b> e permite <b>SpamBlocker Extended</b> como aplicación de filtrado de chamadas. <br>
+        <br>
+        <title><b>En cada chamada entrante</b></title> <br>
+        1. As regras compróbanse por <b>prioridade</b>: regras básicas (Contactos, Base de datos, STIR, Chamada repetida…), despois as <b>Regras de número</b> sobre o número e as <b>Regras de mensaxe</b> sobre o nome de quen chama. <br>
+        2. A primeira regra que coincide decide. <br>
+        3. Sen coincidencias: a chamada soa como sempre. <br>
+        <br>
+        <title><b>Cando se bloquea</b></title> <br>
+        A chamada xestiónase segundo o <b>Tipo de Bloqueo</b>: <b>Rexeitar</b>, <b>Silenciar</b> ou <b>Colgar</b>. <br>
+        Rexístrase na lapela <b>Chamada</b>, para que poidas revisala e crear unha regra a partir dela. <br>
+        <br>
+        <title><b>Consello</b></title> <br>
+        Usa <b>Probar</b> en Configuración para ver que regra activaría un número.
+        ]]>
+    </string>
+    <string name="faq_sms">
+        <![CDATA[
+        Activa <b>Filtrado</b> > <b>SMS/MMS</b>. <b>SpamBlocker Extended</b> non precisa ser a aplicación de SMS predeterminada. <br>
+        <br>
+        <title><b>En cada SMS entrante</b></title> <br>
+        1. As <b>Regras de número</b> comproban o remitente e as <b>Regras de mensaxe</b> a mensaxe, xunto coas regras básicas (Contactos, Base de datos…), por <b>prioridade</b>. <br>
+        2. <highlight>Permitido</highlight>: <b>SpamBlocker Extended</b> mostra a notificación. <br>
+        3. <error>Bloqueado</error>: sen notificación, ou unha silenciosa, segundo a regra. <br>
+        <br>
+        <warn>Nota</warn> <br>
+        - A mensaxe segue na túa aplicación de SMS: só se filtra, non se elimina. <br>
+        - Desactiva as notificacións da túa aplicación de SMS para non recibilas dúas veces. <br>
+        - As <b>MMS</b> (tamén as mensaxes de grupo) compróbanse só polo texto. <br>
+        - As mensaxes RCS / de chat non son SMS: fíltraas con <b>Notificacións</b>.
+        ]]>
+    </string>
+    <string name="faq_notifications">
+        <![CDATA[
+        Activa <b>Filtrado</b> > <b>Notificacións</b>, concede <b>Acceso a Notificacións</b> e escolle as aplicacións coa icona xunto ao interruptor. <br>
+        <br>
+        <title><b>En cada notificación desas aplicacións</b></title> <br>
+        1. As <b>Regras de número</b> e de <b>mensaxe</b> con <b>Título</b> / <b>Corpo</b> activado compróbanse contra ela. <br>
+        2. Os números de teléfono atopados no Título / Corpo compróbanos <b>Contactos</b> e <b>Base de datos</b>, segundo a súa configuración de Título / Corpo. <br>
+        3. Decide a primeira coincidencia por <b>prioridade</b>. Un contacto no Título (permitir, <priority>10</priority>) gaña a un número de spam no Corpo (bloquear, <priority>0</priority>). <br>
+        4. <error>Bloqueado</error>: a notificación descártase. A mensaxe en si segue na aplicación. <br>
+        <br>
+        <title><b>Correo de voz</b></title> <br>
+        <b>Notificación de Correo de Voz</b> extrae o número de quen chama da notificación dunha aplicación de correo de voz e compróbao como unha chamada. <br>
+        <br>
+        <title><b>Consello</b></title> <br>
+        Para escoitar só as notificacións desexadas, desactiva o son propio da aplicación e usa <b>Alertas</b> para as <highlight>permitidas</highlight>.
+        ]]>
+    </string>
+    <string name="wiki">Wiki</string>
+</resources>

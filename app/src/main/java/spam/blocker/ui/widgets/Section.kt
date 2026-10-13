@@ -44,6 +44,9 @@ fun Section(
     // Optional content shown at the far right of the header row, e.g. status icons + a toggle switch.
     headerTrailing: (@Composable () -> Unit)? = null,
 
+    // No gap between the title and the content, e.g. when the content starts with its own row label.
+    compact: Boolean = false,
+
     content: @Composable () -> Unit,
 ) {
     val cardColor = bgColor.slightDiff()
@@ -67,7 +70,10 @@ fun Section(
                             .let {
                                 if (isCollapsible) it.clickable { onToggleCollapse?.invoke() } else it
                             }
-                            .padding(horizontal = 14.dp, vertical = 12.dp)
+                            .padding(
+                                start = 14.dp, end = 14.dp,
+                                top = 12.dp, bottom = if (compact) 0.dp else 12.dp,
+                            )
                     ) {
                         if (isCollapsible) {
                             GreyIcon16(
@@ -102,7 +108,10 @@ fun Section(
                     }
                     Box(
                         modifier = M
-                            .padding(horizontal = 14.dp, vertical = 10.dp)
+                            .padding(
+                                start = 14.dp, end = 14.dp,
+                                top = if (compact) 0.dp else 10.dp, bottom = 10.dp,
+                            )
                             .wrapContentHeight()
                     ) {
                         content()

@@ -4,12 +4,13 @@
     <string name="contact_name">Kişi Adı</string>
     <string name="help_contacts">
         <![CDATA[
-        Kişi numaralarına izin ver. <br>
+        Rehberdeki numaralara izin ver. <br>
         <br>
-        Hem aramalara hem de SMS mesajlarına uygulanır. <br>
+        Ayarlarında, İzin Ver ve Engelle için ayrı ayrı neye uygulanacağını seçin: Aramalar, SMS, MMS ve bir bildirimin Başlık veya Gövdesinde bulunan numaralar. <br>
+        Rehberde olmayanları engellerken Gövde hariç hepsi varsayılan olarak açıktır: bir mesajın gövdesindeki numara genellikle gönderen değil, içeriğin kendisidir. <br>
         <br>
         <priority><b>Varsayılan Öncelik</b></priority>: <br>
-        &ensp; İzin: <priority><b>10</b></priority> <br>
+        &ensp; İzin Ver: <priority><b>10</b></priority> <br>
         &ensp; Engelle: <priority><b>0</b></priority>
         ]]>
     </string>

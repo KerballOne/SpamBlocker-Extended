@@ -81,39 +81,23 @@
     <string name="faq"><short>PMF</short></string>
     <string name="faq_priority">
     <![CDATA[
-        Cada filtre té el seu valor de prioritat, com indica el terme, determina l\'ordre en què es comprova la trucada. <br>
+        Les regles es comproven de la prioritat <b>més alta</b> a la més baixa. La primera regla que coincideix decideix: permetre o bloquejar. <br>
         <br>
-        Per defecte, <br>
+        <title><b>Valors per defecte</b></title> <br>
+        &ensp; <priority>20</priority> <title>Mode Reunió</title> <br>
+        &ensp; <priority>10</priority> Regles de <highlight>Permetre</highlight>: Contactes, Trucada repetida, Recents… <br>
+        &ensp; <priority>0</priority> Regles de <error>Bloquejar</error>: No contactes, STIR, Base de dades <br>
+        &ensp; <priority>-1</priority> <title>Consulta instantània</title>, només després de superar totes les regles locals <br>
         <br>
-        - <highlight>Regles de la llista blanca</highlight> tenen prioritat <priority>10</priority> <br>
-        &ensp; <sample>Per exemple: Contactes, Trucada repetida, Aplicacions recents, etc </sample><br>
+        Per tant, per defecte, permetre guanya a bloquejar. <br>
+        Les Regles de número i de missatge poden fer servir qualsevol prioritat. <br>
         <br>
-        - <error>Regles de la llista negra</error> tenen prioritat <priority>0</priority> <br>
-        &ensp; <sample>Per exemple: STIR, Base de dades, etc </sample> <br>
+        <title><b>Consells</b></title> <br>
+        - <sample>Bloquejar un número encara que truqui dues vegades</sample>: prioritat per sobre de <priority>10</priority>. <br>
+        - <sample>Permetre un número fins i tot en una reunió</sample>: per sobre de <priority>20</priority>. <br>
+        - <sample>Provar una regla nova</sample>: <priority>999</priority>, perquè res més no interfereixi. <br>
         <br>
-        Quan ambdues estan habilitades, les regles de la llista blanca sobreescriuen les de la llista negra ja que 10 > 0. <br>
-        <br>
-        Per a regles regex, la prioritat es pot establir a qualsevol número entre <priority>-2147483648</priority>
-          i <priority>2147483647</priority>. <br>
-        Regles diferents poden tenir la mateixa prioritat sempre que siguin del mateix tipus, però,
-          <warn><b>mai assignis la mateixa prioritat tant a les regles de la llista blanca
-          com a les de la llista negra</b></warn>, ja que pot provocar un comportament aleatori. <br>
-        <br>
-        La funció <title>Mode de reunió</title> té prioritat <priority>20</priority> per defecte,
-          perquè ha de bloquejar qualsevol trucada durant una reunió. <br>
-        I <priority>-1</priority> per a <title>Consulta instantània</title>,
-          de manera que només es comprova després que la trucada hagi superat tots els filtres locals. <br>
-        <br>
-        <b>Casos d\'ús</b> de personalització de la prioritat: <br>
-        <br>
-        - <sample>Bloqueja sempre un número concret, independentment de si es repeteix</sample> <br>
-         &ensp; Estableix una regla amb prioritat > 10 per sobreescriure <title>Trucada repetida</title>. <br>
-        <br>
-        - <sample>Permet sempre un número</sample> <br>
-         &ensp; Estableix-la a > 20 per sobreescriure <title>Mode de reunió</title>. <br>
-        <br>
-        - <sample>Prova una regla regex</sample> <br>
-         &ensp; Estableix-la a 999 per sobreescriure tots els altres filtres i no haver de desactivar-los temporalment un per un.
+        <warn><b>No donis mai la mateixa prioritat a una regla de permetre i a una de bloquejar</b></warn>, el resultat és imprevisible.
     ]]>
     </string>
 </resources>

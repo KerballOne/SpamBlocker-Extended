@@ -81,38 +81,23 @@
     <string name="faq"><short>FAQ</short></string>
     <string name="faq_priority">
     <![CDATA[
-        Chaque filtre possède une valeur de priorité, comme le terme l\'indique, elle détermine l\'ordre dans lequel l\'appel est vérifié. <br>
+        Les règles sont vérifiées de la priorité la <b>plus haute</b> à la plus basse. La première règle qui correspond décide : autoriser ou bloquer. <br>
         <br>
-        Par défaut, <br>
+        <title><b>Par défaut</b></title> <br>
+        &ensp; <priority>20</priority> <title>Mode réunion</title> <br>
+        &ensp; <priority>10</priority> Règles <highlight>Autoriser</highlight> : Contacts, Appel répété, Applications récentes… <br>
+        &ensp; <priority>0</priority> Règles <error>Bloquer</error> : Non-contacts, STIR, Base de données <br>
+        &ensp; <priority>-1</priority> <title>Requête instantanée</title>, seulement après le passage de toutes les règles locales <br>
         <br>
-        - <highlight>règles de liste blanche</highlight> ont une priorité <priority>10</priority> <br>
-        &ensp; <sample>Par ex. Contacts, RepeatedCall, RecentApps, etc </sample><br>
+        Par défaut, autoriser l\'emporte donc sur bloquer. <br>
+        Les règles de numéros et de messages peuvent utiliser n\'importe quelle priorité. <br>
         <br>
-        - <error>règles de liste noire</error> ont une priorité <priority>0</priority> <br>
-        &ensp; <sample>Par ex. STIR, Database, etc </sample> <br>
+        <title><b>Astuces</b></title> <br>
+        - <sample>Bloquer un numéro même s\'il appelle deux fois</sample> : priorité supérieure à <priority>10</priority>. <br>
+        - <sample>Autoriser un numéro même en réunion</sample> : supérieure à <priority>20</priority>. <br>
+        - <sample>Tester une nouvelle règle</sample> : <priority>999</priority>, pour que rien d\'autre n\'interfère. <br>
         <br>
-        Lorsqu\'elles sont toutes les deux activées, les règles de liste blanche prévalent sur les règles de liste noire car 10 > 0. <br>
-        <br>
-        Pour les règles regex, la priorité peut être définie à n\'importe quel nombre entre <priority>-2147483648</priority>
-          et <priority>2147483647</priority>. <br>
-        Des règles différentes peuvent avoir la même priorité tant qu\'elles sont du même type, cependant,
-          <warn><b>n\'attribuez jamais la même priorité aux règles de liste blanche et de liste noire</b></warn>, cela peut entraîner un comportement aléatoire. <br>
-        <br>
-        La fonctionnalité <title>Mode Réunion</title> a une priorité <priority>20</priority> par défaut,
-          car elle doit bloquer tous les appels pendant une réunion. <br>
-        Et <priority>-1</priority> pour <title>Recherche Instantanée</title>,
-          de sorte qu\'elle ne soit vérifiée qu\'après que l\'appel a traversé tous les filtres locaux. <br>
-        <br>
-        <b>Cas d\'utilisation</b> de la personnalisation de la priorité : <br>
-        <br>
-        - <sample>Bloquer toujours un number particulier, quel que soit le nombre de répétitions</sample> <br>
-         &ensp; Définissez une règle avec une priorité > 10 pour remplacer <title>Appel Répété</title>. <br>
-        <br>
-        - <sample>Autoriser toujours un number</sample> <br>
-         &ensp; Définissez-la à > 20 pour remplacer <title>Mode Réunion</title>. <br>
-        <br>
-        - <sample>Tester une règle regex</sample> <br>
-         &ensp; Définissez-la à 999 pour remplacer tous les autres filtres afin de ne pas devoir les désactiver temporairement un par un.
+        <warn><b>Ne donnez jamais la même priorité à une règle d\'autorisation et à une règle de blocage</b></warn>, le résultat est imprévisible.
     ]]>
     </string>
 </resources>

@@ -4,9 +4,10 @@
     <string name="contact_name">Nome do contacto</string>
     <string name="help_contacts">
         <![CDATA[
-        Permitir números de contacto. <br>
+        Permitir os números dos contactos. <br>
         <br>
-        Aplica tanto a chamadas como a mensaxes SMS. <br>
+        Escolle a que se aplica na súa configuración, por separado para Permitir e Bloquear: chamadas, SMS, MMS e números atopados no título ou no corpo dunha notificación. <br>
+        Todo está activado por defecto, agás o corpo para bloquear non contactos: un número no corpo dunha mensaxe adoita ser o seu contido, non o remitente. <br>
         <br>
         <priority><b>Prioridade predeterminada</b></priority>: <br>
         &ensp; Permitir: <priority><b>10</b></priority> <br>

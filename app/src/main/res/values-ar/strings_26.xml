@@ -10,56 +10,45 @@
     <string name="import_numbers">استيراد الأرقام</string>
     <string name="faq_import_numbers">
     <![CDATA[
-        استيراد الأرقام من الملفات المحلية أو البعيدة باستخدام سير العمل. <br>
+        استورد الأرقام من ملف أو رابط URL إلى <b>قاعدة البيانات</b> أو إلى <b>قاعدة رقم</b> باستخدام سير عمل. <br>
         <br>
-        <title><b>إعداد نموذجي</b></title>: <br>
+        <title><b>الخطوات</b></title> <br>
+        1. <minor><b>قراءة ملف</b></minor> أو <minor><b>طلب HTTP</b></minor>: الحصول على المحتوى. <br>
+        2. <minor><b>تحليل CSV</b></minor> أو <minor><b>تحليل XML</b></minor> أو <minor><b>استخراج تعبير منتظم</b></minor>: الحصول على الأرقام. <br>
+        3. <minor><b>استبدال الرقم</b></minor> (اختياري): تصحيح التنسيق، مثلًا <b>123#####</b> → <b>123.*</b> <br>
+        4. <minor><b>استيراد إلى قاعدة بيانات الرسائل غير المرغوب فيها</b></minor> أو <minor><b>استيراد إلى قاعدة Regex</b></minor>. <br>
         <br>
-        1. <minor><b>قراءة ملف</b></minor> / <minor><b>طلب Http</b></minor> <br>
-          &ensp; الحصول على محتوى الملف. <br>
-          <br>
-        2. <minor><b>تحليل CSV</b></minor> / <minor><b>تحليل XML</b></minor> / <minor><b>استخراج Regex</b></minor> <br>
-          &ensp; تحليله والحصول على قائمة بالأرقام. <br>
-          <br>
-        3. <minor><b>استبدال الرقم</b></minor> (اختياري) <br>
-          &ensp; تعديل تنسيق الرقم <br>
-          &ensp; حالة الاستخدام: <br>
-          <sample>
-            &emsp; عند ترحيل الأرقام من تطبيقات أخرى، قم بتحويل التنسيقات مثل <b>123#####</b> إلى regex <b>123.....</b> أو <b>123.*</b> <br>
-          </sample>
-          <br>
-        4. <minor><b>استيراد إلى قاعدة بيانات المكالمات المزعجة</b></minor> / <minor><b>استيراد إلى قاعدة Regex</b></minor> <br>
+        أضف مشغّل <b>جدول</b> لإبقاء القائمة محدّثة. <br>
         <br>
-        <br>
-        <title><b>أمثلة</b></title>: <br>
-          - الإعداد المسبق <no_translate><b>FTC-DNC</b></no_translate> <br>
-        <br>
-        المزيد من الأمثلة عبر الإنترنت: <br>
-          - <a href=\"%s\">نص عادي</a> <br>
-          - <a href=\"%s\">CSV</a> <br>
-          - <a href=\"%s\">XML</a> <br>
-          - <a href=\"%s\">JSON</a> - JsonPath غير مدعوم حتى الآن، استخدم <minor><b>استخراج Regex</b></minor> بدلاً من ذلك.
+        <title><b>أمثلة</b></title> <br>
+        &ensp; القالب المسبق <no_translate><b>FTC-DNC</b></no_translate> <br>
+        &ensp; <a href=\"%s\">نص عادي</a> · <a href=\"%s\">CSV</a> · <a href=\"%s\">XML</a> · <a href=\"%s\">JSON</a> <br>
+        &ensp; (JSON: استخدم <minor><b>استخراج تعبير منتظم</b></minor>، فـ JsonPath غير مدعوم.)
     ]]>
     </string>
     <string name="faq_regex">
     <![CDATA[
-        درس Regex للمبرمجين المبتدئين. <br>
+        تستخدم القواعد التعبيرات النمطية (regex) لمطابقة الأرقام والنصوص. <br>
         <br>
-        <title><b>مستوى الدخول - البدل</b></title> <br>
-        &ensp; كلما أردت استخدام حرف بدل <sample><b>*</b></sample>، ضع نقطة <sample><b>.</b></sample> قبله، مثل <sample><b>.*</b></sample>، وهذا يغطي معظم حالات الاستخدام. <br>
+        <title><b>الأساسيات</b></title> <br>
+        &ensp; <sample><b>.*</b></sample> أي شيء: <sample>1800.*</sample> يبدأ بـ 1800 <br>
+        &ensp; <sample><b>|</b></sample> أو: <sample>.*(prize|winner).*</sample> <br>
+        &ensp; <sample><b>\\d</b></sample> رقم واحد: <sample>\\d{6}</sample> ستة أرقام <br>
+        &ensp; <sample><b>\\.</b></sample> نقطة فعلية، <sample><b>\\+</b></sample> علامة زائد فعلية <br>
         <br>
-        <title><b>متقدم - استخدام الذكاء الاصطناعي</b></title> <br>
-        &ensp; على سبيل المثال، للحصول على regex التالي لرموز التحقق عبر الرسائل القصيرة: <br>
-        &ensp; <sample>.*(verification|validation).*code.*\\d{5,6}.*</sample> <br>
+        يجب أن تطابق القاعدة الرقم أو الرسالة <b>بالكامل</b>، لذا أحط الكلمات بـ <sample>.*</sample> أو فعّل علامة <b>يحتوي</b>. <br>
+        تتجاهل المطابقة حالة الأحرف ما لم يكن <b>حساس لحالة الأحرف</b> مفعّلًا. <br>
+        استخدم <b>اختبار</b> في الإعدادات لتجربة القاعدة قبل الاعتماد عليها. <br>
         <br>
-        اسأل الذكاء الاصطناعي: <br>
+        <title><b>دع الذكاء الاصطناعي يكتبها</b></title> <br>
+        مثال على الطلب: <br>
         <sample>
         %s
         </sample>
         <br>
         <br>
-        <highlight><b>جربه عبر الإنترنت</b></highlight> <br>
-          &ensp; 1. <a href=\"copy\"><big>انسخ الموجه أعلاه</big></a> <br>
-          &ensp; 2. <a href=\"try_it\"><big>شغّل الذكاء الاصطناعي عبر الإنترنت</big></a> <br>
+        &ensp; 1. <a href=\"copy\"><big>نسخ الطلب</big></a> <br>
+        &ensp; 2. <a href=\"try_it\"><big>فتح الذكاء الاصطناعي عبر الإنترنت</big></a> <br>
     ]]>
     </string>
     <string name="ai_regex_prompt">

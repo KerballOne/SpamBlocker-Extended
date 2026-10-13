@@ -423,12 +423,34 @@ class Contact : IConfig {
     var isExcusive = false
     var permissivePriority = 0
     var strictPriority = 0
+    // Apply to: Calls / SMS / MMS / Title / Body (defaults as in SharedPref, for backups made
+    //  before these existed)
+    var allowForCall = true
+    var allowForSms = true
+    var allowForMms = true
+    var allowForTitle = true
+    var allowForBody = true
+    var blockForCall = true
+    var blockForSms = true
+    var blockForMms = true
+    var blockForTitle = true
+    var blockForBody = false
     override fun load(ctx: Context) {
         val spf = spf.Contact(ctx)
         enabled = spf.isEnabled
         isExcusive = spf.isStrict
         permissivePriority = spf.lenientPriority
         strictPriority = spf.strictPriority
+        allowForCall = spf.allowForCall
+        allowForSms = spf.allowForSms
+        allowForMms = spf.allowForMms
+        allowForTitle = spf.allowForTitle
+        allowForBody = spf.allowForBody
+        blockForCall = spf.blockForCall
+        blockForSms = spf.blockForSms
+        blockForMms = spf.blockForMms
+        blockForTitle = spf.blockForTitle
+        blockForBody = spf.blockForBody
     }
 
     override fun apply(ctx: Context) {
@@ -438,6 +460,16 @@ class Contact : IConfig {
             isStrict = me.isExcusive
             lenientPriority = me.permissivePriority
             strictPriority = me.strictPriority
+            allowForCall = me.allowForCall
+            allowForSms = me.allowForSms
+            allowForMms = me.allowForMms
+            allowForTitle = me.allowForTitle
+            allowForBody = me.allowForBody
+            blockForCall = me.blockForCall
+            blockForSms = me.blockForSms
+            blockForMms = me.blockForMms
+            blockForTitle = me.blockForTitle
+            blockForBody = me.blockForBody
         }
     }
 }
@@ -484,6 +516,12 @@ class SpamDB : IConfig {
     var expiryEnabled = true
     var priority = 0
     var ttl = 90
+    // Apply to: Calls / SMS / MMS / Title / Body (default on, for backups made before these existed)
+    var forCall = true
+    var forSms = true
+    var forMms = true
+    var forTitle = true
+    var forBody = true
 
     override fun load(ctx: Context) {
         val spf = spf.SpamDB(ctx)
@@ -491,6 +529,11 @@ class SpamDB : IConfig {
         expiryEnabled = spf.isExpiryEnabled
         priority = spf.priority
         ttl = spf.ttl
+        forCall = spf.forCall
+        forSms = spf.forSms
+        forMms = spf.forMms
+        forTitle = spf.forTitle
+        forBody = spf.forBody
     }
 
     override fun apply(ctx: Context) {
@@ -500,6 +543,11 @@ class SpamDB : IConfig {
             isExpiryEnabled = me.expiryEnabled
             priority = me.priority
             ttl = me.ttl
+            forCall = me.forCall
+            forSms = me.forSms
+            forMms = me.forMms
+            forTitle = me.forTitle
+            forBody = me.forBody
         }
     }
 }

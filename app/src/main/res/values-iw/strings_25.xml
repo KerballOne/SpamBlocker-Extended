@@ -80,37 +80,23 @@
     <string name="faq"><short>שאלות</short></string>
     <string name="faq_priority">
     <![CDATA[
-        לכל מסנן יש ערך עדיפות, כפי שהמונח מרמז, הוא קובע את סדר הבדיקה של השיחה. <br>
+        הכללים נבדקים מהעדיפות <b>הגבוהה ביותר</b> לנמוכה ביותר. הכלל הראשון שתואם מכריע: לאפשר או לחסום. <br>
         <br>
-        בברירת מחדל, <br>
+        <title><b>ברירות מחדל</b></title> <br>
+        &ensp; <priority>20</priority> <title>מצב פגישה</title> <br>
+        &ensp; <priority>10</priority> כללי <highlight>אפשר</highlight>: אנשי קשר, שיחה חוזרת, אפליקציות אחרונות… <br>
+        &ensp; <priority>0</priority> כללי <error>חסום</error>: לא-אנשי קשר, STIR, מסד נתונים <br>
+        &ensp; <priority>-1</priority> <title>שאילתה מיידית</title>, רק לאחר שכל הכללים המקומיים עברו <br>
         <br>
-        - <highlight>Whitelist rules</highlight> have priority <priority>10</priority> <br>
-        &ensp; <sample>לדוגמה: אנשי קשר, RepeatedCall, RecentApps, וכו\' </sample><br>
+        כך שכברירת מחדל, אפשור גובר על חסימה. <br>
+        כללי מספרים וכללי הודעות יכולים להשתמש בכל עדיפות. <br>
         <br>
-        - <error>Blacklist rules</error> have priority <priority>0</priority> <br>
-        &ensp; <sample>לדוגמה: STIR, Database, וכו\' </sample> <br>
+        <title><b>טיפים</b></title> <br>
+        - <sample>לחסום מספר גם אם הוא מתקשר פעמיים</sample>: עדיפות מעל <priority>10</priority>. <br>
+        - <sample>לאפשר מספר גם בזמן פגישה</sample>: מעל <priority>20</priority>. <br>
+        - <sample>לבדוק כלל חדש</sample>: <priority>999</priority>, כדי ששום דבר אחר לא יפריע. <br>
         <br>
-        כאשר שניהם מופעלים, כללי רשימת ההיתרים יעלו על כללי רשימת החסימות מכיוון ש-10 > 0. <br>
-        <br>
-        לכללי regex, ניתן להגדיר את העדיפות לכל מספר בין <priority>-2147483648</priority>
-          ו-<priority>2147483647</priority>. <br>
-        כללים שונים יכולים לחלוק את אותה עדיפות כל עוד הם מאותו סוג, אך לעולם אל תקצה את אותה עדיפות גם לכללי רשימת ההיתרים וגם לכללי רשימת החסימות, זה עלול לגרום להתנהגות אקראית. <br>
-        <br>
-        התכונה <title>Meeting Mode</title> בעלת עדיפות <priority>20</priority> בברירת מחדל,
-          מכיוון שהיא אמורה לחסום כל שיחה במהלך פגישה. <br>
-        ו-<priority>-1</priority> עבור <title>Instant Query</title>,
-          כך שהיא נבדקת רק לאחר שהשיחה עברה את כל המסננים המקומיים. <br>
-        <br>
-        <b>Use cases</b> of customizing the priority: <br>
-        <br>
-        - <sample>תמיד לחסום מספר מסוים, ללא קשר אם הוא חוזר</sample> <br>
-         &ensp; הגדר כלל עם עדיפות > 10 כדי לדרוס <title>Repeated Call</title>. <br>
-        <br>
-        - <sample>תמיד לאפשר מספר</sample> <br>
-         &ensp; הגדר אותו ל- > 20 כדי לדרוס <title>Meeting Mode</title>. <br>
-        <br>
-        - <sample>בדוק כלל regex</sample> <br>
-         &ensp; הגדר אותו ל-999 כדי לדרוס את כל המסננים האחרים כך שלא תצטרך להשבית אותם זמנית אחד אחרי השני.
+        <warn><b>לעולם אל תתנו לכלל אפשור ולכלל חסימה את אותה עדיפות</b></warn>, התוצאה בלתי צפויה.
     ]]>
     </string>
 </resources>

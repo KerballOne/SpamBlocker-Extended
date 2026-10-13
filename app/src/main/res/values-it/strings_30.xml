@@ -1,0 +1,73 @@
+<resources>
+    <string name="calls">Chiamate</string>
+    <string name="notifications">Notifiche</string>
+    <string name="apply_to_notifications">Applica alle notifiche</string>
+    <string name="title_short">Titolo</string>
+    <string name="body_short">Corpo</string>
+    <string name="help_notification_screening">
+        <![CDATA[
+        Filtra le notifiche delle app scelte con il selettore di icone a destra. <br>
+        <br>
+        Le regole numero e messaggio con <b>Titolo</b> / <b>Corpo</b> attivato in <b>Applica alle notifiche</b> vengono verificate sulla notifica, come per un vero SMS in arrivo. <br>
+        Se il risultato è <b>Blocca</b>, la notifica viene rimossa. <br>
+        <br>
+        I numeri di telefono nel <b>Titolo</b> / <b>Corpo</b> della notifica vengono verificati anche dalle Regole di base <b>Contatti</b> (quando si bloccano i non contatti) e <b>Database</b>, se <b>Titolo</b> / <b>Corpo</b> è attivo nelle loro impostazioni, senza bisogno di una regola numero. <br>
+        <br>
+        Funziona indipendentemente dall\'interruttore <b>SMS</b> sopra e richiede il permesso <b>Accesso Notifiche</b>. <br>
+        <br>
+        Le notifiche di alcune app potrebbero non essere rimosse abbastanza in fretta da evitare un breve avviso (suono/vibrazione) dell\'app originale prima che <b>SpamBlocker Extended</b> possa intervenire. <br>
+        Se è fastidioso, puoi disattivare le notifiche di quell\'app nelle impostazioni di sistema e usare invece gli <b>Avvisi</b> per essere avvisato solo delle notifiche esplicitamente <b>consentite</b>.
+        ]]>
+    </string>
+    <string name="faq_calls">
+        <![CDATA[
+        Attiva <b>Filtro</b> > <b>Chiamate</b> e consenti <b>SpamBlocker Extended</b> come app di filtro chiamate. <br>
+        <br>
+        <title><b>A ogni chiamata in arrivo</b></title> <br>
+        1. Le regole vengono verificate per <b>priorità</b>: Regole di base (Contatti, Database, STIR, Chiamata ripetuta…), poi le <b>Regole del numero</b> sul numero e le <b>Regole del messaggio</b> sul nome del chiamante. <br>
+        2. La prima regola che corrisponde decide. <br>
+        3. Nessuna corrispondenza: la chiamata squilla normalmente. <br>
+        <br>
+        <title><b>Quando viene bloccata</b></title> <br>
+        La chiamata viene gestita secondo il <b>Tipo di blocco</b>: <b>Rifiuta</b>, <b>Silenzia</b> o <b>Riaggancia</b>. <br>
+        Viene registrata nella scheda <b>Chiamate</b>, così puoi rivederla e crearne una regola. <br>
+        <br>
+        <title><b>Suggerimento</b></title> <br>
+        Usa <b>Prova</b> nelle Impostazioni per vedere quale regola colpirebbe un numero.
+        ]]>
+    </string>
+    <string name="faq_sms">
+        <![CDATA[
+        Attiva <b>Filtro</b> > <b>SMS/MMS</b>. <b>SpamBlocker Extended</b> non deve essere l\'app SMS predefinita. <br>
+        <br>
+        <title><b>A ogni SMS in arrivo</b></title> <br>
+        1. Le <b>Regole del numero</b> verificano il mittente e le <b>Regole del messaggio</b> il messaggio, insieme alle Regole di base (Contatti, Database…), per <b>priorità</b>. <br>
+        2. <highlight>Consentito</highlight>: <b>SpamBlocker Extended</b> mostra la notifica. <br>
+        3. <error>Bloccato</error>: nessuna notifica, o una silenziosa, come impostato nella regola. <br>
+        <br>
+        <warn>Nota</warn> <br>
+        - Il messaggio resta comunque nella tua app SMS, viene solo filtrato, non eliminato. <br>
+        - Disattiva le notifiche della tua app SMS per non riceverle due volte. <br>
+        - Gli <b>MMS</b> (anche i messaggi di gruppo) vengono verificati solo in base al testo. <br>
+        - I messaggi RCS / chat non sono SMS: filtrali invece con <b>Notifiche</b>.
+        ]]>
+    </string>
+    <string name="faq_notifications">
+        <![CDATA[
+        Attiva <b>Filtro</b> > <b>Notifiche</b>, concedi l\'<b>Accesso Notifiche</b> e scegli le app con l\'icona accanto all\'interruttore. <br>
+        <br>
+        <title><b>A ogni notifica da quelle app</b></title> <br>
+        1. Le <b>Regole del numero</b> e <b>del messaggio</b> con <b>Titolo</b> / <b>Corpo</b> attivo vengono verificate su di essa. <br>
+        2. I numeri di telefono trovati nel Titolo / Corpo vengono verificati da <b>Contatti</b> e <b>Database</b>, secondo le loro impostazioni Titolo / Corpo. <br>
+        3. Decide la prima corrispondenza per <b>priorità</b>. Un contatto nel Titolo (consenti, <priority>10</priority>) prevale su un numero spam nel Corpo (blocca, <priority>0</priority>). <br>
+        4. <error>Bloccato</error>: la notifica viene rimossa. Il messaggio stesso resta nell\'app. <br>
+        <br>
+        <title><b>Segreteria</b></title> <br>
+        <b>Notifica Segreteria</b> estrae il numero del chiamante dalla notifica di un\'app di segreteria e lo verifica come una chiamata. <br>
+        <br>
+        <title><b>Suggerimento</b></title> <br>
+        Per sentire solo le notifiche desiderate, disattiva il suono dell\'app stessa e usa gli <b>Avvisi</b> per quelle <highlight>consentite</highlight>.
+        ]]>
+    </string>
+    <string name="wiki">Wiki</string>
+</resources>

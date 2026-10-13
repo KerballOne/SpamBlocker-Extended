@@ -36,6 +36,7 @@ import spam.blocker.service.bot.QuickTile
 import spam.blocker.service.bot.SmsEvent
 import spam.blocker.service.bot.SmsThrottling
 import spam.blocker.service.bot.executeAll
+import spam.blocker.service.isPhoneLength
 import spam.blocker.ui.darken
 import spam.blocker.ui.setting.regex.RegexMode.ModeType
 import spam.blocker.util.A
@@ -75,6 +76,18 @@ class CheckContext(
     //  Used by RegexRuleChecker.isEnabled() to gate on the Title/Body "Apply to"
     //  flags instead of the SMS/MMS ones.
     val isNotificationScreening: Boolean = false,
+    // For Notification Screening: which part of the notification `smsContent` is, for Text
+    //  Rules' Title/Body options. null: either part, e.g. Voicemail Notification, which picks
+    //  its own parts to search.
+    val notificationField: NotificationField? = null,
+    // Which part `rawNumber` was found in, for the Basic Rules' and Number Rules' Title/Body
+    //  options. Usually the same part, but a Body without a number is checked with the
+    //  Title's number.
+    val numberField: NotificationField? = notificationField,
+    // The number was found inside other text in the Title, e.g. "Order 12345678 shipped",
+    //  so it may not be a phone number at all: Non-Contact doesn't block it. A sender's
+    //  number is usually the whole Title.
+    val isLooseNumber: Boolean = false,
     val logger: ILogger? = null,
     val startTimeMillis: Long = System.currentTimeMillis(),
     val checkers: List<IChecker>,
@@ -214,6 +227,54 @@ object Preprocessors { // for namespace only
             }
     }
 }
+
+// For a notification, the "number" is whatever was found in it, which may be
+//  non-number text (its title, when only a Text Rule matched, e.g. a contact's name
+//  or "2 new messages") or too short to be a phone number (e.g. a short code).
+//  There's nothing to look up in Contacts then, so Non-Contact mustn't block it.
+private fun hasNumberToLookUp(cCtx: CheckContext): Boolean {
+    return !cCtx.isNotificationScreening || isPhoneLength(cCtx.rawNumber)
+}
+
+enum class NotificationField { Title, Body }
+
+// A number found in a notification, the text checked along with it by Text Rules and the
+//  part that text is (null: either), and the part the number was found in.
+// See CheckContext.numberField and isLooseNumber.
+class NumberCandidate(
+    val number: String,
+    val field: NotificationField?,
+    val messageBody: String,
+    val numberField: NotificationField? = field,
+    val isLooseNumber: Boolean = false,
+)
+
+// A Basic Rule's "Apply to" options: Calls / SMS / MMS / Title / Body.
+class ApplyTo(
+    val call: Boolean,
+    val sms: Boolean,
+    val mms: Boolean,
+    val title: Boolean,
+    val body: Boolean,
+) {
+    // Whether it's on for what's being checked.
+    fun appliesTo(cCtx: CheckContext): Boolean {
+        return when {
+            cCtx.isNotificationScreening -> when (cCtx.numberField) {
+                NotificationField.Title -> title
+                NotificationField.Body -> body
+                null -> title || body
+            }
+            cCtx.smsContent != null -> if (cCtx.isMms) mms else sms
+            else -> call
+        }
+    }
+}
+
+private fun spf.SpamDB.applyTo() = ApplyTo(forCall, forSms, forMms, forTitle, forBody)
+private fun spf.Contact.allowApplyTo() = ApplyTo(allowForCall, allowForSms, allowForMms, allowForTitle, allowForBody)
+private fun spf.Contact.blockApplyTo() = ApplyTo(blockForCall, blockForSms, blockForMms, blockForTitle, blockForBody)
+
 class Checker { // for namespace only
 
     class PassedByDefault(
@@ -378,8 +439,8 @@ class Checker { // for namespace only
     private class SpamDB(
         private val ctx: Context,
     ) : IChecker {
-        override fun isConfigEnabledForCall() = spf.SpamDB(ctx).isEnabled
-        override fun isConfigEnabledForSms() = isConfigEnabledForCall()
+        override fun isConfigEnabledForCall() = spf.SpamDB(ctx).let { it.isEnabled && it.forCall }
+        override fun isConfigEnabledForSms() = spf.SpamDB(ctx).let { it.isEnabled && it.forSms }
         override fun listType() = false
 
         override fun desc() =
@@ -393,7 +454,8 @@ class Checker { // for namespace only
             val rawNumber = cCtx.rawNumber
             val logger = cCtx.logger
 
-            if (!isConfigEnabledForCall())
+            val spf = spf.SpamDB(ctx)
+            if (!spf.isEnabled || !spf.applyTo().appliesTo(cCtx))
                 return null
 
             logChecking(ctx, logger)
@@ -434,8 +496,8 @@ class Checker { // for namespace only
     private class Contact(
         private val ctx: Context,
     ) : IChecker {
-        override fun isConfigEnabledForCall() = spf.Contact(ctx).isEnabled
-        override fun isConfigEnabledForSms() = isConfigEnabledForCall()
+        override fun isConfigEnabledForCall() = spf.Contact(ctx).let { it.isEnabled && it.allowForCall }
+        override fun isConfigEnabledForSms() = spf.Contact(ctx).let { it.isEnabled && it.allowForSms }
         override fun priority(): Int {
             return spf.Contact(ctx).lenientPriority
         }
@@ -447,7 +509,14 @@ class Checker { // for namespace only
             val rawNumber = cCtx.rawNumber
             val logger = cCtx.logger
 
-            if (!isConfigEnabledForCall() || !Permission.contacts.isGranted) {
+            val spf = spf.Contact(ctx)
+            if (!spf.isEnabled || !Permission.contacts.isGranted) {
+                return null
+            }
+            if (!spf.allowApplyTo().appliesTo(cCtx)) {
+                return null
+            }
+            if (!hasNumberToLookUp(cCtx)) {
                 return null
             }
 
@@ -471,9 +540,12 @@ class Checker { // for namespace only
     ) : IChecker {
         override fun isConfigEnabledForCall(): Boolean {
             val spf = spf.Contact(ctx)
-            return spf.isEnabled && spf.isStrict
+            return spf.isEnabled && spf.isStrict && spf.blockForCall
         }
-        override fun isConfigEnabledForSms() = isConfigEnabledForCall()
+        override fun isConfigEnabledForSms(): Boolean {
+            val spf = spf.Contact(ctx)
+            return spf.isEnabled && spf.isStrict && spf.blockForSms
+        }
         override fun listType() = false
 
         override fun desc() =
@@ -490,7 +562,14 @@ class Checker { // for namespace only
             if (!Permission.contacts.isGranted) {
                 return null
             }
-            if (!isConfigEnabledForCall()) {
+            val spf = spf.Contact(ctx)
+            if (!spf.isEnabled || !spf.isStrict) {
+                return null
+            }
+            if (!spf.blockApplyTo().appliesTo(cCtx)) {
+                return null
+            }
+            if (!hasNumberToLookUp(cCtx) || cCtx.isLooseNumber) {
                 return null
             }
 
@@ -1097,8 +1176,16 @@ class Checker { // for namespace only
 
             if (isForSMS && cCtx.isNotificationScreening) {
                 // The content being checked is a notification's title/body, not a real
-                //  SMS/MMS, so gate on the Title/Body "Apply to" flags instead of SMS/MMS.
-                if (!rule.isForNotifTitle() && !rule.isForNotifBody())
+                //  SMS/MMS, so gate on the Title/Body "Apply to" flags instead of SMS/MMS:
+                //  the one for the part being checked, if known: the text's for a Text Rule,
+                //  the number's for a Number Rule.
+                val field = if (this is Content) cCtx.notificationField else cCtx.numberField
+                val applies = when (field) {
+                    NotificationField.Title -> rule.isForNotifTitle()
+                    NotificationField.Body -> rule.isForNotifBody()
+                    null -> rule.isForNotifTitle() || rule.isForNotifBody()
+                }
+                if (!applies)
                     return false
             } else {
                 if (isForSMS && cCtx.isMms && !rule.isForMms()) // for mms
@@ -1849,12 +1936,14 @@ class Checker { // for namespace only
             checkers: List<IChecker> = defaultSmsCheckers(ctx),
             isMms: Boolean = false,
             isNotificationScreening: Boolean = false,
+            notificationField: NotificationField? = null,
         ): Triple<ICheckResult, String?, Boolean> {
             val cCtx = CheckContext(
                 rawNumber = rawNumber,
                 smsContent = messageBody,
                 isMms = isMms,
                 isNotificationScreening = isNotificationScreening,
+                notificationField = notificationField,
                 logger = logger,
                 checkers = checkers,
                 simSlot = simSlot,
@@ -1878,6 +1967,79 @@ class Checker { // for namespace only
 
             return Triple(
                 result, fullScreeningLog, cCtx.anythingWrong
+            )
+        }
+
+        // Like `checkSms`, for several numbers found in one notification (with the part each
+        //  was found in). The rules are tried in priority order, and the first one that matches
+        //  any of the numbers decides, e.g. a contact's number in the Title (Contacts Allow,
+        //  priority 10) wins over a non-contact's number in the Body (Block, priority 0).
+        // Returns the deciding candidate along with the result.
+        fun checkNotificationNumbers(
+            ctx: Context,
+            candidates: List<NumberCandidate>,
+            logger: ILogger?,
+            checkers: List<IChecker>,
+            simSlot: Int? = null,
+        ): Pair<NumberCandidate, Triple<ICheckResult, String?, Boolean>> {
+            val contexts = candidates.map { candidate ->
+                candidate to CheckContext(
+                    rawNumber = candidate.number,
+                    smsContent = candidate.messageBody,
+                    isNotificationScreening = true,
+                    notificationField = candidate.field,
+                    numberField = candidate.numberField,
+                    isLooseNumber = candidate.isLooseNumber,
+                    logger = logger,
+                    checkers = checkers,
+                    simSlot = simSlot,
+                )
+            }
+
+            // pre-process the checkers, temporarily modify rules
+            // Once per notification, not once per number, so a workflow's actions don't run
+            //  repeatedly for the same notification. With the first number: the Title's (the
+            //  sender, in most apps) if any. Rule changes apply to all numbers (shared checkers).
+            contexts.firstOrNull()?.let { (_, cCtx) ->
+                Preprocessors.smsBots(ctx).forEach { it.preprocess(cCtx) }
+            }
+
+            // sort by priority desc
+            val sortedCheckers = checkers.sortedByDescending {
+                it.priority()
+            }
+
+            // Checked once per notification, not once per number:
+            //  - SMS Bomb records each matching message's time, so a second check of the same
+            //    notification would count as a repeat. Checked with all of its text.
+            //  - Instant Query is a network request, only for the first phone number.
+            val firstCandidate = candidates.first()
+            val wholeCtx = CheckContext(
+                rawNumber = firstCandidate.number,
+                smsContent = candidates.map { it.messageBody }.filter { it.isNotEmpty() }
+                    .distinct().joinToString(" "),
+                isNotificationScreening = true,
+                logger = logger,
+                checkers = checkers,
+                simSlot = simSlot,
+            )
+            fun contextsFor(checker: IChecker) = when (checker) {
+                is SmsBomb -> listOf(firstCandidate to wholeCtx)
+                is InstantQuery -> contexts.filter { isPhoneLength(it.first.number) }.take(1)
+                else -> contexts
+            }
+
+            // There will definitely be a match, as the last checker is PassedByDefault and it always allows.
+            val (candidate, result) = sortedCheckers.firstNotNullOf { checker ->
+                contextsFor(checker).firstNotNullOfOrNull { (candidate, cCtx) ->
+                    checker.check(cCtx)?.let { candidate to it }
+                }
+            }
+            val fullScreeningLog = logger?.getSaveableOutput()?.serialize() ?: ""
+
+            return candidate to Triple(
+                result, fullScreeningLog,
+                contexts.any { it.second.anythingWrong } || wholeCtx.anythingWrong
             )
         }
 
@@ -1910,6 +2072,17 @@ class Checker { // for namespace only
                 add(NonContact(ctx))
                 add(SpamDB(ctx))
             }
+        }
+
+        // The checker set used when only the Basic Rules with "Apply to: Notifications" apply to
+        //  a notification (a phone number in its title, with no Number/Text Rule matching it).
+        fun basicNotificationCheckers(ctx: Context): List<IChecker> {
+            return listOf(
+                PassedByDefault(ctx),
+                Contact(ctx),
+                NonContact(ctx),
+                SpamDB(ctx),
+            )
         }
 
         // It returns a list<String>, all the Strings will be shown as Buttons in the notification.

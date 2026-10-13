@@ -20,6 +20,7 @@ import spam.blocker.ui.setting.LabeledRow
 import spam.blocker.ui.widgets.AnimatedVisibleV
 import spam.blocker.ui.widgets.GreyIcon16
 import spam.blocker.ui.widgets.PopupDialog
+import spam.blocker.ui.widgets.PopupSize
 import spam.blocker.ui.widgets.PriorityBox
 import spam.blocker.ui.widgets.PriorityLabel
 import spam.blocker.ui.widgets.ResIcon
@@ -43,16 +44,29 @@ fun Contacts() {
     var isStrict by remember { mutableStateOf(spf.isStrict) }
     var priLenient by remember { mutableIntStateOf(spf.lenientPriority) }
     var priStrict by remember { mutableIntStateOf(spf.strictPriority) }
+    val allowForCall = remember { mutableStateOf(spf.allowForCall) }
+    val allowForSms = remember { mutableStateOf(spf.allowForSms) }
+    val allowForMms = remember { mutableStateOf(spf.allowForMms) }
+    val allowForTitle = remember { mutableStateOf(spf.allowForTitle) }
+    val allowForBody = remember { mutableStateOf(spf.allowForBody) }
+    val blockForCall = remember { mutableStateOf(spf.blockForCall) }
+    val blockForSms = remember { mutableStateOf(spf.blockForSms) }
+    val blockForMms = remember { mutableStateOf(spf.blockForMms) }
+    val blockForTitle = remember { mutableStateOf(spf.blockForTitle) }
+    val blockForBody = remember { mutableStateOf(spf.blockForBody) }
 
     val popupTrigger = rememberSaveable { mutableStateOf(false) }
 
     PopupDialog(
         trigger = popupTrigger,
+        // As wide as the Number Rule editor, so all 5 Apply to chips fit on one row.
+        popupSize = PopupSize(maxWidthPercentage = 0.9f, minWidthDp = 340, maxWidthDp = 600),
         content = {
             Column {
                 Section(
                     title = Str(R.string.contacts),
-                    bgColor = C.dialogBg
+                    bgColor = C.dialogBg,
+                    compact = true,
                 ) {
                     Column {
                         LabeledRow(R.string.allow) {
@@ -63,10 +77,19 @@ fun Contacts() {
                         }
 
                         AnimatedVisibleV(isEnabled) {
-                            PriorityBox(priLenient) { newValue, hasError ->
-                                if (!hasError) {
-                                    priLenient = newValue!!
-                                    spf.lenientPriority = newValue
+                            Column {
+                                PriorityBox(priLenient) { newValue, hasError ->
+                                    if (!hasError) {
+                                        priLenient = newValue!!
+                                        spf.lenientPriority = newValue
+                                    }
+                                }
+                                ApplyToTypes(allowForCall, allowForSms, allowForMms, allowForTitle, allowForBody) {
+                                    spf.allowForCall = allowForCall.value
+                                    spf.allowForSms = allowForSms.value
+                                    spf.allowForMms = allowForMms.value
+                                    spf.allowForTitle = allowForTitle.value
+                                    spf.allowForBody = allowForBody.value
                                 }
                             }
                         }
@@ -75,7 +98,8 @@ fun Contacts() {
                 AnimatedVisibleV(isEnabled) {
                     Section(
                         title = Str(R.string.non_contacts),
-                        bgColor = C.dialogBg
+                        bgColor = C.dialogBg,
+                        compact = true,
                     ) {
                         Column {
                             LabeledRow(R.string.block) {
@@ -86,10 +110,19 @@ fun Contacts() {
                             }
 
                             AnimatedVisibleV(isStrict) {
-                                PriorityBox(priStrict) { newValue, hasError ->
-                                    if (!hasError) {
-                                        priStrict = newValue!!
-                                        spf.strictPriority = newValue
+                                Column {
+                                    PriorityBox(priStrict) { newValue, hasError ->
+                                        if (!hasError) {
+                                            priStrict = newValue!!
+                                            spf.strictPriority = newValue
+                                        }
+                                    }
+                                    ApplyToTypes(blockForCall, blockForSms, blockForMms, blockForTitle, blockForBody) {
+                                        spf.blockForCall = blockForCall.value
+                                        spf.blockForSms = blockForSms.value
+                                        spf.blockForMms = blockForMms.value
+                                        spf.blockForTitle = blockForTitle.value
+                                        spf.blockForBody = blockForBody.value
                                     }
                                 }
                             }

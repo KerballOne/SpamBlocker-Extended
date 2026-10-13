@@ -4,9 +4,10 @@
     <string name="contact_name">联系人姓名</string>
     <string name="help_contacts">
         <![CDATA[
-      放行联系人号码。 <br>
+        放行联系人号码。 <br>
         <br>
-      同时适用于来电和短信。 <br>
+        可在其设置中分别为允许和阻止选择适用范围：通话、短信、彩信，以及通知标题或正文中的号码。 <br>
+        默认全部开启，但阻止非联系人时的正文除外：消息正文中的号码通常是内容，而不是发送者。 <br>
         <br>
         <priority><b>默认优先级</b></priority>: <br>
         &ensp; 允许: <priority><b>10</b></priority> <br>

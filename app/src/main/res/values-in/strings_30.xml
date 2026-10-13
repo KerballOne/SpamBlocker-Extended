@@ -1,0 +1,73 @@
+<resources>
+    <string name="calls">Panggilan</string>
+    <string name="notifications">Notifikasi</string>
+    <string name="apply_to_notifications">Terapkan ke Notifikasi</string>
+    <string name="title_short">Judul</string>
+    <string name="body_short">Isi</string>
+    <string name="help_notification_screening">
+        <![CDATA[
+        Menyaring notifikasi dari aplikasi yang dipilih dengan pemilih ikon di sebelah kanan. <br>
+        <br>
+        Aturan Nomor dan Aturan Pesan dengan <b>Judul</b> / <b>Isi</b> diaktifkan di bawah <b>Terapkan ke Notifikasi</b> diperiksa terhadap notifikasi, sama seperti SMS masuk sungguhan. <br>
+        Jika hasilnya <b>Blokir</b>, notifikasi akan ditutup. <br>
+        <br>
+        Nomor telepon di <b>Judul</b> / <b>Isi</b> notifikasi juga diperiksa oleh Aturan Dasar <b>Kontak</b> (saat memblokir bukan kontak) dan <b>Basis Data</b>, jika <b>Judul</b> / <b>Isi</b> aktif di pengaturannya, tanpa perlu Aturan Nomor. <br>
+        <br>
+        Ini bekerja terlepas dari sakelar <b>SMS</b> di atas, dan memerlukan izin <b>Akses Notifikasi</b>. <br>
+        <br>
+        Notifikasi beberapa aplikasi mungkin tidak ditutup cukup cepat untuk menghindari peringatan singkat (suara/getar) dari aplikasi aslinya sebelum <b>SpamBlocker Extended</b> dapat bertindak. <br>
+        Jika ini mengganggu, Anda dapat menonaktifkan notifikasi aplikasi tersebut di pengaturan sistem, lalu gunakan <b>Peringatan</b> untuk diberi tahu hanya tentang notifikasi yang secara eksplisit <b>diizinkan</b>.
+        ]]>
+    </string>
+    <string name="faq_calls">
+        <![CDATA[
+        Aktifkan <b>Penyaringan</b> > <b>Panggilan</b> dan izinkan <b>SpamBlocker Extended</b> sebagai aplikasi penyaringan panggilan. <br>
+        <br>
+        <title><b>Pada setiap panggilan masuk</b></title> <br>
+        1. Aturan diperiksa berdasarkan <b>prioritas</b>: Aturan Dasar (Kontak, Basis Data, STIR, Panggilan Berulang…), lalu <b>Aturan Nomor</b> pada nomor dan <b>Aturan Pesan</b> pada nama penelepon. <br>
+        2. Aturan pertama yang cocok menentukan. <br>
+        3. Tidak ada yang cocok: panggilan berdering seperti biasa. <br>
+        <br>
+        <title><b>Saat diblokir</b></title> <br>
+        Panggilan ditangani sesuai <b>Jenis Blokir</b>: <b>Tolak</b>, <b>Senyap</b> atau <b>Tutup Panggilan</b>. <br>
+        Panggilan dicatat di tab <b>Panggilan</b>, sehingga Anda dapat meninjaunya dan membuat aturan darinya. <br>
+        <br>
+        <title><b>Tips</b></title> <br>
+        Gunakan <b>Uji</b> di Pengaturan untuk melihat aturan mana yang akan terkena oleh sebuah nomor.
+        ]]>
+    </string>
+    <string name="faq_sms">
+        <![CDATA[
+        Aktifkan <b>Penyaringan</b> > <b>SMS/MMS</b>. <b>SpamBlocker Extended</b> tidak perlu menjadi aplikasi SMS bawaan. <br>
+        <br>
+        <title><b>Pada setiap SMS masuk</b></title> <br>
+        1. <b>Aturan Nomor</b> memeriksa pengirim dan <b>Aturan Pesan</b> memeriksa pesan, bersama Aturan Dasar (Kontak, Basis Data…), berdasarkan <b>prioritas</b>. <br>
+        2. <highlight>Diizinkan</highlight>: <b>SpamBlocker Extended</b> menampilkan notifikasi. <br>
+        3. <error>Diblokir</error>: tanpa notifikasi, atau notifikasi senyap, sesuai pengaturan aturan. <br>
+        <br>
+        <warn>Catatan</warn> <br>
+        - Pesan tetap ada di aplikasi SMS Anda, hanya disaring, tidak dihapus. <br>
+        - Nonaktifkan notifikasi aplikasi SMS Anda agar tidak menerimanya dua kali. <br>
+        - <b>MMS</b> (termasuk pesan grup) hanya diperiksa berdasarkan teks. <br>
+        - Pesan RCS / chat bukan SMS: saring dengan <b>Notifikasi</b> sebagai gantinya.
+        ]]>
+    </string>
+    <string name="faq_notifications">
+        <![CDATA[
+        Aktifkan <b>Penyaringan</b> > <b>Notifikasi</b>, berikan <b>Akses Notifikasi</b>, dan pilih aplikasi dengan ikon di sebelah sakelar. <br>
+        <br>
+        <title><b>Pada setiap notifikasi dari aplikasi tersebut</b></title> <br>
+        1. <b>Aturan Nomor</b> dan <b>Aturan Pesan</b> dengan <b>Judul</b> / <b>Isi</b> aktif diperiksa terhadapnya. <br>
+        2. Nomor telepon yang ditemukan di Judul / Isi diperiksa oleh <b>Kontak</b> dan <b>Basis Data</b>, sesuai pengaturan Judul / Isi masing-masing. <br>
+        3. Kecocokan pertama berdasarkan <b>prioritas</b> yang menentukan. Kontak di Judul (izinkan, <priority>10</priority>) mengalahkan nomor spam di Isi (blokir, <priority>0</priority>). <br>
+        4. <error>Diblokir</error>: notifikasi ditutup. Pesannya sendiri tetap ada di aplikasi. <br>
+        <br>
+        <title><b>Pesan Suara</b></title> <br>
+        <b>Notifikasi Pesan Suara</b> mengambil nomor penelepon dari notifikasi aplikasi pesan suara dan memeriksanya seperti panggilan. <br>
+        <br>
+        <title><b>Tips</b></title> <br>
+        Agar hanya mendengar notifikasi yang diinginkan, matikan suara aplikasi itu sendiri dan gunakan <b>Peringatan</b> untuk yang <highlight>diizinkan</highlight>.
+        ]]>
+    </string>
+    <string name="wiki">Wiki</string>
+</resources>

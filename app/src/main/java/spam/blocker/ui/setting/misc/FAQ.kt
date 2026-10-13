@@ -49,13 +49,28 @@ fun FAQ() {
                 val items = remember {
                     listOf(
                         FaqBox(
+                            label = ctx.getString(R.string.calls),
+                            color = C.teal200,
+                            helpTooltip = ctx.getString(R.string.faq_calls)
+                        ),
+                        FaqBox(
+                            label = ctx.getString(R.string.sms),
+                            color = C.teal200,
+                            helpTooltip = ctx.getString(R.string.faq_sms)
+                        ),
+                        FaqBox(
+                            label = ctx.getString(R.string.notifications),
+                            color = C.teal200,
+                            helpTooltip = ctx.getString(R.string.faq_notifications)
+                        ),
+                        FaqBox(
                             label = ctx.getString(R.string.priority),
                             color = C.priority,
                             helpTooltip = ctx.getString(R.string.faq_priority)
                         ),
                         FaqBox(
                             label = ctx.getString(R.string.regex_pattern),
-                            color = C.teal200,
+                            color = C.warning,
                             helpTooltip = ctx.getString(R.string.faq_regex).format(
                                 ctx.getString(R.string.ai_regex_prompt)
                             ),

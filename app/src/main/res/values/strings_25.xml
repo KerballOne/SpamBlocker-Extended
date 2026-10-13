@@ -81,39 +81,23 @@
     <string name="faq"><short>FAQ</short></string>
     <string name="faq_priority">
     <![CDATA[
-        Each filter has a priority value, which determines the order in which calls are checked. <br>
+        Rules are checked from the <b>highest</b> priority to the lowest. The first rule that matches decides: allow or block. <br>
         <br>
-        By default, <br>
+        <title><b>Defaults</b></title> <br>
+        &ensp; <priority>20</priority> <title>Meeting Mode</title> <br>
+        &ensp; <priority>10</priority> <highlight>Allow</highlight> rules: Contacts, Repeated Call, Recent Apps… <br>
+        &ensp; <priority>0</priority> <error>Block</error> rules: Non-Contacts, STIR, Database <br>
+        &ensp; <priority>-1</priority> <title>Instant Query</title>, only after all local rules pass <br>
         <br>
-        - <highlight>Whitelist rules</highlight> have priority <priority>10</priority> <br>
-        &ensp; <sample>E.g. Contacts, RepeatedCall, RecentApps, etc </sample><br>
+        So by default, allow beats block. <br>
+        Number and Text Rules can use any priority. <br>
         <br>
-        - <error>Blacklist rules</error> have priority <priority>0</priority> <br>
-        &ensp; <sample>E.g. STIR, Database, etc </sample> <br>
+        <title><b>Tips</b></title> <br>
+        - <sample>Block a number even if it calls twice</sample>: priority above <priority>10</priority>. <br>
+        - <sample>Allow a number even in a meeting</sample>: above <priority>20</priority>. <br>
+        - <sample>Test a new rule</sample>: <priority>999</priority>, so nothing else gets in the way. <br>
         <br>
-        When they are both enabled, whitelist rules will override blacklist rules as 10 > 0. <br>
-        <br>
-        For regex rules, the priority can be set to any number between <priority>-2147483648</priority>
-          and <priority>2147483647</priority>. <br>
-        Different rules can have the same priority as long as they are the same type, however,
-          <warn><b>never assign the same priority to both
-          whitelist and blacklist rules</b></warn>, it can cause random behavior. <br>
-        <br>
-        The feature <title>Meeting Mode</title> has priority <priority>20</priority> by default,
-          because it\'s supposed to block any calls during a meeting. <br>
-        And <priority>-1</priority> for <title>Instant Query</title>,
-          so it only gets checked after the call has passed all local filters. <br>
-        <br>
-        <b>Use cases</b> of customizing the priority: <br>
-        <br>
-        - <sample>Always block a particular number, no matter if it repeats</sample> <br>
-         &ensp; Set a rule with priority > 10 to override <title>Repeated Call</title>. <br>
-        <br>
-        - <sample>Always allow a number</sample> <br>
-         &ensp; Set it to > 20 to override <title>Meeting Mode</title>. <br>
-        <br>
-        - <sample>Test a regex rule</sample> <br>
-         &ensp; Set it to 999 to override all other filters so you don\'t have to temporarily disable them one by one.
+        <warn><b>Never give an allow rule and a block rule the same priority</b></warn>, the result is unpredictable.
     ]]>
     </string>
 </resources>

@@ -80,35 +80,23 @@
     <string name="faq"><short>常見問答</short></string>
     <string name="faq_priority">
     <![CDATA[
-        每個過濾器都有其優先權值，顧名思義，它決定檢查通話的順序。 <br>
+        規則依優先順序從<b>最高</b>到最低進行檢查。第一條符合的規則決定允許或封鎖。 <br>
         <br>
-        預設情況下， <br>
+        <title><b>預設值</b></title> <br>
+        &ensp; <priority>20</priority> <title>會議模式</title> <br>
+        &ensp; <priority>10</priority> <highlight>允許</highlight>規則：聯絡人、重複來電、最近使用的應用程式… <br>
+        &ensp; <priority>0</priority> <error>封鎖</error>規則：非聯絡人、STIR、資料庫 <br>
+        &ensp; <priority>-1</priority> <title>即時查詢</title>，僅在通過所有本機規則後才進行 <br>
         <br>
-        - <highlight>白名單規則</highlight> 的優先權為 <priority>10</priority> <br>
-        &ensp; <sample>例如：聯絡人、重複通話、最近使用的應用程式等 </sample><br>
+        因此在預設情況下，允許優先於封鎖。 <br>
+        號碼規則和文字規則可使用任何優先順序。 <br>
         <br>
-        - <error>黑名單規則</error> 的優先權為 <priority>0</priority> <br>
-        &ensp; <sample>例如：STIR、資料庫等 </sample> <br>
+        <title><b>提示</b></title> <br>
+        - <sample>即使號碼來電兩次也要封鎖</sample>：優先順序高於 <priority>10</priority>。 <br>
+        - <sample>即使在會議中也允許某個號碼</sample>：高於 <priority>20</priority>。 <br>
+        - <sample>測試新規則</sample>：<priority>999</priority>，避免其他規則干擾。 <br>
         <br>
-        當兩者同時啟用時，白名單規則會覆蓋黑名單規則，因為 10 > 0。 <br>
-        <br>
-        對於正規表達式規則，優先權可設定為介於 <priority>-2147483648</priority>
-          與 <priority>2147483647</priority> 之間的任意數字。 <br>
-        只要屬於相同類型，不同規則可以擁有相同的優先權，然而，<warn><b>千萬不要同時為白名單與黑名單規則設定相同的優先權</b></warn>，否則可能導致不穩定的行為。 <br>
-        <br>
-        功能 <title>會議模式</title> 的預設優先權為 <priority>20</priority>，因為它應在會議期間阻擋所有通話。 <br>
-        而 <title>即時查詢</title> 的優先權為 <priority>-1</priority>，因此僅在通話通過所有本地過濾器後才會被檢查。 <br>
-        <br>
-        <b>自訂優先權的使用情境</b>： <br>
-        <br>
-        - <sample>始終阻擋特定號碼，無論是否重複</sample> <br>
-         &ensp; 設定優先權大於 10 的規則以覆蓋 <title>重複通話</title>。 <br>
-        <br>
-        - <sample>始終允許某個號碼</sample> <br>
-         &ensp; 設定優先權大於 20 以覆蓋 <title>會議模式</title>。 <br>
-        <br>
-        - <sample>測試正規表達式規則</sample> <br>
-         &ensp; 設定為 999 可覆蓋所有其他過濾器，免於逐一暫時停用它們。
+        <warn><b>切勿為允許規則和封鎖規則設定相同的優先順序</b></warn>，否則結果無法預測。
     ]]>
     </string>
 </resources>

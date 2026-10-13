@@ -10,56 +10,45 @@
     <string name="import_numbers">Імпорт номерів</string>
     <string name="faq_import_numbers">
     <![CDATA[
-        Імпорт номерів з локальних або віддалених файлів за допомогою робочих процесів. <br>
+        Імпортуйте номери з файлу чи URL до <b>Бази даних</b> або <b>Правила для номера</b> за допомогою робочого процесу. <br>
         <br>
-        <title><b>Типове налаштування</b></title>: <br>
+        <title><b>Кроки</b></title> <br>
+        1. <minor><b>Зчитати файл</b></minor> або <minor><b>HTTP запит</b></minor>: отримати вміст. <br>
+        2. <minor><b>Аналізувати CSV</b></minor>, <minor><b>Аналізувати XML</b></minor> або <minor><b>Витягнути за регулярним виразом</b></minor>: отримати номери. <br>
+        3. <minor><b>Замінити номер</b></minor> (опціонально): виправити формат, напр. <b>123#####</b> → <b>123.*</b> <br>
+        4. <minor><b>Імпорт до спам-бази даних</b></minor> або <minor><b>Імпорт як одне правило Regex</b></minor>. <br>
         <br>
-        1. <minor><b>Читання файлу</b></minor> / <minor><b>Http-запит</b></minor> <br>
-          &ensp; Отримати вміст файлу. <br>
-          <br>
-        2. <minor><b>Обробка CSV</b></minor> / <minor><b>Обробка XML</b></minor> / <minor><b>Витягнення Regex</b></minor> <br>
-          &ensp; Обробити його та отримати список номерів. <br>
-          <br>
-        3. <minor><b>Заміна номера</b></minor> (опціонально) <br>
-          &ensp; Змінити формат номера <br>
-          &ensp; Сценарій використання: <br>
-          <sample>
-            &emsp; При міграції номерів з інших додатків конвертуйте формати, наприклад <b>123#####</b>, у regex <b>123.....</b> або <b>123.*</b> <br>
-          </sample>
-          <br>
-        4. <minor><b>Імпорт у базу спаму</b></minor> / <minor><b>Імпорт у правило Regex</b></minor> <br>
+        Додайте тригер <b>Розклад</b>, щоб список залишався актуальним. <br>
         <br>
-        <br>
-        <title><b>Приклади</b></title>: <br>
-          - Попереднє налаштування <no_translate><b>FTC-DNC</b></no_translate> <br>
-        <br>
-        Більше онлайн-прикладів: <br>
-          - <a href=\"%s\">Простий текст</a> <br>
-          - <a href=\"%s\">CSV</a> <br>
-          - <a href=\"%s\">XML</a> <br>
-          - <a href=\"%s\">JSON</a> - JsonPath ще не підтримується, натомість використовуйте <minor><b>Витягнення Regex</b></minor>.
+        <title><b>Приклади</b></title> <br>
+        &ensp; Попереднє налаштування <no_translate><b>FTC-DNC</b></no_translate> <br>
+        &ensp; <a href=\"%s\">Простий текст</a> · <a href=\"%s\">CSV</a> · <a href=\"%s\">XML</a> · <a href=\"%s\">JSON</a> <br>
+        &ensp; (JSON: використовуйте <minor><b>Витягнути за регулярним виразом</b></minor>, JsonPath не підтримується.)
     ]]>
     </string>
     <string name="faq_regex">
     <![CDATA[
-        Посібник з regex для непрограмістів. <br>
+        Правила використовують regex для зіставлення номерів і тексту. <br>
         <br>
-        <title><b>Початковий рівень - Знак підстановки</b></title> <br>
-        &ensp; Щоразу, коли ви хочете використати знак підстановки <sample><b>*</b></sample>, ставте крапку <sample><b>.</b></sample> перед ним, наприклад <sample><b>.*</b></sample>, це має покрити більшість випадків використання. <br>
+        <title><b>Основи</b></title> <br>
+        &ensp; <sample><b>.*</b></sample> будь-що: <sample>1800.*</sample> починається з 1800 <br>
+        &ensp; <sample><b>|</b></sample> або: <sample>.*(prize|winner).*</sample> <br>
+        &ensp; <sample><b>\\d</b></sample> одна цифра: <sample>\\d{6}</sample> шість цифр <br>
+        &ensp; <sample><b>\\.</b></sample> справжня крапка, <sample><b>\\+</b></sample> справжній плюс <br>
         <br>
-        <title><b>Розширений - Використання ШІ</b></title> <br>
-        &ensp; Наприклад, щоб отримати наступний regex для SMS-верифікації: <br>
-        &ensp; <sample>.*(verification|validation).*code.*\\d{5,6}.*</sample> <br>
+        Правило має збігатися з <b>усім</b> номером або повідомленням, тож обгортайте слова в <sample>.*</sample> або ввімкніть прапорець <b>Містить</b>. <br>
+        Регістр ігнорується, якщо не ввімкнено <b>Чутливий до регістру</b>. <br>
+        Скористайтеся <b>Тест</b> у Налаштуваннях, щоб перевірити правило, перш ніж покладатися на нього. <br>
         <br>
-        Запитайте ШІ: <br>
+        <title><b>Нехай його напише ШІ</b></title> <br>
+        Приклад запиту: <br>
         <sample>
         %s
         </sample>
         <br>
         <br>
-        <highlight><b>Спробувати онлайн</b></highlight> <br>
-          &ensp; 1. <a href=\"copy\"><big>Скопіювати запит вище</big></a> <br>
-          &ensp; 2. <a href=\"try_it\"><big>Запустити онлайн ШІ</big></a> <br>
+        &ensp; 1. <a href=\"copy\"><big>Скопіювати запит</big></a> <br>
+        &ensp; 2. <a href=\"try_it\"><big>Відкрити онлайн ШІ</big></a> <br>
     ]]>
     </string>
     <string name="ai_regex_prompt">

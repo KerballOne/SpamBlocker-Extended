@@ -10,56 +10,45 @@
     <string name="import_numbers">Impor Nomor</string>
     <string name="faq_import_numbers">
     <![CDATA[
-        Impor nomor dari file lokal atau jarak jauh menggunakan alur kerja. <br>
+        Impor nomor dari berkas atau URL ke <b>Basis Data</b> atau <b>Aturan Nomor</b> dengan alur kerja. <br>
         <br>
-        <title><b>Pengaturan umum</b></title>: <br>
+        <title><b>Langkah</b></title> <br>
+        1. <minor><b>Baca Berkas</b></minor> atau <minor><b>Permintaan HTTP</b></minor>: ambil isinya. <br>
+        2. <minor><b>Urai CSV</b></minor>, <minor><b>Urai XML</b></minor> atau <minor><b>Ekstrak Regex</b></minor>: ambil nomornya. <br>
+        3. <minor><b>Ganti Nomor Telepon</b></minor> (opsional): perbaiki format, mis. <b>123#####</b> → <b>123.*</b> <br>
+        4. <minor><b>Impor ke Basis Data Spam</b></minor> atau <minor><b>Impor sebagai Satu Aturan Regex</b></minor>. <br>
         <br>
-        1. <minor><b>Baca File</b></minor> / <minor><b>Permintaan Http</b></minor> <br>
-          &ensp; Dapatkan konten file. <br>
-          <br>
-        2. <minor><b>Uraikan CSV</b></minor> / <minor><b>Uraikan XML</b></minor> / <minor><b>Ekstrak Regex</b></minor> <br>
-          &ensp; Uraikan dan dapatkan daftar nomor. <br>
-          <br>
-        3. <minor><b>Ganti Nomor</b></minor> (opsional) <br>
-          &ensp; Ubah format nomor <br>
-          &ensp; Kasus penggunaan: <br>
-        <sample>
-            &emsp; Saat memigrasi nomor dari aplikasi lain, konversi format seperti <b>123#####</b> ke regex <b>123.....</b> atau <b>123.*</b> <br>
-        </sample>
-          <br>
-        4. <minor><b>Impor ke Database Spam</b></minor> / <minor><b>Impor ke Aturan Regex</b></minor> <br>
+        Tambahkan pemicu <b>Jadwal</b> agar daftar tetap diperbarui. <br>
         <br>
-        <br>
-        <title><b>Contoh</b></title>: <br>
-          - Preset <no_translate><b>FTC-DNC</b></no_translate> <br>
-        <br>
-        Contoh online lainnya: <br>
-          - <a href=\"%s\">Teks biasa</a> <br>
-          - <a href=\"%s\">CSV</a> <br>
-          - <a href=\"%s\">XML</a> <br>
-          - <a href=\"%s\">JSON</a> - JsonPath belum didukung, gunakan <minor><b>Ekstrak Regex</b></minor> sebagai gantinya.
+        <title><b>Contoh</b></title> <br>
+        &ensp; Preset <no_translate><b>FTC-DNC</b></no_translate> <br>
+        &ensp; <a href=\"%s\">Teks biasa</a> · <a href=\"%s\">CSV</a> · <a href=\"%s\">XML</a> · <a href=\"%s\">JSON</a> <br>
+        &ensp; (JSON: gunakan <minor><b>Ekstrak Regex</b></minor>, JsonPath tidak didukung.)
     ]]>
     </string>
     <string name="faq_regex">
     <![CDATA[
-        Tutorial regex untuk non-programmer. <br>
+        Aturan memakai regex untuk mencocokkan nomor dan teks. <br>
         <br>
-        <title><b>Tingkat Dasar - Wildcard</b></title> <br>
-        &ensp; Setiap kali Anda ingin menggunakan wildcard <sample><b>*</b></sample>, letakkan titik <sample><b>.</b></sample> sebelumnya, seperti <sample><b>.*</b></sample>, ini seharusnya mencakup sebagian besar kasus penggunaan. <br>
+        <title><b>Dasar</b></title> <br>
+        &ensp; <sample><b>.*</b></sample> apa saja: <sample>1800.*</sample> diawali 1800 <br>
+        &ensp; <sample><b>|</b></sample> atau: <sample>.*(prize|winner).*</sample> <br>
+        &ensp; <sample><b>\\d</b></sample> satu digit: <sample>\\d{6}</sample> enam digit <br>
+        &ensp; <sample><b>\\.</b></sample> titik sungguhan, <sample><b>\\+</b></sample> plus sungguhan <br>
         <br>
-        <title><b>Lanjutan - Menggunakan AI</b></title> <br>
-        &ensp; Misalnya, untuk mendapatkan regex berikut untuk verifikasi SMS: <br>
-        &ensp; <sample>.*(verification|validation).*code.*\\d{5,6}.*</sample> <br>
+        Aturan harus cocok dengan nomor atau pesan <b>secara utuh</b>, jadi apit kata dengan <sample>.*</sample>, atau aktifkan opsi <b>Berisi</b>. <br>
+        Pencocokan mengabaikan huruf besar/kecil kecuali <b>Peka Huruf Besar-Kecil</b> aktif. <br>
+        Gunakan <b>Uji</b> di Pengaturan untuk mencoba aturan sebelum mengandalkannya. <br>
         <br>
-        Tanya AI: <br>
+        <title><b>Biarkan AI menuliskannya</b></title> <br>
+        Contoh prompt: <br>
         <sample>
         %s
         </sample>
         <br>
         <br>
-        <highlight><b>Coba online</b></highlight> <br>
-          &ensp; 1. <a href=\"copy\"><big>Salin prompt di atas</big></a> <br>
-          &ensp; 2. <a href=\"try_it\"><big>Luncurkan AI online</big></a> <br>
+        &ensp; 1. <a href=\"copy\"><big>Salin prompt</big></a> <br>
+        &ensp; 2. <a href=\"try_it\"><big>Buka AI online</big></a> <br>
     ]]>
     </string>
     <string name="ai_regex_prompt">

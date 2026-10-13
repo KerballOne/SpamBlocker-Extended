@@ -6,7 +6,8 @@
         <![CDATA[
         Allow contact numbers. <br>
         <br>
-        It applies to both calls and SMS messages. <br>
+        Choose what it applies to in its settings, separately for Allow and Block: Calls, SMS, MMS, and numbers found in a notification\'s Title or Body. <br>
+        All are on by default, except Body for blocking non-contacts: a number in a message\'s body is usually its content, not the sender. <br>
         <br>
         <priority><b>Default Priority</b></priority>: <br>
         &ensp; Allow: <priority><b>10</b></priority> <br>

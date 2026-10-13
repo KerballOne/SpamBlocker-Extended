@@ -4,9 +4,10 @@
     <string name="contact_name">Nom del contacte</string>
     <string name="help_contacts">
         <![CDATA[
-        Permetre números de contacte. <br>
+        Permet els números dels contactes. <br>
         <br>
-        S\'aplica tant a trucades com a missatges SMS. <br>
+        Tria a què s\'aplica a la seva configuració, per separat per a Permetre i Bloquejar: Trucades, SMS, MMS i números trobats al Títol o al Cos d\'una notificació. <br>
+        Tot està activat per defecte, excepte Cos en bloquejar no contactes: un número al cos d\'un missatge sol ser part del contingut, no el remitent. <br>
         <br>
         <priority><b>Prioritat per defecte</b></priority>: <br>
         &ensp; Permetre: <priority><b>10</b></priority> <br>

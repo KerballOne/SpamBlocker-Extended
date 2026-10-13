@@ -9,11 +9,11 @@
         <![CDATA[
         I numeri in questo database verranno bloccati.<br>
         <br>
-        Puoi integrare qualsiasi database pubblico, o anche più database, puoi anche importare numeri da file locali.<br>
+        Puoi integrare qualsiasi database pubblico, anche più di uno, e puoi anche importare numeri da file locali.<br>
         <br>
-        Controlla la sezione \"Automazione\" di seguito per sapere come pianificare un\'attività di importazione automatica.<br>
+        Consulta la sezione \"Automazione\" qui sotto per programmare un\'attività di importazione automatica.<br>
         <br>
-        Si applica sia alle chiamate che ai messaggi SMS.<br>
+        Scegli a cosa si applica nelle sue impostazioni: chiamate, SMS, MMS e numeri trovati nel titolo o nel corpo di una notifica (tutto attivo per impostazione predefinita).<br>
         <br>
         <priority><b>Priorità predefinita: 0</b></priority>
         ]]>

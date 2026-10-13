@@ -81,34 +81,23 @@
     <string name="faq"><short>SSS</short></string>
     <string name="faq_priority">
     <![CDATA[
-        Her filtre, terimin de belirttiği gibi, öncelik değerine sahiptir ve bu, aramanın kontrol edildiği sırayı belirler. <br>
+        Kurallar <b>en yüksek</b> öncelikten en düşüğe doğru kontrol edilir. Eşleşen ilk kural karar verir: izin ver veya engelle. <br>
         <br>
-        Varsayılan olarak, <br>
+        <title><b>Varsayılanlar</b></title> <br>
+        &ensp; <priority>20</priority> <title>Toplantı Modu</title> <br>
+        &ensp; <priority>10</priority> <highlight>İzin Ver</highlight> kuralları: Kişiler, Tekrarlanan Arama, Son Uygulama… <br>
+        &ensp; <priority>0</priority> <error>Engelle</error> kuralları: Rehberde Olmayan, STIR, Veritabanı <br>
+        &ensp; <priority>-1</priority> <title>Anında Sorgu</title>, yalnızca tüm yerel kurallar geçildikten sonra <br>
         <br>
-        - <highlight>Whitelist rules</highlight> önceliği <priority>10</priority> <br>
-        &ensp; <sample>Örn. Kişiler, TekrarlananArama, SonUygulamalar, vb </sample><br>
+        Yani varsayılan olarak izin verme, engellemeye üstün gelir. <br>
+        Numara ve Mesaj Kuralları herhangi bir öncelik kullanabilir. <br>
         <br>
-        - <error>Blacklist rules</error> önceliği <priority>0</priority> <br>
-        &ensp; <sample>Örn. STIR, Veritabanı, vb </sample> <br>
+        <title><b>İpuçları</b></title> <br>
+        - <sample>Bir numarayı iki kez arasa bile engelle</sample>: öncelik <priority>10</priority> üzerinde. <br>
+        - <sample>Bir numaraya toplantıdayken bile izin ver</sample>: <priority>20</priority> üzerinde. <br>
+        - <sample>Yeni bir kuralı test et</sample>: <priority>999</priority>, böylece başka hiçbir şey araya girmez. <br>
         <br>
-        Her ikisi de etkin olduğunda, whitelist kuralları blacklist kurallarını 10 > 0 olduğu için geçersiz kılar. <br>
-        <br>
-        Regex kuralları için öncelik, <priority>-2147483648</priority> ile <priority>2147483647</priority> arasında herhangi bir numaraya ayarlanabilir. <br>
-        Farklı kurallar aynı türde oldukları sürece aynı önceliğe sahip olabilir, ancak <warn><b>whitelist ve blacklist kurallarına aynı önceliği asla atamayın</b></warn>, bu rastgele davranışa neden olabilir. <br>
-        <br>
-        <title>Meeting Mode</title> özelliği, varsayılan olarak önceliği <priority>20</priority>’dir, çünkü toplantı sırasında tüm aramaları engellemesi gerekir. <br>
-        Ve <priority>-1</priority> <title>Instant Query</title> için, böylece arama tüm yerel filtrelerden geçtiğinde kontrol edilir. <br>
-        <br>
-        <b>Önceliği özelleştirmenin kullanım durumları</b>: <br>
-        <br>
-        - <sample>Tekrarlansa da belirli bir numarayı her zaman engelle</sample> <br>
-         &ensp; <title>Repeated Call</title> kuralını geçersiz kılmak için önceliği > 10 bir kural ayarlayın. <br>
-        <br>
-        - <sample>Bir numarayı her zaman izin ver</sample> <br>
-         &ensp; <title>Meeting Mode</title>’u geçersiz kılmak için önceliği > 20 yapın. <br>
-        <br>
-        - <sample>Bir regex kuralını test et</sample> <br>
-         &ensp; Diğer tüm filtreleri geçersiz kılmak için önceliği 999 yapın, böylece tek tek geçici olarak devre dışı bırakmanız gerekmez.
+        <warn><b>Bir izin kuralına ve bir engelleme kuralına asla aynı önceliği vermeyin</b></warn>, sonuç tahmin edilemez.
     ]]>
     </string>
 </resources>

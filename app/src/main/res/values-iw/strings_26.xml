@@ -10,56 +10,45 @@
     <string name="import_numbers">ייבא מספרים</string>
     <string name="faq_import_numbers">
     <![CDATA[
-        ייבוא מספרים מקבצים מקומיים או מרוחקים באמצעות זרימות עבודה. <br>
+        ייבאו מספרים מקובץ או מכתובת URL אל <b>מסד הנתונים</b> או אל <b>כלל מספר</b> באמצעות זרימת עבודה. <br>
         <br>
-        <title><b>הגדרה טיפוסית</b></title>: <br>
+        <title><b>שלבים</b></title> <br>
+        1. <minor><b>קרא קובץ</b></minor> או <minor><b>בקשת HTTP</b></minor>: קבלת התוכן. <br>
+        2. <minor><b>ניתוח CSV</b></minor>, <minor><b>ניתוח XML</b></minor> או <minor><b>חילוץ ביטוי רגולרי</b></minor>: קבלת המספרים. <br>
+        3. <minor><b>החלף מספר</b></minor> (אופציונלי): תיקון הפורמט, למשל <b>123#####</b> → <b>123.*</b> <br>
+        4. <minor><b>ייבוא למסד נתוני ספאם</b></minor> או <minor><b>ייבוא ככלל Regex יחיד</b></minor>. <br>
         <br>
-        1. <minor><b>קריאת קובץ</b></minor> / <minor><b>בקשת Http</b></minor> <br>
-          &ensp; קבלת תוכן הקובץ. <br>
-          <br>
-        2. <minor><b>ניתוח CSV</b></minor> / <minor><b>ניתוח XML</b></minor> / <minor><b>חילוץ Regex</b></minor> <br>
-          &ensp; ניתוח וקבלת רשימת מספרים. <br>
-          <br>
-        3. <minor><b>החלפת מספר</b></minor> (אופציונלי) <br>
-          &ensp; שינוי פורמט המספר <br>
-          &ensp; מקרה שימוש: <br>
-        <sample>
-            &emsp; בעת העברת מספרים מאפליקציות אחרות, המר פורמטים כמו <b>123#####</b> ל-regex <b>123.....</b> או <b>123.*</b> <br>
-        </sample>
-          <br>
-        4. <minor><b>ייבוא למסד נתוני ספאם</b></minor> / <minor><b>ייבוא לכלל Regex</b></minor> <br>
+        הוסיפו טריגר <b>לוח זמנים</b> כדי לשמור על הרשימה מעודכנת. <br>
         <br>
-        <br>
-        <title><b>דוגמאות</b></title>: <br>
-          - הגדרה קבועה מראש <no_translate><b>FTC-DNC</b></no_translate> <br>
-        <br>
-        עוד דוגמאות מקוונות: <br>
-          - <a href=\"%s\">טקסט פשוט</a> <br>
-          - <a href=\"%s\">CSV</a> <br>
-          - <a href=\"%s\">XML</a> <br>
-          - <a href=\"%s\">JSON</a> - JsonPath עדיין לא נתמך, השתמש ב-<minor><b>חילוץ Regex</b></minor> במקום.
+        <title><b>דוגמאות</b></title> <br>
+        &ensp; ההגדרה המוכנה <no_translate><b>FTC-DNC</b></no_translate> <br>
+        &ensp; <a href=\"%s\">טקסט פשוט</a> · <a href=\"%s\">CSV</a> · <a href=\"%s\">XML</a> · <a href=\"%s\">JSON</a> <br>
+        &ensp; (JSON: השתמשו ב<minor><b>חילוץ ביטוי רגולרי</b></minor>, JsonPath אינו נתמך.)
     ]]>
     </string>
     <string name="faq_regex">
     <![CDATA[
-        מדריך Regex למתחילים. <br>
+        הכללים משתמשים בביטויים רגולריים (regex) כדי להתאים מספרים וטקסט. <br>
         <br>
-        <title><b>רמת מתחילים - תו כללי</b></title> <br>
-        &ensp; בכל פעם שברצונך להשתמש בתו כללי <sample><b>*</b></sample>, שים נקודה <sample><b>.</b></sample> לפניו, כמו <sample><b>.*</b></sample>, זה אמור לכסות את רוב מקרי השימוש. <br>
+        <title><b>יסודות</b></title> <br>
+        &ensp; <sample><b>.*</b></sample> כל דבר: <sample>1800.*</sample> מתחיל ב-1800 <br>
+        &ensp; <sample><b>|</b></sample> או: <sample>.*(prize|winner).*</sample> <br>
+        &ensp; <sample><b>\\d</b></sample> ספרה אחת: <sample>\\d{6}</sample> שש ספרות <br>
+        &ensp; <sample><b>\\.</b></sample> נקודה ממשית, <sample><b>\\+</b></sample> פלוס ממשי <br>
         <br>
-        <title><b>מתקדם - שימוש בבינה מלאכותית</b></title> <br>
-        &ensp; למשל, כדי לקבל את ה-regex הבא לאימותי SMS: <br>
-        &ensp; <sample>.*(verification|validation).*code.*\\d{5,6}.*</sample> <br>
+        כלל חייב להתאים למספר או להודעה <b>במלואם</b>, לכן עטפו מילים ב-<sample>.*</sample>, או הפעילו את הדגל <b>מכיל</b>. <br>
+        ההתאמה מתעלמת מרישיות אלא אם <b>תלוי רישיות</b> מופעל. <br>
+        השתמשו ב<b>בדיקה</b> שבהגדרות כדי לנסות כלל לפני שסומכים עליו. <br>
         <br>
-        שאל בינה מלאכותית: <br>
+        <title><b>תנו ל-AI לכתוב אותו</b></title> <br>
+        הנחיה לדוגמה: <br>
         <sample>
         %s
         </sample>
         <br>
         <br>
-        <highlight><b>נסה זאת באינטרנט</b></highlight> <br>
-          &ensp; 1. <a href=\"copy\"><big>העתק את ההנחיה למעלה</big></a> <br>
-          &ensp; 2. <a href=\"try_it\"><big>הפעל את הבינה המלאכותית המקוונת</big></a> <br>
+        &ensp; 1. <a href=\"copy\"><big>העתק את ההנחיה</big></a> <br>
+        &ensp; 2. <a href=\"try_it\"><big>פתח את ה-AI המקוון</big></a> <br>
     ]]>
     </string>
     <string name="ai_regex_prompt">

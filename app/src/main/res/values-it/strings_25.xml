@@ -81,38 +81,23 @@
     <string name="faq"><short>FAQ</short></string>
     <string name="faq_priority">
     <![CDATA[
-        Ogni filtro ha il suo valore di priorità; come suggerisce il termine, determina l\'ordine in cui la chiamata viene controllata. <br>
+        Le regole vengono verificate dalla priorità <b>più alta</b> alla più bassa. La prima regola che corrisponde decide: consentire o bloccare. <br>
         <br>
-        Per impostazione predefinita, <br>
+        <title><b>Predefiniti</b></title> <br>
+        &ensp; <priority>20</priority> <title>Modalità Riunione</title> <br>
+        &ensp; <priority>10</priority> Regole <highlight>Consenti</highlight>: Contatti, Chiamata ripetuta, Applicazioni recenti… <br>
+        &ensp; <priority>0</priority> Regole <error>Blocca</error>: Non-Contatti, STIR, Database <br>
+        &ensp; <priority>-1</priority> <title>Query Istantanea</title>, solo dopo che tutte le regole locali sono passate <br>
         <br>
-        - <highlight>Whitelist rules</highlight> hanno priorità <priority>10</priority> <br>
-        &ensp; <sample>Ad es. Contatti, RepeatedCall, RecentApps, ecc </sample><br>
+        Quindi, per impostazione predefinita, consentire prevale su bloccare. <br>
+        Le regole numero e messaggio possono usare qualsiasi priorità. <br>
         <br>
-        - <error>Blacklist rules</error> hanno priorità <priority>0</priority> <br>
-        &ensp; <sample>Ad es. STIR, Database, ecc </sample> <br>
+        <title><b>Suggerimenti</b></title> <br>
+        - <sample>Bloccare un numero anche se chiama due volte</sample>: priorità superiore a <priority>10</priority>. <br>
+        - <sample>Consentire un numero anche durante una riunione</sample>: superiore a <priority>20</priority>. <br>
+        - <sample>Provare una nuova regola</sample>: <priority>999</priority>, così nient\'altro interferisce. <br>
         <br>
-        Quando sono entrambe abilitate, le regole della whitelist sovrascrivono quelle della blacklist poiché 10 > 0. <br>
-        <br>
-        Per le regole regex, la priorità può essere impostata a qualsiasi numero compreso tra <priority>-2147483648</priority>
-          e <priority>2147483647</priority>. <br>
-        Regole diverse possono avere la stessa priorità finché sono dello stesso tipo, tuttavia,
-          <warn><b>non assegnare mai la stessa priorità sia alle regole della whitelist sia a quelle della blacklist</b></warn>, poiché può causare comportamenti casuali. <br>
-        <br>
-        La funzionalità <title>Meeting Mode</title> ha priorità <priority>20</priority> per impostazione predefinita,
-          poiché dovrebbe bloccare tutte le chiamate durante una riunione. <br>
-        E <priority>-1</priority> per <title>Instant Query</title>,
-          così viene controllata solo dopo che la chiamata ha superato tutti i filtri locali. <br>
-        <br>
-        <b>Casi d\'uso</b> per personalizzare la priorità: <br>
-        <br>
-        - <sample>Blocca sempre un numero specifico, indipendentemente dal fatto che si ripeta</sample> <br>
-         &ensp; Imposta una regola con priorità > 10 per sovrascrivere <title>Repeated Call</title>. <br>
-        <br>
-        - <sample>Consenti sempre un numero</sample> <br>
-         &ensp; Impostala a > 20 per sovrascrivere <title>Meeting Mode</title>. <br>
-        <br>
-        - <sample>Testa una regola regex</sample> <br>
-         &ensp; Impostala a 999 per sovrascrivere tutti gli altri filtri, così non dovrai disabilitarli temporaneamente uno per uno.
+        <warn><b>Non dare mai la stessa priorità a una regola che consente e a una che blocca</b></warn>, il risultato è imprevedibile.
     ]]>
     </string>
 </resources>

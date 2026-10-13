@@ -13,7 +13,7 @@
         <br>
         Check the \"Automation\" section below for how to schedule an auto-import task.<br>
         <br>
-        It applies to both calls and SMS messages.<br>
+        Choose what it applies to in its settings: Calls, SMS, MMS, and numbers found in a notification\'s Title or Body (all on by default).<br>
         <br>
         <priority><b>Default Priority: 0</b></priority>
         ]]>

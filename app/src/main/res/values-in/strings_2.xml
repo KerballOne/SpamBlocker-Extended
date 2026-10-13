@@ -6,9 +6,10 @@
         <![CDATA[
         Izinkan nomor kontak. <br>
         <br>
-        Berlaku untuk panggilan dan pesan SMS. <br>
+        Pilih penerapannya di pengaturannya, terpisah untuk Izinkan dan Blokir: Panggilan, SMS, MMS, dan nomor yang ditemukan di Judul atau Isi notifikasi. <br>
+        Semua aktif secara bawaan, kecuali Isi untuk memblokir bukan kontak: nomor di isi pesan biasanya adalah kontennya, bukan pengirimnya. <br>
         <br>
-        <priority><b>Prioritas Default</b></priority>: <br>
+        <priority><b>Prioritas Bawaan</b></priority>: <br>
         &ensp; Izinkan: <priority><b>10</b></priority> <br>
         &ensp; Blokir: <priority><b>0</b></priority>
         ]]>

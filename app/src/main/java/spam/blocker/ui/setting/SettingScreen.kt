@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -23,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
@@ -48,6 +50,7 @@ import spam.blocker.ui.setting.misc.BackupRestore
 import spam.blocker.ui.setting.misc.FAQ
 import spam.blocker.ui.setting.misc.Language
 import spam.blocker.ui.setting.misc.Theme
+import spam.blocker.ui.setting.misc.Wiki
 import spam.blocker.ui.setting.quick.Alerts
 import spam.blocker.ui.setting.quick.Answered
 import spam.blocker.ui.setting.quick.BlockType
@@ -206,8 +209,8 @@ fun SettingScreen() {
                 ) {
                     Column {
                         Contacts()
-                        Stir()
                         SpamDB()
+                        Stir()
                         RepeatedCall()
                         Dialed()
                         Answered()
@@ -402,13 +405,18 @@ fun SettingScreen() {
                         Language()
                         Theme()
                         BackupRestore()
-                        SettingRow {
-                            RowVCenterSpaced(8) {
-                                FAQ()
-                                About()
-                            }
-                        }
                     }
+                }
+
+                // Help, always visible at the very bottom
+                Row(
+                    modifier = M.fillMaxWidth().padding(start = 16.dp, top = 4.dp, bottom = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    FAQ()
+                    Wiki()
+                    About()
                 }
             }
         }

@@ -10,57 +10,45 @@
     <string name="import_numbers">وارد کردن Numbers</string>
     <string name="faq_import_numbers">
     <![CDATA[
-        وارد کردن شماره‌ها از فایل‌های محلی یا راه دور با استفاده از گردش‌کارها. <br>
+        شماره‌ها را از یک فایل یا URL با یک جریان کار به <b>پایگاه داده</b> یا یک <b>قانون شماره</b> وارد کنید. <br>
         <br>
-        <title><b>یک تنظیم معمول</b></title>: <br>
+        <title><b>مراحل</b></title> <br>
+        1. <minor><b>خواندن فایل</b></minor> یا <minor><b>درخواست HTTP</b></minor>: دریافت محتوا. <br>
+        2. <minor><b>تجزیه CSV</b></minor>، <minor><b>تجزیه XML</b></minor> یا <minor><b>استخراج عبارت باقاعده</b></minor>: به‌دست آوردن شماره‌ها. <br>
+        3. <minor><b>جایگزینی شماره</b></minor> (اختیاری): اصلاح قالب، مثلاً <b>123#####</b> → <b>123.*</b> <br>
+        4. <minor><b>وارد کردن به پایگاه داده مزاحمین</b></minor> یا <minor><b>وارد کردن به قانون Regex</b></minor>. <br>
         <br>
-        ۱. <minor><b>خواندن فایل</b></minor> / <minor><b>درخواست Http</b></minor> <br>
-          &ensp; دریافت محتوای فایل. <br>
-          <br>
-        ۲. <minor><b>تجزیه CSV</b></minor> / <minor><b>تجزیه XML</b></minor> / <minor><b>استخراج Regex</b></minor> <br>
-          &ensp; آن را تجزیه کنید و لیستی از شماره‌ها دریافت کنید. <br>
-          <br>
-        ۳. <minor><b>جایگزینی شماره</b></minor> (اختیاری) <br>
-          &ensp; تغییر فرمت شماره <br>
-          &ensp; مورد استفاده: <br>
-          <sample>
-            &emsp; هنگام انتقال شماره‌ها از برنامه‌های دیگر، فرمت‌هایی مانند <b>123#####</b> را به رجکس <b>123.....</b> یا <b>123.*</b> تبدیل کنید <br>
-          </sample>
-          <br>
-        ۴. <minor><b>وارد کردن به پایگاه داده اسپم</b></minor> / <minor><b>وارد کردن به قانون Regex</b></minor> <br>
+        یک محرک <b>برنامه</b> اضافه کنید تا فهرست به‌روز بماند. <br>
         <br>
-        <br>
-        <title><b>نمونه‌ها</b></title>: <br>
-          - پیش‌تنظیم شده <no_translate><b>FTC-DNC</b></no_translate> <br>
-        <br>
-        نمونه‌های آنلاین بیشتر: <br>
-          - <a href=\"%s\">متن ساده</a> <br>
-          - <a href=\"%s\">CSV</a> <br>
-          - <a href=\"%s\">XML</a> <br>
-          - <a href=\"%s\">JSON</a> - JsonPath هنوز پشتیبانی نمی‌شود، به جای آن از <minor><b>استخراج Regex</b></minor> استفاده کنید.
+        <title><b>نمونه‌ها</b></title> <br>
+        &ensp; پیش‌تنظیم <no_translate><b>FTC-DNC</b></no_translate> <br>
+        &ensp; <a href=\"%s\">متن ساده</a> · <a href=\"%s\">CSV</a> · <a href=\"%s\">XML</a> · <a href=\"%s\">JSON</a> <br>
+        &ensp; (JSON: از <minor><b>استخراج عبارت باقاعده</b></minor> استفاده کنید، JsonPath پشتیبانی نمی‌شود.)
     ]]>
     </string>
     <string name="faq_regex">
     <![CDATA[
-        یک آموزش رجکس برای غیر برنامه‌نویسان. <br>
+        قوانین برای تطبیق شماره‌ها و متن از عبارت باقاعده (regex) استفاده می‌کنند. <br>
         <br>
-        <title><b>سطح مقدماتی - وایلدکارد</b></title> <br>
-        &ensp; هر زمان که بخواهید از یک وایلدکارد <sample><b>*</b></sample> استفاده کنید، یک نقطه <sample><b>.</b></sample>
-          قبل از آن بگذارید، مانند <sample><b>.*</b></sample>، این باید اکثر موارد استفاده را پوشش دهد. <br>
+        <title><b>مبانی</b></title> <br>
+        &ensp; <sample><b>.*</b></sample> هر چیزی: <sample>1800.*</sample> با 1800 شروع می‌شود <br>
+        &ensp; <sample><b>|</b></sample> یا: <sample>.*(prize|winner).*</sample> <br>
+        &ensp; <sample><b>\\d</b></sample> یک رقم: <sample>\\d{6}</sample> شش رقم <br>
+        &ensp; <sample><b>\\.</b></sample> یک نقطه واقعی، <sample><b>\\+</b></sample> یک علامت جمع واقعی <br>
         <br>
-        <title><b>پیشرفته - استفاده از هوش مصنوعی</b></title> <br>
-        &ensp; برای مثال، برای دریافت رجکس زیر برای تأیید پیامک: <br>
-        &ensp; <sample>.*(verification|validation).*code.*\\d{5,6}.*</sample> <br>
+        یک قانون باید با <b>کل</b> شماره یا پیام مطابقت داشته باشد، پس کلمات را بین <sample>.*</sample> قرار دهید یا پرچم <b>شامل</b> را روشن کنید. <br>
+        تطبیق به بزرگی و کوچکی حروف حساس نیست مگر اینکه <b>حساس به حروف کوچک و بزرگ</b> روشن باشد. <br>
+        از <b>آزمایش</b> در تنظیمات استفاده کنید تا قانون را پیش از اتکا به آن امتحان کنید. <br>
         <br>
-        از هوش مصنوعی بپرسید: <br>
+        <title><b>بگذارید هوش مصنوعی آن را بنویسد</b></title> <br>
+        نمونه درخواست: <br>
         <sample>
         %s
         </sample>
         <br>
         <br>
-        <highlight><b>آنلاین امتحان کنید</b></highlight> <br>
-          &ensp; ۱. <a href=\"copy\"><big>پرامپت بالا را کپی کنید</big></a> <br>
-          &ensp; ۲. <a href=\"try_it\"><big>هوش مصنوعی آنلاین را اجرا کنید</big></a> <br>
+        &ensp; 1. <a href=\"copy\"><big>کپی درخواست</big></a> <br>
+        &ensp; 2. <a href=\"try_it\"><big>باز کردن هوش مصنوعی آنلاین</big></a> <br>
     ]]>
     </string>
     <string name="ai_regex_prompt">

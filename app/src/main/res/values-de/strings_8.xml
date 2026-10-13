@@ -9,11 +9,11 @@
         <![CDATA[
         Nummern in dieser Datenbank werden blockiert.<br>
         <br>
-        Sie können jede öffentliche Datenbank, oder sogar mehrere Datenbanken, integrieren. Sie können auch Nummern aus lokalen Dateien importieren.<br>
+        Sie können jede öffentliche Datenbank oder sogar mehrere Datenbanken einbinden und auch Nummern aus lokalen Dateien importieren.<br>
         <br>
-        Sehen Sie im Abschnitt \"Automatisierung\" unten nach, wie Sie eine automatische Importaufgabe planen können.<br>
+        Im Abschnitt \"Automatisierung\" unten erfahren Sie, wie Sie einen automatischen Import planen.<br>
         <br>
-        Dies gilt sowohl für Anrufe als auch für SMS-Nachrichten.<br>
+        Wählen Sie in den Einstellungen, worauf es angewendet wird: Anrufe, SMS, MMS und Nummern im Titel oder Text einer Benachrichtigung (alles standardmäßig aktiv).<br>
         <br>
         <priority><b>Standardpriorität: 0</b></priority>
         ]]>

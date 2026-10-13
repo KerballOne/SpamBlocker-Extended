@@ -81,36 +81,23 @@
     <string name="faq"><short>FAQ</short></string>
     <string name="faq_priority">
     <![CDATA[
-        Jeder Filter hat einen Prioritätswert, wie der Begriff impliziert, bestimmt er die Reihenfolge, in der der Anruf geprüft wird. <br>
+        Regeln werden von der <b>höchsten</b> zur niedrigsten Priorität geprüft. Die erste passende Regel entscheidet: zulassen oder blockieren. <br>
         <br>
-        Standardmäßig, <br>
+        <title><b>Standardwerte</b></title> <br>
+        &ensp; <priority>20</priority> <title>Meeting-Modus</title> <br>
+        &ensp; <priority>10</priority> <highlight>Zulassen</highlight>-Regeln: Kontakte, Wiederholter Anruf, Letzte Apps… <br>
+        &ensp; <priority>0</priority> <error>Blockieren</error>-Regeln: Nichtkontakte, STIR, Datenbank <br>
+        &ensp; <priority>-1</priority> <title>Sofortige Abfrage</title>, erst nachdem alle lokalen Regeln passiert sind <br>
         <br>
-        - <highlight>Whitelist-Regeln</highlight> haben Priorität <priority>10</priority> <br>
-        &ensp; <sample>z. B. Kontakte, RepeatedCall, RecentApps, usw. </sample><br>
+        Standardmäßig hat Zulassen also Vorrang vor Blockieren. <br>
+        Rufnummern- und Nachrichtenregeln können jede Priorität verwenden. <br>
         <br>
-        - <error>Blacklist-Regeln</error> haben Priorität <priority>0</priority> <br>
-        &ensp; <sample>z. B. STIR, Datenbank, usw. </sample> <br>
+        <title><b>Tipps</b></title> <br>
+        - <sample>Eine Nummer blockieren, selbst wenn sie zweimal anruft</sample>: Priorität über <priority>10</priority>. <br>
+        - <sample>Eine Nummer auch im Meeting zulassen</sample>: über <priority>20</priority>. <br>
+        - <sample>Eine neue Regel testen</sample>: <priority>999</priority>, damit nichts anderes dazwischenkommt. <br>
         <br>
-        Wenn beide aktiviert sind, überschreiben Whitelist-Regeln die Blacklist-Regeln, da 10 > 0. <br>
-        <br>
-        Für Regex-Regeln kann die Priorität auf jede Zahl zwischen <priority>-2147483648</priority>
-          und <priority>2147483647</priority> gesetzt werden. <br>
-        Verschiedene Regeln können dieselbe Priorität haben, solange sie vom gleichen Typ sind, jedoch <warn><b>niemals dieselbe Priorität sowohl für Whitelist- als auch für Blacklist-Regeln vergeben</b></warn>, da dies zu zufälligem Verhalten führen kann. <br>
-        <br>
-        Die Funktion <title>Meeting Mode</title> hat standardmäßig Priorität <priority>20</priority>, weil sie alle Anrufe während einer Besprechung blockieren soll. <br>
-        Und <priority>-1</priority> für <title>Instant Query</title>,
-          sodass sie erst geprüft wird, nachdem der Anruf alle lokalen Filter durchlaufen hat. <br>
-        <br>
-        <b>Anwendungsfälle</b> für die Anpassung der Priorität: <br>
-        <br>
-        - <sample>Immer eine bestimmte Nummer blockieren, egal ob sie wiederholt wird</sample> <br>
-         &ensp; Setze eine Regel mit Priorität > 10, um <title>Repeated Call</title> zu überschreiben. <br>
-        <br>
-        - <sample>Immer eine Nummer zulassen</sample> <br>
-         &ensp; Setze sie auf > 20, um <title>Meeting Mode</title> zu überschreiben. <br>
-        <br>
-        - <sample>Eine Regex-Regel testen</sample> <br>
-         &ensp; Setze sie auf 999, um alle anderen Filter zu überschreiben, damit du sie nicht einzeln temporär deaktivieren musst.
+        <warn><b>Geben Sie einer Zulassen- und einer Blockieren-Regel niemals dieselbe Priorität</b></warn>, das Ergebnis ist unvorhersehbar.
     ]]>
     </string>
 </resources>

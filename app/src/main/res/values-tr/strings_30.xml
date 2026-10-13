@@ -1,0 +1,73 @@
+<resources>
+    <string name="calls">Aramalar</string>
+    <string name="notifications">Bildirimler</string>
+    <string name="apply_to_notifications">Bildirimlere uygula</string>
+    <string name="title_short">Başlık</string>
+    <string name="body_short">Gövde</string>
+    <string name="help_notification_screening">
+        <![CDATA[
+        Sağdaki simge seçiciyle seçilen uygulamalardan gelen bildirimleri tarar. <br>
+        <br>
+        <b>Bildirimlere Uygula</b> altında <b>Başlık</b> / <b>Gövde</b> etkin olan Numara Kuralları ve Mesaj Kuralları, gerçek bir gelen SMS ile aynı şekilde bildirime karşı kontrol edilir. <br>
+        Sonuç <b>Engelle</b> ise bildirim kapatılır. <br>
+        <br>
+        Bildirimin <b>Başlık</b> / <b>Gövde</b> kısmındaki telefon numaraları, ayarlarında <b>Başlık</b> / <b>Gövde</b> açıksa, bir Numara Kuralına gerek kalmadan Temel Kurallardan <b>Kişiler</b> (rehberde olmayanlar engellenirken) ve <b>Veritabanı</b> tarafından da kontrol edilir. <br>
+        <br>
+        Bu, yukarıdaki <b>SMS</b> anahtarından bağımsız çalışır ve <b>Bildirim Erişimi</b> izni gerektirir. <br>
+        <br>
+        Bazı uygulamaların bildirimleri, <b>SpamBlocker Extended</b> müdahale edemeden önce orijinal uygulamanın kısa bir uyarısını (ses/titreşim) önleyecek kadar hızlı kapatılamayabilir. <br>
+        Bu rahatsız ediciyse, sistem ayarlarından o uygulamanın kendi bildirimlerini kapatabilir ve bunun yerine yalnızca açıkça <b>izin verilen</b> bildirimlerden haberdar olmak için <b>Uyarılar</b>\'ı kullanabilirsiniz.
+        ]]>
+    </string>
+    <string name="wiki">Wiki</string>
+    <string name="faq_calls">
+        <![CDATA[
+        <b>Tarama</b> > <b>Aramalar</b>\'ı açın ve <b>SpamBlocker Extended</b>\'ın arama tarama uygulaması olmasına izin verin. <br>
+        <br>
+        <title><b>Her gelen aramada</b></title> <br>
+        1. Kurallar <b>önceliğe</b> göre kontrol edilir: Temel Kurallar (Kişiler, Veritabanı, STIR, Tekrarlanan Arama…), ardından numara için <b>Numara Kuralları</b> ve arayan adı için <b>Mesaj Kuralları</b>. <br>
+        2. Eşleşen ilk kural karar verir. <br>
+        3. Eşleşme yoksa: arama her zamanki gibi çalar. <br>
+        <br>
+        <title><b>Engellendiğinde</b></title> <br>
+        Arama <b>Blok Türü</b>\'ne göre işlenir: <b>Reddet</b>, <b>Sessize Al</b> veya <b>Kapat</b>. <br>
+        <b>Arama</b> sekmesine kaydedilir, böylece inceleyebilir ve ondan bir kural oluşturabilirsiniz. <br>
+        <br>
+        <title><b>İpucu</b></title> <br>
+        Bir numaranın hangi kurala takılacağını görmek için Ayarlar\'daki <b>Test</b>\'i kullanın.
+        ]]>
+    </string>
+    <string name="faq_sms">
+        <![CDATA[
+        <b>Tarama</b> > <b>SMS/MMS</b>\'i açın. <b>SpamBlocker Extended</b>\'ın varsayılan SMS uygulaması olması gerekmez. <br>
+        <br>
+        <title><b>Her gelen SMS\'te</b></title> <br>
+        1. <b>Numara Kuralları</b> göndereni, <b>Mesaj Kuralları</b> mesajı, Temel Kurallarla (Kişiler, Veritabanı…) birlikte <b>önceliğe</b> göre kontrol eder. <br>
+        2. <highlight>İzin verildi</highlight>: <b>SpamBlocker Extended</b> bildirimi gösterir. <br>
+        3. <error>Engellendi</error>: kuralda ayarlandığı gibi bildirim yok veya sessiz bir bildirim. <br>
+        <br>
+        <warn>Not</warn> <br>
+        - Mesaj SMS uygulamanızda kalır, yalnızca filtrelenir, silinmez. <br>
+        - Bildirimleri iki kez almamak için SMS uygulamanızın bildirimlerini kapatın. <br>
+        - <b>MMS</b> (grup mesajları dahil) yalnızca metne göre kontrol edilir. <br>
+        - RCS / sohbet mesajları SMS değildir: bunları <b>Bildirimler</b> ile tarayın.
+        ]]>
+    </string>
+    <string name="faq_notifications">
+        <![CDATA[
+        <b>Tarama</b> > <b>Bildirimler</b>\'i açın, <b>Bildirim Erişimi</b> verin ve anahtarın yanındaki simgeyle uygulamaları seçin. <br>
+        <br>
+        <title><b>Bu uygulamalardan gelen her bildirimde</b></title> <br>
+        1. <b>Başlık</b> / <b>Gövde</b> açık olan <b>Numara</b> ve <b>Mesaj Kuralları</b> bildirime karşı kontrol edilir. <br>
+        2. Başlık / Gövdede bulunan telefon numaraları, Başlık / Gövde ayarlarına göre <b>Kişiler</b> ve <b>Veritabanı</b> tarafından kontrol edilir. <br>
+        3. <b>Önceliğe</b> göre ilk eşleşme karar verir. Başlıktaki bir kişi (izin ver, <priority>10</priority>), Gövdedeki bir spam numarasına (engelle, <priority>0</priority>) üstün gelir. <br>
+        4. <error>Engellendi</error>: bildirim kapatılır. Mesajın kendisi uygulamada kalır. <br>
+        <br>
+        <title><b>Sesli Mesaj</b></title> <br>
+        <b>Sesli Mesaj Bildirimi</b>, arayanın numarasını bir sesli mesaj uygulamasının bildiriminden alır ve bir arama gibi kontrol eder. <br>
+        <br>
+        <title><b>İpucu</b></title> <br>
+        Yalnızca istediğiniz bildirimleri duymak için uygulamanın kendi sesini kapatın ve <highlight>izin verilenler</highlight> için <b>Uyarılar</b>\'ı kullanın.
+        ]]>
+    </string>
+</resources>

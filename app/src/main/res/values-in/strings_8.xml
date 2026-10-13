@@ -7,15 +7,15 @@
 
     <string name="help_spam_db">
         <![CDATA[
-        Nomor-nomor dalam basis data ini akan diblokir.<br>
+        Nomor dalam basis data ini akan diblokir.<br>
         <br>
-        Anda dapat mengintegrasikan basis data publik apa pun, atau bahkan beberapa basis data, Anda juga dapat mengimpor nomor dari berkas lokal.<br>
+        Anda dapat mengintegrasikan basis data publik apa pun, bahkan beberapa sekaligus, dan juga mengimpor nomor dari berkas lokal.<br>
         <br>
         Lihat bagian \"Otomatisasi\" di bawah untuk cara menjadwalkan tugas impor otomatis.<br>
         <br>
-        Ini berlaku untuk panggilan dan pesan SMS.<br>
+        Pilih penerapannya di pengaturannya: Panggilan, SMS, MMS, dan nomor yang ditemukan di Judul atau Isi notifikasi (semua aktif secara bawaan).<br>
         <br>
-        <priority><b>Prioritas Default: 0</b></priority>
+        <priority><b>Prioritas Bawaan: 0</b></priority>
         ]]>
     </string>
     <string name="help_spam_db_ttl">

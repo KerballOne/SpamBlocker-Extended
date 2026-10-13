@@ -24,6 +24,11 @@ import spam.blocker.def.Def
 import spam.blocker.def.Def.ANDROID_12
 import spam.blocker.service.CallScreeningService
 import spam.blocker.service.SmsReceiver
+import spam.blocker.service.NotificationScreeningPlan
+import spam.blocker.service.planNotificationScreening
+import spam.blocker.service.checker.Checker
+import spam.blocker.service.checker.NotificationField
+import spam.blocker.service.checker.NumberCandidate
 import spam.blocker.ui.priorityInlineMap
 import spam.blocker.ui.setting.regex.RegexMode.ModeType
 import spam.blocker.ui.widgets.AnimatedVisibleV
@@ -160,21 +165,39 @@ fun TestDialog(
                             )
                         isForNotification -> {
                             // A rule can independently target the notification's Title and/or
-                            //  Body (see help_apply_to_notification), so test each field that
-                            //  was actually filled in as its own check rather than silently
-                            //  collapsing them into one result.
-                            if (vm.notifTitle.value.isNotEmpty()) {
-                                SmsReceiver.processSms(
-                                    ctx, rawNumber = vm.phone.value, messageBody = vm.notifTitle.value,
-                                    simSlot = vm.simSlot.value, isTest = true, logger = multiLogger,
-                                    source = Def.SOURCE_NOTIFICATION,
+                            //  Body (see help_apply_to_notification), so each field that was
+                            //  filled in is checked with its own text and number, decided
+                            //  together by rule priority like the real screening, then
+                            //  processed once (one history record, one notification showing
+                            //  the Title + Body as entered).
+                            // The same plan as the real screening (the numbers and the rules), with
+                            //  the Phone Number, if entered, as the sender's (the Title's) number.
+                            // When nothing applies, the real screening leaves it alone: passed.
+                            val title = vm.notifTitle.value
+                            val body = vm.notifBody.value
+                            val plan = planNotificationScreening(
+                                ctx, title, body, senderNumber = vm.phone.value,
+                            ) ?: NotificationScreeningPlan(
+                                candidates = listOf(NumberCandidate(
+                                    vm.phone.value.ifEmpty { title }, NotificationField.Title, title,
+                                )),
+                                checkers = listOf(Checker.PassedByDefault(ctx)),
+                                anyRuleMatches = false,
+                            )
+
+                            if (title.isNotEmpty() || body.isNotEmpty()) {
+                                val (decisive, checkResult) = Checker.checkNotificationNumbers(
+                                    ctx, plan.candidates, logger = multiLogger,
+                                    checkers = plan.checkers, simSlot = vm.simSlot.value,
                                 )
-                            }
-                            if (vm.notifBody.value.isNotEmpty()) {
                                 SmsReceiver.processSms(
-                                    ctx, rawNumber = vm.phone.value, messageBody = vm.notifBody.value,
-                                    simSlot = vm.simSlot.value, isTest = true, logger = multiLogger,
-                                    source = Def.SOURCE_NOTIFICATION,
+                                    ctx, rawNumber = decisive.number,
+                                    // Logged as the history record's content: the message itself.
+                                    messageBody = vm.notifBody.value.ifEmpty { vm.notifTitle.value },
+                                    simSlot = vm.simSlot.value, isTest = true,
+                                    source = Def.SOURCE_NOTIFICATION, checkResult = checkResult,
+                                    notificationTitle = vm.notifTitle.value.ifEmpty { null },
+                                    notificationBody = vm.notifBody.value,
                                 )
                             }
                         }

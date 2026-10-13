@@ -1,0 +1,73 @@
+<resources>
+    <string name="calls">通話</string>
+    <string name="notifications">通知</string>
+    <string name="apply_to_notifications">套用至通知</string>
+    <string name="title_short">標題</string>
+    <string name="body_short">內文</string>
+    <string name="help_notification_screening">
+        <![CDATA[
+        篩選以右側圖示所選應用程式的通知。 <br>
+        <br>
+        在 <b>套用至通知</b> 下啟用 <b>標題</b> / <b>內文</b> 的號碼規則和文字規則會檢查通知，方式與實際收到的簡訊相同。 <br>
+        如果結果為 <b>封鎖</b>，該通知會被關閉。 <br>
+        <br>
+        若基本規則 <b>聯絡人</b>（封鎖非聯絡人時）和 <b>資料庫</b> 的設定中開啟了 <b>標題</b> / <b>內文</b>，它們也會檢查通知 <b>標題</b> / <b>內文</b> 中的電話號碼，無需號碼規則。 <br>
+        <br>
+        此功能獨立於上方的 <b>簡訊</b> 開關，並需要 <b>通知存取權</b>。 <br>
+        <br>
+        部分應用程式的通知可能無法足夠快速地關閉，在 <b>SpamBlocker Extended</b> 處理之前，原應用程式可能會短暫提醒（音效/震動）。 <br>
+        如果覺得困擾，可在系統設定中關閉該應用程式本身的通知，然後改用 <b>提醒</b>，只在通知被明確<b>允許</b>時收到提醒。
+        ]]>
+    </string>
+    <string name="faq_calls">
+        <![CDATA[
+        開啟 <b>篩選</b> > <b>通話</b>，並允許 <b>SpamBlocker Extended</b> 作為來電過濾應用程式。 <br>
+        <br>
+        <title><b>每次來電時</b></title> <br>
+        1. 依<b>優先順序</b>檢查規則：基本規則（聯絡人、資料庫、STIR、重複來電…），接著是檢查號碼的<b>號碼規則</b>和檢查來電者名稱的<b>文字規則</b>。 <br>
+        2. 第一條符合的規則決定結果。 <br>
+        3. 沒有符合：來電照常響鈴。 <br>
+        <br>
+        <title><b>被封鎖時</b></title> <br>
+        來電依<b>封鎖類型</b>處理：<b>拒絕</b>、<b>靜音</b>或<b>掛斷</b>。 <br>
+        它會記錄在 <b>通話</b> 分頁中，您可以檢視並據此建立規則。 <br>
+        <br>
+        <title><b>提示</b></title> <br>
+        在設定中使用 <b>測試</b> 查看某個號碼會符合哪條規則。
+        ]]>
+    </string>
+    <string name="faq_sms">
+        <![CDATA[
+        開啟 <b>篩選</b> > <b>簡訊/MMS</b>。<b>SpamBlocker Extended</b> 不需要設為預設簡訊應用程式。 <br>
+        <br>
+        <title><b>每次收到簡訊時</b></title> <br>
+        1. <b>號碼規則</b>檢查寄件者，<b>文字規則</b>檢查訊息，並與基本規則（聯絡人、資料庫…）一起依<b>優先順序</b>檢查。 <br>
+        2. <highlight>已允許</highlight>：由 <b>SpamBlocker Extended</b> 顯示通知。 <br>
+        3. <error>已封鎖</error>：不顯示通知，或依規則設定顯示靜音通知。 <br>
+        <br>
+        <warn>注意</warn> <br>
+        - 訊息仍會保留在您的簡訊應用程式中，只是被過濾，並未刪除。 <br>
+        - 關閉簡訊應用程式本身的通知，以免收到兩次。 <br>
+        - <b>MMS</b>（包括群組訊息）僅依文字檢查。 <br>
+        - RCS / 聊天訊息不是簡訊：請改用 <b>通知</b> 篩選。
+        ]]>
+    </string>
+    <string name="faq_notifications">
+        <![CDATA[
+        開啟 <b>篩選</b> > <b>通知</b>，授予 <b>通知存取權</b>，並透過開關旁的圖示選擇應用程式。 <br>
+        <br>
+        <title><b>來自這些應用程式的每則通知</b></title> <br>
+        1. 開啟 <b>標題</b> / <b>內文</b> 的<b>號碼規則</b>和<b>文字規則</b>會檢查該通知。 <br>
+        2. 標題 / 內文中的電話號碼會由 <b>聯絡人</b> 和 <b>資料庫</b> 依各自的標題 / 內文設定進行檢查。 <br>
+        3. 依<b>優先順序</b>第一個符合的規則決定結果。標題中的聯絡人（允許，<priority>10</priority>）優先於內文中的騷擾號碼（封鎖，<priority>0</priority>）。 <br>
+        4. <error>已封鎖</error>：通知會被關閉。訊息本身仍保留在應用程式中。 <br>
+        <br>
+        <title><b>語音信箱</b></title> <br>
+        <b>語音信箱通知</b> 會從語音信箱應用程式的通知中取出來電者號碼，並像來電一樣進行檢查。 <br>
+        <br>
+        <title><b>提示</b></title> <br>
+        若只想聽到需要的通知，請關閉該應用程式本身的音效，並對<highlight>允許</highlight>的通知使用 <b>提醒</b>。
+        ]]>
+    </string>
+    <string name="wiki">維基</string>
+</resources>

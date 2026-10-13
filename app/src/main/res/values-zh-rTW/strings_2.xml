@@ -6,9 +6,10 @@
         <![CDATA[
         允許聯絡人號碼。 <br>
         <br>
-        適用於通話與簡訊。 <br>
+        可在其設定中分別為允許和封鎖選擇套用範圍：通話、簡訊、MMS，以及通知標題或內文中的號碼。 <br>
+        預設全部開啟，但封鎖非聯絡人時的內文除外：訊息內文中的號碼通常是內容，而不是寄件者。 <br>
         <br>
-        <priority><b>預設優先權</b></priority>: <br>
+        <priority><b>預設優先順序</b></priority>: <br>
         &ensp; 允許: <priority><b>10</b></priority> <br>
         &ensp; 封鎖: <priority><b>0</b></priority>
         ]]>

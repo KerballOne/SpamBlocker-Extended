@@ -10,56 +10,45 @@
     <string name="import_numbers">匯入號碼</string>
     <string name="faq_import_numbers">
     <![CDATA[
-        使用工作流程從本機或遠端檔案匯入號碼。<br>
+        使用工作流程從檔案或 URL 將號碼匯入<b>資料庫</b>或<b>號碼規則</b>。 <br>
         <br>
-        <title><b>典型設定</b></title>：<br>
+        <title><b>步驟</b></title> <br>
+        1. <minor><b>讀取檔案</b></minor>或<minor><b>HTTP 請求</b></minor>：取得內容。 <br>
+        2. <minor><b>解析 CSV</b></minor>、<minor><b>解析 XML</b></minor>或<minor><b>正規表達式擷取</b></minor>：取得號碼。 <br>
+        3. <minor><b>取代電話號碼</b></minor>（選用）：修正格式，例如 <b>123#####</b> → <b>123.*</b> <br>
+        4. <minor><b>匯入至騷擾號碼資料庫</b></minor>或<minor><b>匯入為單一正則規則</b></minor>。 <br>
         <br>
-        1. <minor><b>讀取檔案</b></minor> / <minor><b>Http 請求</b></minor> <br>
-          &ensp; 取得檔案內容。<br>
-          <br>
-        2. <minor><b>解析 CSV</b></minor> / <minor><b>解析 XML</b></minor> / <minor><b>正則提取</b></minor> <br>
-          &ensp; 解析並取得號碼列表。<br>
-          <br>
-        3. <minor><b>替換號碼</b></minor> (選用) <br>
-          &ensp; 修改號碼格式<br>
-          &ensp; 使用案例：<br>
-          <sample>
-            &emsp; 從其他應用程式遷移號碼時，將 <b>123#####</b> 等格式轉換為正則表達式 <b>123.....</b> 或 <b>123.*</b> <br>
-          </sample>
-          <br>
-        4. <minor><b>匯入至騷擾資料庫</b></minor> / <minor><b>匯入至正則規則</b></minor> <br>
+        新增 <b>排程</b> 觸發條件，讓清單保持更新。 <br>
         <br>
-        <br>
-        <title><b>範例</b></title>：<br>
-          - 預設的 <no_translate><b>FTC-DNC</b></no_translate> <br>
-        <br>
-        更多線上範例：<br>
-          - <a href=\"%s\">純文字</a> <br>
-          - <a href=\"%s\">CSV</a> <br>
-          - <a href=\"%s\">XML</a> <br>
-          - <a href=\"%s\">Json</a> - 尚未支援 JsonPath，請改用 <minor><b>正則提取</b></minor>。
+        <title><b>範例</b></title> <br>
+        &ensp; 預設的 <no_translate><b>FTC-DNC</b></no_translate> <br>
+        &ensp; <a href=\"%s\">純文字</a> · <a href=\"%s\">CSV</a> · <a href=\"%s\">XML</a> · <a href=\"%s\">JSON</a> <br>
+        &ensp; （JSON：請使用<minor><b>正規表達式擷取</b></minor>，不支援 JsonPath。）
     ]]>
     </string>
     <string name="faq_regex">
     <![CDATA[
-        給非程式設計師的正則表達式教學。<br>
+        規則使用正規表達式比對號碼和文字。 <br>
         <br>
-        <title><b>入門 - 萬用字元</b></title> <br>
-        &ensp; 當您想使用萬用字元 <sample><b>*</b></sample> 時，請在前面加一個點 <sample><b>.</b></sample>，例如 <sample><b>.*</b></sample>，這應該能涵蓋大多數的使用情境。<br>
+        <title><b>基礎</b></title> <br>
+        &ensp; <sample><b>.*</b></sample> 任何內容：<sample>1800.*</sample> 以 1800 開頭 <br>
+        &ensp; <sample><b>|</b></sample> 或：<sample>.*(prize|winner).*</sample> <br>
+        &ensp; <sample><b>\\d</b></sample> 一位數字：<sample>\\d{6}</sample> 六位數字 <br>
+        &ensp; <sample><b>\\.</b></sample> 真正的點，<sample><b>\\+</b></sample> 真正的加號 <br>
         <br>
-        <title><b>進階 - 使用 AI</b></title> <br>
-        &ensp; 例如，要取得以下用於簡訊驗證的正則表達式：<br>
-        &ensp; <sample>.*(verification|validation).*code.*\\d{5,6}.*</sample> <br>
+        規則必須符合<b>整個</b>號碼或訊息，因此請用 <sample>.*</sample> 包住字詞，或開啟 <b>包含</b> 標記。 <br>
+        除非開啟 <b>區分大小寫</b>，否則比對時不分大小寫。 <br>
+        在設定中使用 <b>測試</b>，先試用規則再依賴它。 <br>
         <br>
-        詢問 AI：<br>
+        <title><b>讓 AI 來寫</b></title> <br>
+        提示詞範例：<br>
         <sample>
         %s
         </sample>
         <br>
         <br>
-        <highlight><b>線上試試看</b></highlight> <br>
-          &ensp; 1. <a href=\"copy\"><big>複製上方提示詞</big></a> <br>
-          &ensp; 2. <a href=\"try_it\"><big>啟動線上 AI</big></a> <br>
+        &ensp; 1. <a href=\"copy\"><big>複製提示詞</big></a> <br>
+        &ensp; 2. <a href=\"try_it\"><big>開啟線上 AI</big></a> <br>
     ]]>
     </string>
     <string name="ai_regex_prompt">

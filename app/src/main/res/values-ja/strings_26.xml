@@ -10,56 +10,45 @@
     <string name="import_numbers">電話番号をインポート</string>
     <string name="faq_import_numbers">
     <![CDATA[
-        ワークフローを使用して、ローカルまたはリモートファイルから番号をインポートします。<br>
+        ワークフローを使って、ファイルやURLから番号を<b>データベース</b>または<b>電話番号ルール</b>にインポートします。 <br>
         <br>
-        <title><b>典型的な設定</b></title>: <br>
+        <title><b>手順</b></title> <br>
+        1. <minor><b>ファイルの読み込み</b></minor>または<minor><b>HTTPリクエスト</b></minor>: 内容を取得します。 <br>
+        2. <minor><b>CSVの解析</b></minor>、<minor><b>XMLの解析</b></minor>または<minor><b>正規表現の抽出</b></minor>: 番号を取得します。 <br>
+        3. <minor><b>電話番号の置換</b></minor>(任意): 形式を修正します。例: <b>123#####</b> → <b>123.*</b> <br>
+        4. <minor><b>スパムデータベースへのインポート</b></minor>または<minor><b>1つの正規表現ルールとしてインポート</b></minor>。 <br>
         <br>
-        1. <minor><b>ファイルを読み込み</b></minor> / <minor><b>HTTPリクエスト</b></minor> <br>
-          &ensp; ファイルの内容を取得します。<br>
-          <br>
-        2. <minor><b>CSV解析</b></minor> / <minor><b>XML解析</b></minor> / <minor><b>正規表現抽出</b></minor> <br>
-          &ensp; 解析して番号のリストを取得します。<br>
-          <br>
-        3. <minor><b>番号の置換</b></minor> (オプション) <br>
-          &ensp; 番号の形式を変更します<br>
-          &ensp; 使用例:<br>
-          <sample>
-            &emsp; 他のアプリから番号を移行する際、<b>123#####</b> のような形式を正規表現 <b>123.....</b> または <b>123.*</b> に変換します <br>
-          </sample>
-          <br>
-        4. <minor><b>スパムデータベースにインポート</b></minor> / <minor><b>正規表現ルールにインポート</b></minor> <br>
+        <b>スケジュール</b>トリガーを追加すると、リストを最新の状態に保てます。 <br>
         <br>
-        <br>
-        <title><b>例</b></title>: <br>
-          - プリセット <no_translate><b>FTC-DNC</b></no_translate> <br>
-        <br>
-        その他のオンライン例: <br>
-          - <a href=\"%s\">プレーンテキスト</a> <br>
-          - <a href=\"%s\">CSV</a> <br>
-          - <a href=\"%s\">XML</a> <br>
-          - <a href=\"%s\">JSON</a> - JsonPathはまだサポートされていません。代わりに <minor><b>正規表現抽出</b></minor> を使用してください。
+        <title><b>例</b></title> <br>
+        &ensp; プリセット <no_translate><b>FTC-DNC</b></no_translate> <br>
+        &ensp; <a href=\"%s\">プレーンテキスト</a> · <a href=\"%s\">CSV</a> · <a href=\"%s\">XML</a> · <a href=\"%s\">JSON</a> <br>
+        &ensp; (JSON: JsonPathは非対応のため、<minor><b>正規表現の抽出</b></minor>を使用してください。)
     ]]>
     </string>
     <string name="faq_regex">
     <![CDATA[
-        プログラマー以外のための正規表現チュートリアル。<br>
+        ルールは正規表現で番号やテキストを照合します。 <br>
         <br>
-        <title><b>初級 - ワイルドカード</b></title> <br>
-        &ensp; ワイルドカード <sample><b>*</b></sample> を使用したい場合は、その前にドット <sample><b>.</b></sample> を置きます（例: <sample><b>.*</b></sample>）。これでほとんどのケースに対応できます。<br>
+        <title><b>基本</b></title> <br>
+        &ensp; <sample><b>.*</b></sample> 任意の文字列: <sample>1800.*</sample> 1800で始まる <br>
+        &ensp; <sample><b>|</b></sample> または: <sample>.*(prize|winner).*</sample> <br>
+        &ensp; <sample><b>\\d</b></sample> 数字1桁: <sample>\\d{6}</sample> 数字6桁 <br>
+        &ensp; <sample><b>\\.</b></sample> 文字としてのドット、<sample><b>\\+</b></sample> 文字としてのプラス <br>
         <br>
-        <title><b>上級 - AIの使用</b></title> <br>
-        &ensp; 例えば、SMS認証用に以下の正規表現を取得する場合: <br>
-        &ensp; <sample>.*(verification|validation).*code.*\\d{5,6}.*</sample> <br>
+        ルールは番号やメッセージの<b>全体</b>に一致する必要があるため、単語を<sample>.*</sample>で囲むか、<b>含む</b>フラグをオンにしてください。 <br>
+        <b>大文字と小文字を区別</b>がオンでない限り、大文字と小文字は区別されません。 <br>
+        ルールに頼る前に、設定の<b>テスト</b>で試してください。 <br>
         <br>
-        AIに質問する: <br>
+        <title><b>AIに書かせる</b></title> <br>
+        プロンプトの例: <br>
         <sample>
         %s
         </sample>
         <br>
         <br>
-        <highlight><b>オンラインで試す</b></highlight> <br>
-          &ensp; 1. <a href=\"copy\"><big>上記のプロンプトをコピー</big></a> <br>
-          &ensp; 2. <a href=\"try_it\"><big>オンラインAIを起動</big></a> <br>
+        &ensp; 1. <a href=\"copy\"><big>プロンプトをコピー</big></a> <br>
+        &ensp; 2. <a href=\"try_it\"><big>オンラインAIを開く</big></a> <br>
     ]]>
     </string>
     <string name="ai_regex_prompt">

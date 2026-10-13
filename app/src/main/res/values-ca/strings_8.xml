@@ -7,15 +7,15 @@
 
     <string name="help_spam_db">
         <![CDATA[
-        Els números d\'aquesta base de dades es bloquejaran.<br>
+        Els números d\'aquesta base de dades seran bloquejats.<br>
         <br>
-        Podeu integrar qualsevol base de dades pública, o fins i tot diverses bases de dades; també podeu importar números des de fitxers locals.<br>
+        Pots integrar qualsevol base de dades pública, o fins i tot diverses, i també importar números de fitxers locals.<br>
         <br>
-        Consulteu la secció \"Automatització\" a continuació per saber com programar una tasca d\'importació automàtica.<br>
+        Consulta la secció \"Automatització\" més avall per saber com programar una importació automàtica.<br>
         <br>
-        S\'aplica tant a les trucades com als missatges SMS.<br>
+        Tria a què s\'aplica a la seva configuració: Trucades, SMS, MMS i números trobats al Títol o al Cos d\'una notificació (tot activat per defecte).<br>
         <br>
-        <priority><b>Prioritat predeterminada: 0</b></priority>
+        <priority><b>Prioritat per defecte: 0</b></priority>
         ]]>
     </string>
     <string name="help_spam_db_ttl">

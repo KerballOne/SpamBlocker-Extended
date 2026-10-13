@@ -81,35 +81,23 @@
     <string name="faq"><short>よくある質問</short></string>
     <string name="faq_priority">
     <![CDATA[
-        各フィルターには優先度の値があり、その名前が示す通り、電話がチェックされる順序を決定します。 <br>
+        ルールは優先順位の<b>高い</b>ものから低いものへ順にチェックされます。最初に一致したルールが許可かブロックかを決定します。 <br>
         <br>
-        デフォルトでは、 <br>
+        <title><b>デフォルト</b></title> <br>
+        &ensp; <priority>20</priority> <title>会議モード</title> <br>
+        &ensp; <priority>10</priority> <highlight>許可</highlight>ルール: 連絡先、繰り返し通話、最近のアプリ… <br>
+        &ensp; <priority>0</priority> <error>ブロック</error>ルール: 非連絡先、STIR、データベース <br>
+        &ensp; <priority>-1</priority> <title>瞬時照会</title>、すべてのローカルルールを通過した後のみ <br>
         <br>
-        - <highlight>Whitelist rules</highlight>の優先度は <priority>10</priority> <br>
-        &ensp; <sample>例: Contacts, RepeatedCall, RecentApps, etc </sample><br>
+        つまりデフォルトでは、許可がブロックに優先します。 <br>
+        番号ルールとメッセージルールには任意の優先順位を設定できます。 <br>
         <br>
-        - <error>Blacklist rules</error>の優先度は <priority>0</priority> <br>
-        &ensp; <sample>例: STIR, Database, etc </sample> <br>
+        <title><b>ヒント</b></title> <br>
+        - <sample>2回かけてきても番号をブロックする</sample>: 優先順位を<priority>10</priority>より上に。 <br>
+        - <sample>会議中でも番号を許可する</sample>: <priority>20</priority>より上に。 <br>
+        - <sample>新しいルールをテストする</sample>: <priority>999</priority>にして、他のルールに邪魔されないようにします。 <br>
         <br>
-        両方が有効な場合、ホワイトリストルールはブラックリストルールを上書きします（10 > 0）。 <br>
-        <br>
-        正規表現ルールの場合、優先度は <priority>-2147483648</priority>
-          と <priority>2147483647</priority> の間の任意の数に設定できます。 <br>
-        同じタイプのルールであれば、異なるルールでも同じ優先度を設定できますが、<warn><b>ホワイトリストとブラックリストのルールに同じ優先度を付けてはいけません</b></warn>。ランダムな動作を引き起こす可能性があります。 <br>
-        <br>
-        機能 <title>Meeting Mode</title> のデフォルト優先度は <priority>20</priority> です。会議中のすべての電話をブロックすることを想定しています。 <br>
-        そして <priority>-1</priority> は <title>Instant Query</title> 用で、すべてのローカルフィルターを通過した後にのみチェックされます。 <br>
-        <br>
-        <b>優先度カスタマイズの使用例</b>： <br>
-        <br>
-        - <sample>特定の電話番号を常にブロックする（繰り返しでも）</sample> <br>
-         &ensp; 優先度 > 10 のルールを設定して <title>Repeated Call</title> を上書きします。 <br>
-        <br>
-        - <sample>電話番号を常に許可する</sample> <br>
-         &ensp; 優先度を > 20 に設定して <title>Meeting Mode</title> を上書きします。 <br>
-        <br>
-        - <sample>正規表現ルールをテストする</sample> <br>
-         &ensp; 優先度を 999 に設定すれば、他のすべてのフィルターを上書きでき、個別に一時的に無効化する必要がなくなります。
+        <warn><b>許可ルールとブロックルールに同じ優先順位を設定しないでください</b></warn>。結果が予測できなくなります。
     ]]>
     </string>
 </resources>

@@ -10,56 +10,45 @@
     <string name="import_numbers">Numaraları İçe Aktar</string>
     <string name="faq_import_numbers">
     <![CDATA[
-        İş akışlarını kullanarak yerel veya uzak dosyalardan numara içe aktarın. <br>
+        Bir iş akışıyla, bir dosyadan veya URL\'den numaraları <b>Veritabanı</b>\'na veya bir <b>Numara Kuralı</b>\'na içe aktarın. <br>
         <br>
-        <title><b>Tipik bir kurulum</b></title>: <br>
+        <title><b>Adımlar</b></title> <br>
+        1. <minor><b>Dosyayı Oku</b></minor> veya <minor><b>HTTP İsteği</b></minor>: içeriği al. <br>
+        2. <minor><b>CSV Ayrıştır</b></minor>, <minor><b>XML Ayrıştır</b></minor> veya <minor><b>Regex Çıkart</b></minor>: numaraları al. <br>
+        3. <minor><b>Numarayı Değiştir</b></minor> (isteğe bağlı): biçimi düzelt, örn. <b>123#####</b> → <b>123.*</b> <br>
+        4. <minor><b>Spam Veritabanına İçe Aktar</b></minor> veya <minor><b>Tek Regex Kuralı Olarak İçe Aktar</b></minor>. <br>
         <br>
-        1. <minor><b>Dosya Oku</b></minor> / <minor><b>Http İsteği</b></minor> <br>
-          &ensp; Dosya içeriğini alın. <br>
-          <br>
-        2. <minor><b>CSV Ayrıştır</b></minor> / <minor><b>XML Ayrıştır</b></minor> / <minor><b>Regex Çıkar</b></minor> <br>
-          &ensp; Ayrıştırın ve bir numara listesi alın. <br>
-          <br>
-        3. <minor><b>Numara Değiştir</b></minor> (isteğe bağlı) <br>
-          &ensp; Numara formatını değiştirin <br>
-          &ensp; Kullanım durumu: <br>
-          <sample>
-            &emsp; Diğer uygulamalardan numara taşırken, <b>123#####</b> gibi formatları <b>123.....</b> veya <b>123.*</b> regex\'ine dönüştürün <br>
-          </sample>
-          <br>
-        4. <minor><b>Spam Veritabanına İçe Aktar</b></minor> / <minor><b>Regex Kuralına İçe Aktar</b></minor> <br>
+        Listeyi güncel tutmak için bir <b>Takvim</b> tetikleyicisi ekleyin. <br>
         <br>
-        <br>
-        <title><b>Örnekler</b></title>: <br>
-          - Hazır ayar <no_translate><b>FTC-DNC</b></no_translate> <br>
-        <br>
-        Daha fazla çevrimiçi örnek: <br>
-          - <a href=\"%s\">Düz metin</a> <br>
-          - <a href=\"%s\">CSV</a> <br>
-          - <a href=\"%s\">XML</a> <br>
-          - <a href=\"%s\">JSON</a> - JsonPath henüz desteklenmiyor, bunun yerine <minor><b>Regex Çıkar</b></minor> kullanın.
+        <title><b>Örnekler</b></title> <br>
+        &ensp; Hazır ayar <no_translate><b>FTC-DNC</b></no_translate> <br>
+        &ensp; <a href=\"%s\">Düz metin</a> · <a href=\"%s\">CSV</a> · <a href=\"%s\">XML</a> · <a href=\"%s\">JSON</a> <br>
+        &ensp; (JSON: <minor><b>Regex Çıkart</b></minor> kullanın, JsonPath desteklenmez.)
     ]]>
     </string>
     <string name="faq_regex">
     <![CDATA[
-        Programcı olmayanlar için regex öğreticisi. <br>
+        Kurallar numaraları ve metni eşleştirmek için regex kullanır. <br>
         <br>
-        <title><b>Giriş Seviyesi - Joker Karakter</b></title> <br>
-        &ensp; Bir joker karakter <sample><b>*</b></sample> kullanmak istediğinizde, önüne bir nokta <sample><b>.</b></sample> koyun, örneğin <sample><b>.*</b></sample>, bu çoğu kullanım durumunu kapsamalıdır. <br>
+        <title><b>Temel Bilgiler</b></title> <br>
+        &ensp; <sample><b>.*</b></sample> herhangi bir şey: <sample>1800.*</sample> 1800 ile başlar <br>
+        &ensp; <sample><b>|</b></sample> veya: <sample>.*(prize|winner).*</sample> <br>
+        &ensp; <sample><b>\\d</b></sample> bir rakam: <sample>\\d{6}</sample> altı rakam <br>
+        &ensp; <sample><b>\\.</b></sample> gerçek bir nokta, <sample><b>\\+</b></sample> gerçek bir artı <br>
         <br>
-        <title><b>İleri Seviye - Yapay Zeka Kullanımı</b></title> <br>
-        &ensp; Örneğin, SMS doğrulamaları için şu regex\'i elde etmek için: <br>
-        &ensp; <sample>.*(verification|validation).*code.*\\d{5,6}.*</sample> <br>
+        Bir kural numaranın veya mesajın <b>tamamıyla</b> eşleşmelidir, bu yüzden kelimeleri <sample>.*</sample> içine alın ya da <b>İçerir</b> bayrağını açın. <br>
+        <b>Büyük/Küçük Harf Duyarlı</b> açık değilse eşleştirme büyük/küçük harfi yok sayar. <br>
+        Bir kurala güvenmeden önce denemek için Ayarlar\'daki <b>Test</b> özelliğini kullanın. <br>
         <br>
-        Yapay zekaya sor: <br>
+        <title><b>Yapay zekaya yazdırın</b></title> <br>
+        Örnek istem: <br>
         <sample>
         %s
         </sample>
         <br>
         <br>
-        <highlight><b>Çevrimiçi deneyin</b></highlight> <br>
-          &ensp; 1. <a href=\"copy\"><big>Yukarıdaki istemi kopyalayın</big></a> <br>
-          &ensp; 2. <a href=\"try_it\"><big>Çevrimiçi yapay zekayı başlatın</big></a> <br>
+        &ensp; 1. <a href=\"copy\"><big>İstemi kopyala</big></a> <br>
+        &ensp; 2. <a href=\"try_it\"><big>Çevrimiçi yapay zekayı aç</big></a> <br>
     ]]>
     </string>
     <string name="ai_regex_prompt">

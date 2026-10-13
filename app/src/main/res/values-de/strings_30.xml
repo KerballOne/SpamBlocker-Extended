@@ -1,0 +1,73 @@
+<resources>
+    <string name="calls">Anrufe</string>
+    <string name="notifications">Benachrichtigungen</string>
+    <string name="apply_to_notifications">Auf Benachrichtigungen anwenden</string>
+    <string name="title_short">Titel</string>
+    <string name="body_short">Text</string>
+    <string name="help_notification_screening">
+        <![CDATA[
+        Filtert Benachrichtigungen der Apps, die mit der Symbolauswahl rechts gewählt wurden. <br>
+        <br>
+        Rufnummern- und Nachrichtenregeln, bei denen unter <b>Auf Benachrichtigungen anwenden</b> <b>Titel</b> / <b>Text</b> aktiviert ist, werden auf die Benachrichtigung angewendet, genau wie bei einer echten eingehenden SMS. <br>
+        Ist das Ergebnis <b>Blockieren</b>, wird die Benachrichtigung verworfen. <br>
+        <br>
+        Telefonnummern im <b>Titel</b> / <b>Text</b> der Benachrichtigung werden außerdem von den Grundregeln <b>Kontakte</b> (beim Blockieren von Nichtkontakten) und <b>Datenbank</b> geprüft, wenn <b>Titel</b> / <b>Text</b> in deren Einstellungen aktiv ist, ohne dass eine Rufnummernregel nötig ist. <br>
+        <br>
+        Dies funktioniert unabhängig vom <b>SMS</b>-Schalter oben und erfordert die Berechtigung <b>Benachrichtigungszugriff</b>. <br>
+        <br>
+        Bei manchen Apps wird die Benachrichtigung eventuell nicht schnell genug verworfen, sodass die ursprüngliche App kurz einen Ton oder eine Vibration auslöst, bevor <b>SpamBlocker Extended</b> eingreifen kann. <br>
+        Wenn das stört, deaktivieren Sie die Benachrichtigungen dieser App in den Systemeinstellungen und nutzen stattdessen <b>Alarme</b>, um nur für ausdrücklich <b>zugelassene</b> Benachrichtigungen benachrichtigt zu werden.
+        ]]>
+    </string>
+    <string name="faq_calls">
+        <![CDATA[
+        Aktivieren Sie <b>Filterung</b> > <b>Anrufe</b> und erlauben Sie <b>SpamBlocker Extended</b> als App zur Anruffilterung. <br>
+        <br>
+        <title><b>Bei jedem eingehenden Anruf</b></title> <br>
+        1. Regeln werden nach <b>Priorität</b> geprüft: Grundregeln (Kontakte, Datenbank, STIR, Wiederholter Anruf…), dann <b>Rufnummernregeln</b> für die Nummer und <b>Nachrichtenregeln</b> für den Anrufernamen. <br>
+        2. Die erste passende Regel entscheidet. <br>
+        3. Kein Treffer: Der Anruf klingelt wie gewohnt. <br>
+        <br>
+        <title><b>Wenn blockiert</b></title> <br>
+        Der Anruf wird gemäß dem <b>Block-Typ</b> behandelt: <b>Ablehnen</b>, <b>Stummschalten</b> oder <b>Auflegen</b>. <br>
+        Er wird im Tab <b>Anruf</b> protokolliert, sodass Sie ihn prüfen und daraus eine Regel erstellen können. <br>
+        <br>
+        <title><b>Tipp</b></title> <br>
+        Nutzen Sie <b>Testen</b> in den Einstellungen, um zu sehen, welche Regel eine Nummer treffen würde.
+        ]]>
+    </string>
+    <string name="faq_sms">
+        <![CDATA[
+        Aktivieren Sie <b>Filterung</b> > <b>SMS/MMS</b>. <b>SpamBlocker Extended</b> muss nicht die Standard-SMS-App sein. <br>
+        <br>
+        <title><b>Bei jeder eingehenden SMS</b></title> <br>
+        1. <b>Rufnummernregeln</b> prüfen den Absender und <b>Nachrichtenregeln</b> die Nachricht, zusammen mit den Grundregeln (Kontakte, Datenbank…), nach <b>Priorität</b>. <br>
+        2. <highlight>Zugelassen</highlight>: <b>SpamBlocker Extended</b> zeigt die Benachrichtigung an. <br>
+        3. <error>Blockiert</error>: keine Benachrichtigung oder eine stumme, je nach Regel. <br>
+        <br>
+        <warn>Hinweis</warn> <br>
+        - Die Nachricht bleibt in Ihrer SMS-App erhalten, sie wird nur gefiltert, nicht gelöscht. <br>
+        - Deaktivieren Sie die Benachrichtigungen Ihrer SMS-App, um sie nicht doppelt zu erhalten. <br>
+        - <b>MMS</b> (auch Gruppennachrichten) werden nur anhand des Textes geprüft. <br>
+        - RCS-/Chat-Nachrichten sind keine SMS: Filtern Sie sie stattdessen mit <b>Benachrichtigungen</b>.
+        ]]>
+    </string>
+    <string name="faq_notifications">
+        <![CDATA[
+        Aktivieren Sie <b>Filterung</b> > <b>Benachrichtigungen</b>, gewähren Sie <b>Benachrichtigungszugriff</b> und wählen Sie die Apps über das Symbol neben dem Schalter. <br>
+        <br>
+        <title><b>Bei jeder Benachrichtigung dieser Apps</b></title> <br>
+        1. <b>Rufnummern</b>- und <b>Nachrichtenregeln</b> mit aktivem <b>Titel</b> / <b>Text</b> werden darauf angewendet. <br>
+        2. Telefonnummern im Titel / Text werden von <b>Kontakte</b> und <b>Datenbank</b> gemäß deren Titel-/Text-Einstellungen geprüft. <br>
+        3. Der erste Treffer nach <b>Priorität</b> entscheidet. Ein Kontakt im Titel (zulassen, <priority>10</priority>) schlägt eine Spam-Nummer im Text (blockieren, <priority>0</priority>). <br>
+        4. <error>Blockiert</error>: Die Benachrichtigung wird verworfen. Die Nachricht selbst bleibt in der App. <br>
+        <br>
+        <title><b>Mailbox</b></title> <br>
+        <b>Mailbox-Benachrichtigung</b> entnimmt die Nummer des Anrufers aus der Benachrichtigung einer Mailbox-App und prüft sie wie einen Anruf. <br>
+        <br>
+        <title><b>Tipp</b></title> <br>
+        Um nur erwünschte Benachrichtigungen zu hören, schalten Sie den eigenen Ton der App aus und verwenden Sie <b>Alarme</b> für <highlight>zugelassene</highlight>.
+        ]]>
+    </string>
+    <string name="wiki">Wiki</string>
+</resources>

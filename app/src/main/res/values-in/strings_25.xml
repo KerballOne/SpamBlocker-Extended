@@ -81,39 +81,23 @@
     <string name="faq"><short>Tanya</short></string>
     <string name="faq_priority">
     <![CDATA[
-        Setiap filter memiliki nilai prioritasnya, sebagaimana istilahnya, menentukan urutan pemeriksaan panggilan. <br>
+        Aturan diperiksa dari prioritas <b>tertinggi</b> ke terendah. Aturan pertama yang cocok menentukan: izinkan atau blokir. <br>
         <br>
-        Secara Default, <br>
+        <title><b>Bawaan</b></title> <br>
+        &ensp; <priority>20</priority> <title>Mode Rapat</title> <br>
+        &ensp; <priority>10</priority> Aturan <highlight>Izinkan</highlight>: Kontak, Panggilan Berulang, Aplikasi Terbaru… <br>
+        &ensp; <priority>0</priority> Aturan <error>Blokir</error>: Bukan Kontak, STIR, Basis Data <br>
+        &ensp; <priority>-1</priority> <title>Permintaan Instan</title>, hanya setelah semua aturan lokal lolos <br>
         <br>
-        - <highlight>Whitelist rules</highlight> memiliki prioritas <priority>10</priority> <br>
-        &ensp; <sample>Contoh: Kontak, RepeatedCall, RecentApps, dll </sample><br>
+        Jadi secara bawaan, izinkan mengalahkan blokir. <br>
+        Aturan Nomor dan Aturan Pesan dapat memakai prioritas apa pun. <br>
         <br>
-        - <error>Blacklist rules</error> memiliki prioritas <priority>0</priority> <br>
-        &ensp; <sample>Contoh: STIR, Database, dll </sample> <br>
+        <title><b>Tips</b></title> <br>
+        - <sample>Blokir nomor meskipun menelepon dua kali</sample>: prioritas di atas <priority>10</priority>. <br>
+        - <sample>Izinkan nomor meskipun sedang rapat</sample>: di atas <priority>20</priority>. <br>
+        - <sample>Uji aturan baru</sample>: <priority>999</priority>, agar tidak ada yang menghalangi. <br>
         <br>
-        Ketika keduanya diaktifkan, aturan whitelist akan menggantikan aturan blacklist karena 10 > 0. <br>
-        <br>
-        Untuk aturan regex, prioritas dapat diatur ke angka berapa pun antara <priority>-2147483648</priority>
-          dan <priority>2147483647</priority>. <br>
-        Berbagai aturan dapat memiliki prioritas yang sama selama mereka bertipe sama, namun,
-          <warn><b>jangan pernah memberikan prioritas yang sama kepada
-          whitelist dan blacklist rules</b></warn>, karena dapat menyebabkan perilaku acak. <br>
-        <br>
-        Fitur <title>Meeting Mode</title> memiliki prioritas <priority>20</priority> secara default,
-          karena seharusnya memblokir semua panggilan selama rapat. <br>
-        Dan <priority>-1</priority> untuk <title>Instant Query</title>,
-          sehingga hanya diperiksa setelah panggilan melewati semua filter lokal. <br>
-        <br>
-        <b>Contoh penggunaan</b> penyesuaian prioritas: <br>
-        <br>
-        - <sample>Selalu blokir nomor tertentu, tidak peduli apakah berulang</sample> <br>
-         &ensp; Atur aturan dengan prioritas > 10 untuk menggantikan <title>Repeated Call</title>. <br>
-        <br>
-        - <sample>Selalu izinkan nomor</sample> <br>
-         &ensp; Atur menjadi > 20 untuk menggantikan <title>Meeting Mode</title>. <br>
-        <br>
-        - <sample>Uji aturan regex</sample> <br>
-         &ensp; Atur menjadi 999 untuk menggantikan semua filter lain sehingga Anda tidak perlu menonaktifkannya satu per satu secara sementara.
+        <warn><b>Jangan pernah memberi aturan izinkan dan aturan blokir prioritas yang sama</b></warn>, hasilnya tidak dapat diprediksi.
     ]]>
     </string>
 </resources>

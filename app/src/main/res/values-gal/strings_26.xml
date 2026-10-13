@@ -10,57 +10,45 @@
     <string name="import_numbers">Importar Numbers</string>
     <string name="faq_import_numbers">
     <![CDATA[
-        Importar números de ficheiros locais ou remotos usando fluxos de traballo. <br>
+        Importa números desde un ficheiro ou URL á <b>Base de datos</b> ou a unha <b>Regra de Número</b> cun fluxo de traballo. <br>
         <br>
-        <title><b>Unha configuración típica</b></title>: <br>
+        <title><b>Pasos</b></title> <br>
+        1. <minor><b>Ler ficheiro</b></minor> ou <minor><b>Solicitude HTTP</b></minor>: obter o contido. <br>
+        2. <minor><b>Analizar CSV</b></minor>, <minor><b>Analizar XML</b></minor> ou <minor><b>Extraer Regex</b></minor>: obter os números. <br>
+        3. <minor><b>Substituír número</b></minor> (opcional): corrixir o formato, p. ex. <b>123#####</b> → <b>123.*</b> <br>
+        4. <minor><b>Importar á base de datos de spam</b></minor> ou <minor><b>Importar como unha Regra Regex</b></minor>. <br>
         <br>
-        1. <minor><b>Ler Ficheiro</b></minor> / <minor><b>Petición HTTP</b></minor> <br>
-          &ensp; Obter o contido do ficheiro. <br>
-          <br>
-        2. <minor><b>Analizar CSV</b></minor> / <minor><b>Analizar XML</b></minor> / <minor><b>Extracción Regex</b></minor> <br>
-          &ensp; Analícao e obtén unha lista de números. <br>
-          <br>
-        3. <minor><b>Substituír Número</b></minor> (opcional) <br>
-          &ensp; Modifica o formato do número <br>
-          &ensp; Caso de uso: <br>
-          <sample>
-            &emsp; Ao migrar números doutras aplicacións, converte formatos como <b>123#####</b> a regex <b>123.....</b> ou <b>123.*</b> <br>
-          </sample>
-          <br>
-        4. <minor><b>Importar á Base de Datos de Spam</b></minor> / <minor><b>Importar á Regra Regex</b></minor> <br>
+        Engade un disparador de <b>Programación</b> para manter a lista actualizada. <br>
         <br>
-        <br>
-        <title><b>Exemplos</b></title>: <br>
-          - O predefinido <no_translate><b>FTC-DNC</b></no_translate> <br>
-        <br>
-        Máis exemplos en liña: <br>
-          - <a href=\"%s\">Texto plano</a> <br>
-          - <a href=\"%s\">CSV</a> <br>
-          - <a href=\"%s\">XML</a> <br>
-          - <a href=\"%s\">JSON</a> - JsonPath aínda non é compatíbel, usa <minor><b>Extracción Regex</b></minor> no seu lugar.
+        <title><b>Exemplos</b></title> <br>
+        &ensp; O predefinido <no_translate><b>FTC-DNC</b></no_translate> <br>
+        &ensp; <a href=\"%s\">Texto simple</a> · <a href=\"%s\">CSV</a> · <a href=\"%s\">XML</a> · <a href=\"%s\">JSON</a> <br>
+        &ensp; (JSON: usa <minor><b>Extraer Regex</b></minor>, JsonPath non é compatible.)
     ]]>
     </string>
     <string name="faq_regex">
     <![CDATA[
-        Un titorial de regex para non programadores. <br>
+        As regras usan regex para coincidir con números e texto. <br>
         <br>
-        <title><b>Nivel de entrada - Comodín</b></title> <br>
-        &ensp; Cando queiras usar un comodín <sample><b>*</b></sample>, pon un punto <sample><b>.</b></sample>
-          antes del, como <sample><b>.*</b></sample>, isto debería cubrir a maioría dos casos de uso. <br>
+        <title><b>Conceptos básicos</b></title> <br>
+        &ensp; <sample><b>.*</b></sample> calquera cousa: <sample>1800.*</sample> comeza por 1800 <br>
+        &ensp; <sample><b>|</b></sample> ou: <sample>.*(prize|winner).*</sample> <br>
+        &ensp; <sample><b>\\d</b></sample> un díxito: <sample>\\d{6}</sample> seis díxitos <br>
+        &ensp; <sample><b>\\.</b></sample> un punto real, <sample><b>\\+</b></sample> un máis real <br>
         <br>
-        <title><b>Avanzado - Usando IA</b></title> <br>
-        &ensp; Por exemplo, para obter a seguinte regex para verificacións por SMS: <br>
-        &ensp; <sample>.*(verification|validation).*code.*\\d{5,6}.*</sample> <br>
+        Unha regra debe coincidir co número ou mensaxe <b>enteiro</b>, así que rodea as palabras con <sample>.*</sample>, ou activa a opción <b>Contén</b>. <br>
+        A coincidencia ignora maiúsculas e minúsculas salvo que <b>Sensible ás Maiúsculas/Minúsculas</b> estea activado. <br>
+        Usa <b>Probar</b> en Configuración para probar unha regra antes de confiar nela. <br>
         <br>
-        Pregúntalle á IA: <br>
+        <title><b>Deixa que a IA a escriba</b></title> <br>
+        Exemplo de prompt: <br>
         <sample>
         %s
         </sample>
         <br>
         <br>
-        <highlight><b>Probar en liña</b></highlight> <br>
-          &ensp; 1. <a href=\"copy\"><big>Copia o prompt de arriba</big></a> <br>
-          &ensp; 2. <a href=\"try_it\"><big>Inicia a IA en liña</big></a> <br>
+        &ensp; 1. <a href=\"copy\"><big>Copiar o prompt</big></a> <br>
+        &ensp; 2. <a href=\"try_it\"><big>Abrir a IA en liña</big></a> <br>
     ]]>
     </string>
     <string name="ai_regex_prompt">

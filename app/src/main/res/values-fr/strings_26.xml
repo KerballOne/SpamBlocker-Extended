@@ -10,57 +10,45 @@
     <string name="import_numbers">Importer Numbers</string>
     <string name="faq_import_numbers">
     <![CDATA[
-        Importer des numéros depuis des fichiers locaux ou distants en utilisant des flux de travail. <br>
+        Importez des numéros depuis un fichier ou une URL dans la <b>Base de données</b> ou une <b>Règle de numéro</b> avec un flux de travail. <br>
         <br>
-        <title><b>Une configuration typique</b></title> : <br>
+        <title><b>Étapes</b></title> <br>
+        1. <minor><b>Lire le fichier</b></minor> ou <minor><b>Requête HTTP</b></minor> : obtenir le contenu. <br>
+        2. <minor><b>Analyser CSV</b></minor>, <minor><b>Analyser XML</b></minor> ou <minor><b>Extraire Regex</b></minor> : obtenir les numéros. <br>
+        3. <minor><b>Remplacer le numéro</b></minor> (facultatif) : corriger le format, ex. <b>123#####</b> → <b>123.*</b> <br>
+        4. <minor><b>Importer dans la base de données de spam</b></minor> ou <minor><b>Importer comme une règle Regex</b></minor>. <br>
         <br>
-        1. <minor><b>Lire le fichier</b></minor> / <minor><b>Requête Http</b></minor> <br>
-          &ensp; Obtenir le contenu du fichier. <br>
-          <br>
-        2. <minor><b>Analyser CSV</b></minor> / <minor><b>Analyser XML</b></minor> / <minor><b>Extraction Regex</b></minor> <br>
-          &ensp; L\'analyser et obtenir une liste de numéros. <br>
-          <br>
-        3. <minor><b>Remplacer le numéro</b></minor> (optionnel) <br>
-          &ensp; Modifier le format du numéro <br>
-          &ensp; Cas d\'usage : <br>
-          <sample>
-            &emsp; Lors de la migration de numéros depuis d\'autres applications, convertir les formats comme <b>123#####</b> en regex <b>123.....</b> ou <b>123.*</b> <br>
-          </sample>
-          <br>
-        4. <minor><b>Importer dans la base de données Spam</b></minor> / <minor><b>Importer dans la règle Regex</b></minor> <br>
+        Ajoutez un déclencheur <b>Planification</b> pour garder la liste à jour. <br>
         <br>
-        <br>
-        <title><b>Exemples</b></title> : <br>
-          - Le préréglage <no_translate><b>FTC-DNC</b></no_translate> <br>
-        <br>
-        Plus d\'exemples en ligne : <br>
-          - <a href=\"%s\">Texte brut</a> <br>
-          - <a href=\"%s\">CSV</a> <br>
-          - <a href=\"%s\">XML</a> <br>
-          - <a href=\"%s\">JSON</a> - JsonPath n\'est pas encore supporté, utilisez <minor><b>Extraction Regex</b></minor> à la place.
+        <title><b>Exemples</b></title> <br>
+        &ensp; Le préréglage <no_translate><b>FTC-DNC</b></no_translate> <br>
+        &ensp; <a href=\"%s\">Texte brut</a> · <a href=\"%s\">CSV</a> · <a href=\"%s\">XML</a> · <a href=\"%s\">JSON</a> <br>
+        &ensp; (JSON : utilisez <minor><b>Extraire Regex</b></minor>, JsonPath n\'est pas pris en charge.)
     ]]>
     </string>
     <string name="faq_regex">
     <![CDATA[
-        Un tutoriel regex pour non-programmeurs. <br>
+        Les règles utilisent des regex pour reconnaître les numéros et le texte. <br>
         <br>
-        <title><b>Niveau Débutant - Joker</b></title> <br>
-        &ensp; Chaque fois que vous voulez utiliser un joker <sample><b>*</b></sample>, mettez un point <sample><b>.</b></sample>
-          devant, comme <sample><b>.*</b></sample>, cela devrait couvrir la plupart des cas d\'usage. <br>
+        <title><b>Bases</b></title> <br>
+        &ensp; <sample><b>.*</b></sample> n\'importe quoi : <sample>1800.*</sample> commence par 1800 <br>
+        &ensp; <sample><b>|</b></sample> ou : <sample>.*(prize|winner).*</sample> <br>
+        &ensp; <sample><b>\\d</b></sample> un chiffre : <sample>\\d{6}</sample> six chiffres <br>
+        &ensp; <sample><b>\\.</b></sample> un vrai point, <sample><b>\\+</b></sample> un vrai plus <br>
         <br>
-        <title><b>Avancé - Utiliser l\'IA</b></title> <br>
-        &ensp; Par exemple, pour obtenir la regex suivante pour les vérifications SMS : <br>
-        &ensp; <sample>.*(verification|validation).*code.*\\d{5,6}.*</sample> <br>
+        Une règle doit correspondre au numéro ou au message <b>entier</b> : entourez donc les mots de <sample>.*</sample>, ou activez l\'option <b>Contient</b>. <br>
+        La casse est ignorée sauf si <b>Sensible à la casse</b> est activé. <br>
+        Utilisez <b>Tester</b> dans les Paramètres pour essayer une règle avant de vous y fier. <br>
         <br>
-        Demander à l\'IA : <br>
+        <title><b>Laissez l\'IA l\'écrire</b></title> <br>
+        Exemple de prompt : <br>
         <sample>
         %s
         </sample>
         <br>
         <br>
-        <highlight><b>Essayer en ligne</b></highlight> <br>
-          &ensp; 1. <a href=\"copy\"><big>Copier l\'invite ci-dessus</big></a> <br>
-          &ensp; 2. <a href=\"try_it\"><big>Lancer l\'IA en ligne</big></a> <br>
+        &ensp; 1. <a href=\"copy\"><big>Copier le prompt</big></a> <br>
+        &ensp; 2. <a href=\"try_it\"><big>Ouvrir l\'IA en ligne</big></a> <br>
     ]]>
     </string>
     <string name="ai_regex_prompt">

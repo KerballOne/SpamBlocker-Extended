@@ -10,56 +10,45 @@
     <string name="import_numbers">Nummern importieren</string>
     <string name="faq_import_numbers">
     <![CDATA[
-        Importieren Sie Nummern aus lokalen oder Remote-Dateien mithilfe von Workflows. <br>
+        Importieren Sie Nummern aus einer Datei oder URL per Workflow in die <b>Datenbank</b> oder eine <b>Rufnummernregel</b>. <br>
         <br>
-        <title><b>Ein typisches Setup</b></title>: <br>
+        <title><b>Schritte</b></title> <br>
+        1. <minor><b>Datei lesen</b></minor> oder <minor><b>HTTP-Anfrage</b></minor>: den Inhalt abrufen. <br>
+        2. <minor><b>CSV parsen</b></minor>, <minor><b>XML parsen</b></minor> oder <minor><b>Regex extrahieren</b></minor>: die Nummern erhalten. <br>
+        3. <minor><b>Nummer ersetzen</b></minor> (optional): das Format anpassen, z. B. <b>123#####</b> → <b>123.*</b> <br>
+        4. <minor><b>In die Spam-Datenbank importieren</b></minor> oder <minor><b>In Regex-Regel importieren</b></minor>. <br>
         <br>
-        1. <minor><b>Datei lesen</b></minor> / <minor><b>Http-Anfrage</b></minor> <br>
-          &ensp; Den Dateiinhalt abrufen. <br>
-          <br>
-        2. <minor><b>CSV parsen</b></minor> / <minor><b>XML parsen</b></minor> / <minor><b>Regex extrahieren</b></minor> <br>
-          &ensp; Analysieren Sie es und erhalten Sie eine Liste von Nummern. <br>
-          <br>
-        3. <minor><b>Nummer ersetzen</b></minor> (optional) <br>
-          &ensp; Das Nummernformat ändern <br>
-          &ensp; Anwendungsfall: <br>
-          <sample>
-            &emsp; Beim Migrieren von Nummern aus anderen Apps, Formate wie <b>123#####</b> in Regex <b>123.....</b> oder <b>123.*</b> konvertieren <br>
-          </sample>
-          <br>
-        4. <minor><b>In Spam-Datenbank importieren</b></minor> / <minor><b>In Regex-Regel importieren</b></minor> <br>
+        Fügen Sie einen <b>Zeitplan</b>-Auslöser hinzu, um die Liste aktuell zu halten. <br>
         <br>
-        <br>
-        <title><b>Beispiele</b></title>: <br>
-          - Die Voreinstellung <no_translate><b>FTC-DNC</b></no_translate> <br>
-        <br>
-        Weitere Online-Beispiele: <br>
-          - <a href=\"%s\">Klartext</a> <br>
-          - <a href=\"%s\">CSV</a> <br>
-          - <a href=\"%s\">XML</a> <br>
-          - <a href=\"%s\">JSON</a> - JsonPath wird noch nicht unterstützt, verwenden Sie stattdessen <minor><b>Regex extrahieren</b></minor>.
+        <title><b>Beispiele</b></title> <br>
+        &ensp; Die Vorlage <no_translate><b>FTC-DNC</b></no_translate> <br>
+        &ensp; <a href=\"%s\">Klartext</a> · <a href=\"%s\">CSV</a> · <a href=\"%s\">XML</a> · <a href=\"%s\">JSON</a> <br>
+        &ensp; (JSON: <minor><b>Regex extrahieren</b></minor> verwenden, JsonPath wird nicht unterstützt.)
     ]]>
     </string>
     <string name="faq_regex">
     <![CDATA[
-        Ein Regex-Tutorial für Nicht-Programmierer. <br>
+        Regeln verwenden Regex, um Nummern und Text zu erkennen. <br>
         <br>
-        <title><b>Einsteigerlevel - Platzhalter</b></title> <br>
-        &ensp; Wann immer Sie einen Platzhalter <sample><b>*</b></sample> verwenden möchten, setzen Sie einen Punkt <sample><b>.</b></sample> davor, wie <sample><b>.*</b></sample>, dies sollte die meisten Anwendungsfälle abdecken. <br>
+        <title><b>Grundlagen</b></title> <br>
+        &ensp; <sample><b>.*</b></sample> beliebiges: <sample>1800.*</sample> beginnt mit 1800 <br>
+        &ensp; <sample><b>|</b></sample> oder: <sample>.*(prize|winner).*</sample> <br>
+        &ensp; <sample><b>\\d</b></sample> eine Ziffer: <sample>\\d{6}</sample> sechs Ziffern <br>
+        &ensp; <sample><b>\\.</b></sample> ein echter Punkt, <sample><b>\\+</b></sample> ein echtes Plus <br>
         <br>
-        <title><b>Fortgeschritten - KI nutzen</b></title> <br>
-        &ensp; Um beispielsweise den folgenden Regex für SMS-Bestätigungen zu erhalten: <br>
-        &ensp; <sample>.*(verification|validation).*code.*\\d{5,6}.*</sample> <br>
+        Eine Regel muss die <b>gesamte</b> Nummer oder Nachricht treffen, setzen Sie Wörter also in <sample>.*</sample> oder aktivieren Sie das Flag <b>Enthält</b>. <br>
+        Groß-/Kleinschreibung wird ignoriert, außer <b>Groß-/Kleinschreibung beachten</b> ist aktiv. <br>
+        Nutzen Sie <b>Testen</b> in den Einstellungen, um eine Regel auszuprobieren, bevor Sie sich darauf verlassen. <br>
         <br>
-        Fragen Sie die KI: <br>
+        <title><b>Von einer KI schreiben lassen</b></title> <br>
+        Beispiel-Prompt: <br>
         <sample>
         %s
         </sample>
         <br>
         <br>
-        <highlight><b>Online testen</b></highlight> <br>
-          &ensp; 1. <a href=\"copy\"><big>Die obige Eingabe kopieren</big></a> <br>
-          &ensp; 2. <a href=\"try_it\"><big>Die Online-KI starten</big></a> <br>
+        &ensp; 1. <a href=\"copy\"><big>Prompt kopieren</big></a> <br>
+        &ensp; 2. <a href=\"try_it\"><big>Online-KI öffnen</big></a> <br>
     ]]>
     </string>
     <string name="ai_regex_prompt">

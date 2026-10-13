@@ -10,57 +10,45 @@
     <string name="import_numbers">Import Numbers</string>
     <string name="faq_import_numbers">
     <![CDATA[
-        Import numbers from local or remote files using workflows. <br>
+        Import numbers from a file or URL into the <b>Database</b> or a <b>Number Rule</b> with a workflow. <br>
         <br>
-        <title><b>A typical setup</b></title>: <br>
+        <title><b>Steps</b></title> <br>
+        1. <minor><b>Read File</b></minor> or <minor><b>HTTP Request</b></minor>: get the content. <br>
+        2. <minor><b>Parse CSV</b></minor>, <minor><b>Parse XML</b></minor> or <minor><b>Regex Extract</b></minor>: get the numbers. <br>
+        3. <minor><b>Replace Number</b></minor> (optional): fix the format, e.g. <b>123#####</b> → <b>123.*</b> <br>
+        4. <minor><b>Import to Spam Database</b></minor> or <minor><b>Import to Regex Rule</b></minor>. <br>
         <br>
-        1. <minor><b>Read File</b></minor> / <minor><b>Http Request</b></minor> <br>
-          &ensp; Get the file content. <br>
-          <br>
-        2. <minor><b>Parse CSV</b></minor> / <minor><b>Parse XML</b></minor> / <minor><b>Regex Extract</b></minor> <br>
-          &ensp; Parse it and get a list of numbers. <br>
-          <br>
-        3. <minor><b>Replace Number</b></minor> (optional) <br>
-          &ensp; Modify the number format <br>
-          &ensp; Use case: <br>
-          <sample>
-            &emsp; When migrating numbers from other apps, convert formats like <b>123#####</b> to regex <b>123.....</b> or <b>123.*</b> <br>
-          </sample>
-          <br>
-        4. <minor><b>Import to Spam Database</b></minor> / <minor><b>Import to Regex Rule</b></minor> <br>
+        Add a <b>Schedule</b> trigger to keep the list updated. <br>
         <br>
-        <br>
-        <title><b>Examples</b></title>: <br>
-          - The preset <no_translate><b>FTC-DNC</b></no_translate> <br>
-        <br>
-        More online examples: <br>
-          - <a href=\"%s\">Plain text</a> <br>
-          - <a href=\"%s\">CSV</a> <br>
-          - <a href=\"%s\">XML</a> <br>
-          - <a href=\"%s\">JSON</a> - JsonPath isn\'t supported yet, use <minor><b>Regex Extract</b></minor> instead.
+        <title><b>Examples</b></title> <br>
+        &ensp; The preset <no_translate><b>FTC-DNC</b></no_translate> <br>
+        &ensp; <a href=\"%s\">Plain text</a> · <a href=\"%s\">CSV</a> · <a href=\"%s\">XML</a> · <a href=\"%s\">JSON</a> <br>
+        &ensp; (JSON: use <minor><b>Regex Extract</b></minor>, JsonPath isn\'t supported.)
     ]]>
     </string>
     <string name="faq_regex">
     <![CDATA[
-        A regex tutorial for non-programmers. <br>
+        Rules use regex to match numbers and text. <br>
         <br>
-        <title><b>Entry Level - Wildcard</b></title> <br>
-        &ensp; Whenever you want to use a wildcard <sample><b>*</b></sample>, put a dot <sample><b>.</b></sample>
-          before it, like <sample><b>.*</b></sample>, this should cover most use cases. <br>
+        <title><b>Basics</b></title> <br>
+        &ensp; <sample><b>.*</b></sample> anything: <sample>1800.*</sample> starts with 1800 <br>
+        &ensp; <sample><b>|</b></sample> or: <sample>.*(prize|winner).*</sample> <br>
+        &ensp; <sample><b>\\d</b></sample> one digit: <sample>\\d{6}</sample> six digits <br>
+        &ensp; <sample><b>\\.</b></sample> a real dot, <sample><b>\\+</b></sample> a real plus <br>
         <br>
-        <title><b>Advanced - Using AI</b></title> <br>
-        &ensp; For example, to get the following regex for SMS verifications: <br>
-        &ensp; <sample>.*(verification|validation).*code.*\\d{5,6}.*</sample> <br>
+        A rule must match the <b>whole</b> number or message, so wrap words in <sample>.*</sample>, or turn on the <b>Contains</b> flag. <br>
+        Matching ignores case unless <b>Case Sensitive</b> is on. <br>
+        Use <b>Test</b> in Settings to try a rule before relying on it. <br>
         <br>
-        Ask AI: <br>
+        <title><b>Let AI write it</b></title> <br>
+        Example prompt: <br>
         <sample>
         %s
         </sample>
         <br>
         <br>
-        <highlight><b>Try it online</b></highlight> <br>
-          &ensp; 1. <a href=\"copy\"><big>Copy the prompt above</big></a> <br>
-          &ensp; 2. <a href=\"try_it\"><big>Launch the online AI</big></a> <br>
+        &ensp; 1. <a href=\"copy\"><big>Copy the prompt</big></a> <br>
+        &ensp; 2. <a href=\"try_it\"><big>Open the online AI</big></a> <br>
     ]]>
     </string>
     <string name="ai_regex_prompt">

@@ -45,6 +45,7 @@ import spam.blocker.ui.widgets.LeftDeleteSwipeWrapper
 import spam.blocker.ui.widgets.NumberInputBox
 import spam.blocker.ui.widgets.OutlineCard
 import spam.blocker.ui.widgets.PopupDialog
+import spam.blocker.ui.widgets.PopupSize
 import spam.blocker.ui.widgets.PriorityBox
 import spam.blocker.ui.widgets.PriorityLabel
 import spam.blocker.ui.widgets.RowVCenter
@@ -127,6 +128,11 @@ fun SpamDB() {
     var expiryEnabled by remember { mutableStateOf(spf.isExpiryEnabled) }
     var ttl by remember { mutableIntStateOf(spf.ttl) }
     var priority by remember { mutableIntStateOf(spf.priority) }
+    val forCall = remember { mutableStateOf(spf.forCall) }
+    val forSms = remember { mutableStateOf(spf.forSms) }
+    val forMms = remember { mutableStateOf(spf.forMms) }
+    val forTitle = remember { mutableStateOf(spf.forTitle) }
+    val forBody = remember { mutableStateOf(spf.forBody) }
 
     val popupTrigger = rememberSaveable { mutableStateOf(false) }
     var total by remember { mutableIntStateOf(SpamTable.count(ctx)) }
@@ -154,6 +160,8 @@ fun SpamDB() {
     // Configuration Dialog
     PopupDialog(
         trigger = popupTrigger,
+        // As wide as the Number Rule editor, so all 5 Apply to chips fit on one row.
+        popupSize = PopupSize(maxWidthPercentage = 0.9f, minWidthDp = 340, maxWidthDp = 600),
         onDismiss = {
             spf.isExpiryEnabled = expiryEnabled
             spf.ttl = ttl
@@ -209,6 +217,14 @@ fun SpamDB() {
                 }
             }
 
+            // Apply to: Calls / SMS / MMS / Title / Body
+            ApplyToTypes(forCall, forSms, forMms, forTitle, forBody) {
+                spf.forCall = forCall.value
+                spf.forSms = forSms.value
+                spf.forMms = forMms.value
+                spf.forTitle = forTitle.value
+                spf.forBody = forBody.value
+            }
 
             // Search list
             var keyword by remember { mutableStateOf("") }

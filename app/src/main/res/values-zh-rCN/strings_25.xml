@@ -79,35 +79,23 @@
     <string name="faq"><short>常见问题</short></string>
     <string name="faq_priority">
     <![CDATA[
-        每个过滤器都有其优先级值，顾名思义，它决定了检查来电的顺序。 <br>
+        规则按优先级从<b>高</b>到低检查。第一条匹配的规则决定允许还是阻止。 <br>
         <br>
-        默认情况下， <br>
+        <title><b>默认值</b></title> <br>
+        &ensp; <priority>20</priority> <title>会议模式</title> <br>
+        &ensp; <priority>10</priority> <highlight>允许</highlight>规则：联系人、重复呼叫、最近应用… <br>
+        &ensp; <priority>0</priority> <error>阻止</error>规则：非联系人、STIR、数据库 <br>
+        &ensp; <priority>-1</priority> <title>即时查询</title>，仅在通过所有本地规则后进行 <br>
         <br>
-        - <highlight>白名单规则</highlight> 的优先级为 <priority>10</priority> <br>
-        &ensp; <sample>例如：联系人、重复来电、最近使用的应用等 </sample><br>
+        因此默认情况下，允许优先于阻止。 <br>
+        号码规则和文本规则可以使用任意优先级。 <br>
         <br>
-        - <error>黑名单规则</error> 的优先级为 <priority>0</priority> <br>
-        &ensp; <sample>例如：STIR、数据库等 </sample> <br>
+        <title><b>提示</b></title> <br>
+        - <sample>即使号码打来两次也阻止</sample>：优先级高于 <priority>10</priority>。 <br>
+        - <sample>即使在会议中也允许某号码</sample>：高于 <priority>20</priority>。 <br>
+        - <sample>测试新规则</sample>：<priority>999</priority>，避免其他规则干扰。 <br>
         <br>
-        当两者同时启用时，白名单规则会覆盖黑名单规则，因为 10 > 0。 <br>
-        <br>
-        对于正则规则，优先级可以设置为介于 <priority>-2147483648</priority>
-          和 <priority>2147483647</priority> 之间的任意数字。 <br>
-        不同的规则可以拥有相同的优先级，只要它们属于同一类型；然而，<warn><b>绝不要为白名单和黑名单规则分配相同的优先级</b></warn>，否则可能导致随机行为。 <br>
-        <br>
-        功能 <title>会议模式</title> 默认优先级为 <priority>20</priority>，因为它应在会议期间阻止所有来电。 <br>
-        对于 <title>即时查询</title>，优先级为 <priority>-1</priority>，因此只有在来电通过所有本地过滤器后才会进行检查。 <br>
-        <br>
-        <b>自定义优先级的使用场景</b>： <br>
-        <br>
-        - <sample>始终拦截特定号码，无论是否重复</sample> <br>
-         &ensp; 设置优先级大于 10 的规则以覆盖 <title>重复来电</title>。 <br>
-        <br>
-        - <sample>始终允许某个号码</sample> <br>
-         &ensp; 将其优先级设为大于 20，以覆盖 <title>会议模式</title>。 <br>
-        <br>
-        - <sample>测试正则规则</sample> <br>
-         &ensp; 将其设为 999，以覆盖所有其他过滤器，免去逐个临时禁用的麻烦。
+        <warn><b>切勿为允许规则和阻止规则设置相同的优先级</b></warn>，否则结果不可预测。
     ]]>
     </string>
 </resources>

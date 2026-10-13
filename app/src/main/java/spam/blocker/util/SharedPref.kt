@@ -310,6 +310,12 @@ class spf { // for namespace only
         var isExpiryEnabled by bool("spam_db_expiry_enabled")
         var priority by int("spam_db_priority")
         var ttl by int("spam_db_ttl_days", 180) // 180 days
+        // Apply to: Calls / SMS / MMS / notification Title / notification Body
+        var forCall by bool("spam_db_for_call", true)
+        var forSms by bool("spam_db_for_sms", true)
+        var forMms by bool("spam_db_for_mms", true)
+        var forTitle by bool("spam_db_for_title", true)
+        var forBody by bool("spam_db_for_body", true)
     }
 
     class Contact(ctx: Context) : SharedPref(ctx) {
@@ -317,6 +323,20 @@ class spf { // for namespace only
         var isStrict by bool("contacts_exclusive")
         var lenientPriority by int("contacts_lenient_priority", 10)
         var strictPriority by int("contacts_strict_priority")
+        // Apply to: Calls / SMS / MMS / notification Title / notification Body, separately for
+        //  Allow (contacts) and Block (non-contacts)
+        var allowForCall by bool("contacts_allow_for_call", true)
+        var allowForSms by bool("contacts_allow_for_sms", true)
+        var allowForMms by bool("contacts_allow_for_mms", true)
+        var allowForTitle by bool("contacts_allow_for_title", true)
+        var allowForBody by bool("contacts_allow_for_body", true)
+        var blockForCall by bool("contacts_block_for_call", true)
+        var blockForSms by bool("contacts_block_for_sms", true)
+        var blockForMms by bool("contacts_block_for_mms", true)
+        var blockForTitle by bool("contacts_block_for_title", true)
+        // Off by default: a number in a message's body is usually its content (e.g. a contact
+        //  texting someone else's number), not the sender, unlike in a voicemail app's.
+        var blockForBody by bool("contacts_block_for_body", false)
     }
     class RepeatedCall(ctx: Context) : SharedPref(ctx) {
         var isEnabled by bool("permit_repeated")

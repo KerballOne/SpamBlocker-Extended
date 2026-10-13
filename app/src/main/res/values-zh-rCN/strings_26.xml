@@ -10,56 +10,45 @@
     <string name="import_numbers">导入号码</string>
     <string name="faq_import_numbers">
     <![CDATA[
-        使用工作流从本地或远程文件导入号码。<br>
+        使用工作流程从文件或 URL 将号码导入<b>数据库</b>或<b>号码规则</b>。 <br>
         <br>
-        <title><b>典型设置</b></title>: <br>
+        <title><b>步骤</b></title> <br>
+        1. <minor><b>读取文件</b></minor>或<minor><b>HTTP请求</b></minor>：获取内容。 <br>
+        2. <minor><b>解析CSV</b></minor>、<minor><b>解析XML</b></minor>或<minor><b>正则表达式提取</b></minor>：获取号码。 <br>
+        3. <minor><b>替换号码</b></minor>（可选）：修正格式，例如 <b>123#####</b> → <b>123.*</b> <br>
+        4. <minor><b>导入到垃圾数据库</b></minor>或<minor><b>导入为单条正则规则</b></minor>。 <br>
         <br>
-        1. <minor><b>读取文件</b></minor> / <minor><b>Http 请求</b></minor> <br>
-          &ensp; 获取文件内容。<br>
-          <br>
-        2. <minor><b>解析 CSV</b></minor> / <minor><b>解析 XML</b></minor> / <minor><b>正则提取</b></minor> <br>
-          &ensp; 解析文件并获取号码列表。<br>
-          <br>
-        3. <minor><b>替换号码</b></minor> (可选) <br>
-          &ensp; 修改号码格式 <br>
-          &ensp; 使用场景： <br>
-          <sample>
-            &emsp; 从其他应用迁移号码时，将 <b>123#####</b> 等格式转换为正则表达式 <b>123.....</b> 或 <b>123.*</b> <br>
-          </sample>
-          <br>
-        4. <minor><b>导入到骚扰电话数据库</b></minor> / <minor><b>导入到正则规则</b></minor> <br>
+        添加 <b>时间安排</b> 触发器，使列表保持更新。 <br>
         <br>
-        <br>
-        <title><b>示例</b></title>: <br>
-          - 预设 <no_translate><b>FTC-DNC</b></no_translate> <br>
-        <br>
-        更多在线示例： <br>
-          - <a href=\"%s\">纯文本</a> <br>
-          - <a href=\"%s\">CSV</a> <br>
-          - <a href=\"%s\">XML</a> <br>
-          - <a href=\"%s\">JSON</a> - 暂不支持 JsonPath，请改用 <minor><b>正则提取</b></minor>。
+        <title><b>示例</b></title> <br>
+        &ensp; 预设 <no_translate><b>FTC-DNC</b></no_translate> <br>
+        &ensp; <a href=\"%s\">纯文本</a> · <a href=\"%s\">CSV</a> · <a href=\"%s\">XML</a> · <a href=\"%s\">JSON</a> <br>
+        &ensp; （JSON：请使用<minor><b>正则表达式提取</b></minor>，不支持 JsonPath。）
     ]]>
     </string>
     <string name="faq_regex">
     <![CDATA[
-        面向非程序员的正则表达式教程。<br>
+        规则使用正则表达式匹配号码和文本。 <br>
         <br>
-        <title><b>入门 - 通配符</b></title> <br>
-        &ensp; 当您想使用通配符 <sample><b>*</b></sample> 时，请在它前面加一个点 <sample><b>.</b></sample>，例如 <sample><b>.*</b></sample>，这应该能覆盖大多数使用场景。<br>
+        <title><b>基础</b></title> <br>
+        &ensp; <sample><b>.*</b></sample> 任意内容：<sample>1800.*</sample> 以 1800 开头 <br>
+        &ensp; <sample><b>|</b></sample> 或：<sample>.*(prize|winner).*</sample> <br>
+        &ensp; <sample><b>\\d</b></sample> 一位数字：<sample>\\d{6}</sample> 六位数字 <br>
+        &ensp; <sample><b>\\.</b></sample> 真正的点，<sample><b>\\+</b></sample> 真正的加号 <br>
         <br>
-        <title><b>进阶 - 使用 AI</b></title> <br>
-        &ensp; 例如，要获取以下用于短信验证的正则表达式：<br>
-        &ensp; <sample>.*(verification|validation).*code.*\\d{5,6}.*</sample> <br>
+        规则必须匹配<b>整个</b>号码或消息，因此请用 <sample>.*</sample> 包裹词语，或开启 <b>包含</b> 标志。 <br>
+        除非开启 <b>区分大小写</b>，否则匹配时忽略大小写。 <br>
+        在设置中使用 <b>测试</b>，先试用规则再依赖它。 <br>
         <br>
-        向 AI 提问：<br>
+        <title><b>让 AI 来写</b></title> <br>
+        提示词示例：<br>
         <sample>
         %s
         </sample>
         <br>
         <br>
-        <highlight><b>在线试用</b></highlight> <br>
-          &ensp; 1. <a href=\"copy\"><big>复制上方提示词</big></a> <br>
-          &ensp; 2. <a href=\"try_it\"><big>启动在线 AI</big></a> <br>
+        &ensp; 1. <a href=\"copy\"><big>复制提示词</big></a> <br>
+        &ensp; 2. <a href=\"try_it\"><big>打开在线 AI</big></a> <br>
     ]]>
     </string>
     <string name="ai_regex_prompt">
