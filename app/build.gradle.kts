@@ -31,8 +31,8 @@ android {
         applicationId = "dev.kerballone.spamblocker"
         minSdk = 29
         targetSdk = 36
-        versionCode = 615
-        versionName = "6.1.5"
+        versionCode = 620
+        versionName = "6.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

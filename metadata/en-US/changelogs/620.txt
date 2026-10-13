@@ -1,0 +1,19 @@
+SpamBlocker Extended 6.2.0
+
+New:
+- Contacts and Database now apply to Notifications: phone numbers in a screened app's notification Title or Body are checked against your contacts and the spam database, with no Number Rule needed. "Block non-contacts" can dismiss notifications from unknown senders, e.g. RCS or WhatsApp.
+- Contacts (Allow and Block separately) and Database have Calls / SMS / MMS / Title / Body chips to choose what they apply to. All are on by default, except Body for blocking non-contacts.
+- A contact's number in the Title wins over a blocked number in the Body.
+- FAQ: new Calls, SMS and Notifications sections; Priority, RegEx and Import Numbers rewritten to be shorter.
+- New Wiki button. FAQ, Wiki and About are now always at the bottom of Settings.
+
+Improvements:
+- Basic Rules order: Contacts, Database, STIR.
+- The Notification test in Rule Testing now checks exactly what real screening checks.
+- Non-Contacts only dismisses a notification whose Title is the sender's number (e.g. "+1 555-123-4567" or "Voicemail from +1 555-123-4567"), not titles like "Order 12345678 shipped".
+- Translations for the new and updated help in all languages, plus the Calls / Notifications / Title / Body labels.
+
+Fixes:
+- Rule Testing posted two notifications for a notification test, without its Title.
+- Duplicate history records for a notification, e.g. with Voicemail Notification.
+- Group summary notifications (e.g. "2 new messages") are no longer dismissed, which also dismissed the allowed messages in the group.
