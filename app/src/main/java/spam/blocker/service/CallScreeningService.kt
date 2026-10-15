@@ -56,7 +56,9 @@ fun Details.getRawNumber(): String {
         }
     }
 
-    return rawNumber
+    // Wi-Fi calling (IMS) may deliver the caller as a SIP URI, e.g. "sip:+4930123456@ims.example.org;user=phone",
+    //  keep only the user part so it matches rules and contacts like a regular number.
+    return rawNumber.substringBefore('@').substringBefore(';')
 }
 
 class CallScreeningService : CallScreeningService() {
@@ -143,41 +145,54 @@ class CallScreeningService : CallScreeningService() {
         // Outgoing
         if (details.callDirection == Details.DIRECTION_OUTGOING) {
             updateOutgoingEmergencyTimestamp(this, details.getRawNumber())
+            return
         }
 
         // Incoming
-        if (details.callDirection != Details.DIRECTION_INCOMING)
-            return
+        // Some IMS (Wi-Fi calling) stacks report DIRECTION_UNKNOWN for incoming calls, so anything
+        //  that isn't outgoing is screened. Returning without a response would leave the call
+        //  unscreened and missing from the history.
+        var responded = false
+        try {
+            val ctx = this
+            val rawNumber = details.getRawNumber()
 
-        if (!spf.Global(this).isGloballyEnabled || !spf.Global(this).isCallEnabled) {
-            pass(details)
-            return
-        }
-
-        val ctx = this
-        val rawNumber = details.getRawNumber()
-        val ringingSimSlot = SimUtils.getRingingSimSlot(ctx)
-        val cnap = details.callerDisplayName
-
-        val r = processCall(
-            ctx = ctx, logger = SaveableLogger(), rawNumber = rawNumber,
-            cnap = cnap, callDetails = details, simSlot = ringingSimSlot, isTest = false,
-            showCallerId = spf.CallerID(ctx).isEnabled
-        )
-        logi("processCall() result: $r")
-
-        if (r.shouldBlock()) {
-            val blockType = r.getBlockType(ctx) // reject / silence / answer+hangup
-
-            when (blockType) {
-                Def.BLOCK_TYPE_SILENCE -> silence(details)
-                Def.BLOCK_TYPE_ANSWER_AND_HANGUP -> answerThenHangUp(rawNumber, r, details)
-                else -> reject(details)
+            if (!spf.Global(this).isGloballyEnabled || !spf.Global(this).isCallEnabled) {
+                responded = true
+                pass(details)
+                return
             }
-        } else {
-            // 1. Set ringtone + pass()
-            val shouldMute = setRingtone(ctx, r)
-            pass(details, shouldMute)
+
+            val ringingSimSlot = SimUtils.getRingingSimSlot(ctx)
+            val cnap = details.callerDisplayName
+
+            val r = processCall(
+                ctx = ctx, logger = SaveableLogger(), rawNumber = rawNumber,
+                cnap = cnap, callDetails = details, simSlot = ringingSimSlot, isTest = false,
+                showCallerId = spf.CallerID(ctx).isEnabled
+            )
+            logi("processCall() result: $r")
+
+            if (r.shouldBlock()) {
+                val blockType = r.getBlockType(ctx) // reject / silence / answer+hangup
+
+                responded = true
+                when (blockType) {
+                    Def.BLOCK_TYPE_SILENCE -> silence(details)
+                    Def.BLOCK_TYPE_ANSWER_AND_HANGUP -> answerThenHangUp(rawNumber, r, details)
+                    else -> reject(details)
+                }
+            } else {
+                // 1. Set ringtone + pass()
+                val shouldMute = setRingtone(ctx, r)
+                responded = true
+                pass(details, shouldMute)
+            }
+        } catch (t: Throwable) {
+            // Never leave a call unanswered because of a screening error, let it ring.
+            logi("doScreenCall() failed: ${t.stackTraceToString()}")
+            if (!responded)
+                pass(details)
         }
         logi("doScreenCall() finished")
     }
