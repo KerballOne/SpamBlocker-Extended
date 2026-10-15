@@ -1,0 +1,11 @@
+SpamBlocker Extended 6.2.1
+
+Fixes:
+- Answer + Hang Up could fail on some devices (e.g. CalyxOS) because the ringing event arrived too late. Reverted the 6.1.5 change, as upstream did in 5.19.
+- Calls reported with an unknown direction are now screened and logged instead of being skipped.
+- Caller numbers in SIP format (e.g. "sip:+49...@ims...;user=phone") now match rules and contacts.
+- A call always gets a screening response, even if screening hits an error.
+
+Improvements:
+- An empty spam database search lists private numbers first.
+- Updated phone number library and build tools.
