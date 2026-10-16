@@ -104,23 +104,19 @@ class CallScreeningService : CallScreeningService() {
 
         val ctx = this
 
-        // If a call is ongoing, don't hang-up, Reject instead
-        if (Util.isInCall(ctx)) {
+        // If a real call is ongoing, don't hang-up, Reject instead.
+        // But if the ongoing call is another spam call being hung up, queue this one, it will be
+        //  answered after that one ends. Rejecting it would send it to voicemail.
+        if (Util.isInCall(ctx) && !HangUpQueue.hasAnswered(ctx)) {
             // "Reject" or "Silence" makes no difference here, it just keeps ringing on the peer.
             reject(details)
             return
         }
 
-        val now = System.currentTimeMillis()
+        // save 'number/current time/hang up delay', they will be read soon in CallStateReceiver
+        HangUpQueue.add(ctx, rawNumber, r.hangUpDelay(ctx))
 
-        // save 'number/current time/hang up delay' to shared pref, they will be read soon in CallStateReceiver
-        spf.Temporary(ctx).apply {
-            lastCallToBlock = Util.clearNumber(rawNumber)
-            lastCallTime = now
-            hangUpDelay = r.hangUpDelay(ctx)
-        }
-
-        // let it ring silently in the background, it will be answered in the CallStateReceiver immediately
+        // let it ring silently in the background, it will be answered in the CallStateReceiver
         val builder = CallResponse.Builder().apply {
             setSkipCallLog(false)
             setSilenceCall(true)
@@ -144,6 +140,7 @@ class CallScreeningService : CallScreeningService() {
 
         // Outgoing
         if (details.callDirection == Details.DIRECTION_OUTGOING) {
+            HangUpQueue.removeUnanswered(this)
             updateOutgoingEmergencyTimestamp(this, details.getRawNumber())
             return
         }
@@ -183,6 +180,9 @@ class CallScreeningService : CallScreeningService() {
                     else -> reject(details)
                 }
             } else {
+                // Don't let a queued hang-up answer this allowed call by mistake.
+                HangUpQueue.removeUnanswered(ctx)
+
                 // 1. Set ringtone + pass()
                 val shouldMute = setRingtone(ctx, r)
                 responded = true

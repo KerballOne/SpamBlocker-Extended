@@ -1,0 +1,8 @@
+SpamBlocker Extended 6.2.2
+
+Fixes:
+- Answer + Hang Up: when two spam calls arrive at once, the second one is now answered and hung up after the first, instead of being rejected and reaching voicemail.
+- Answer + Hang Up: a pending hang-up is now cancelled when the caller hangs up first, so it can't end a later call.
+
+Improvements:
+- Answer + Hang Up: the microphone is muted while the call is connected for the hang-up delay, so the caller can't hear you. It is unmuted when the call ends.

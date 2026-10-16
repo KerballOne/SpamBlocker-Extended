@@ -5,36 +5,24 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Context.TELECOM_SERVICE
 import android.content.Intent
+import android.media.AudioManager
 import android.os.Handler
 import android.os.Looper
 import android.telecom.TelecomManager
 import android.telephony.TelephonyManager
 import spam.blocker.ui.widgets.FloatingWindow
-import spam.blocker.util.Util
+import spam.blocker.util.Permission
 import spam.blocker.util.logi
 import spam.blocker.util.spf
 
 class CallStateReceiver : BroadcastReceiver() {
-    private var handler: Handler = Handler(Looper.getMainLooper())
+    companion object {
+        // The receiver is declared in the manifest, a new instance is created for every broadcast,
+        //  so the handler must be shared, or pending hang-ups can't be cancelled.
+        private val handler: Handler = Handler(Looper.getMainLooper())
 
-    // Don't block calls that are not marked to block in CallScreenService.
-    private fun shouldBlock(ctx: Context, currNumber: String): Boolean {
-        // `numToBlock` and `lastCalledTime` are set in CallScreeningService,
-        //   they are only set when the call is blocked by "answer + hang up"
-        val spf = spf.Temporary(ctx)
-
-        // 1. Check if the number matches
-        val numToBlock = spf.lastCallToBlock
-        if (numToBlock != Util.clearNumber(currNumber)) {
-            return false
-        }
-
-        // 2. Check if the time since the `lastCalledTime` is less than 5 seconds,
-        //   answer the call and hang up
-        val lastCalledTime = spf.lastCallTime
-        val now = System.currentTimeMillis()
-        val tolerance = 5000 // 5 seconds
-        return (now - lastCalledTime) < tolerance
+        // Wait for the ended call to go away before answering the next one.
+        private const val ANSWER_NEXT_DELAY = 1000L
     }
 
     private fun extractNumber(intent: Intent) : String {
@@ -50,19 +38,28 @@ class CallStateReceiver : BroadcastReceiver() {
             when (state) {
                 // This is triggered when it starts ringing
                 TelephonyManager.EXTRA_STATE_RINGING -> {
-                    logi("RINGING")
+                    val currNumber = extractNumber(intent)
+                    logi("RINGING: $currNumber")
 
                     // 1. Blocked by "Answer+HangUp"?
-                    val currNumber = extractNumber(intent)
-
-                    val block = shouldBlock(ctx, currNumber)
-                    if (block)
-                        answerCall(ctx)
+                    // Don't block calls that are not marked to block in CallScreenService.
+                    val entry = HangUpQueue.find(ctx, currNumber)
+                    if (entry != null && !entry.isAnswered) {
+                        if (HangUpQueue.hasAnswered(ctx)) {
+                            // Another spam call is being hung up, answering now would put it on
+                            //  hold. This one will be answered after that one ends.
+                            logi("another call is being hung up, answer later")
+                        } else {
+                            muteMic(ctx)
+                            answerCall(ctx)
+                        }
+                    }
                 }
 
                 // This is triggered when a call is answered(in call)
                 TelephonyManager.EXTRA_STATE_OFFHOOK -> {
-                    logi("IN CALL")
+                    val currNumber = extractNumber(intent)
+                    logi("IN CALL: $currNumber")
 
                     // 1. Dismiss the Caller ID window
                     if (spf.CallerID(ctx).isEnabled) {
@@ -70,21 +67,34 @@ class CallStateReceiver : BroadcastReceiver() {
                     }
 
                     // 2. Hang-up the call after "hang-up-delay" seconds
-                    val currNumber = extractNumber(intent)
-                    val block = shouldBlock(ctx, currNumber)
-                    if (block) {
-                        // Schedule a delayed hang-up task.
-                        val delay = spf.Temporary(ctx).hangUpDelay.toLong() * 1000
+                    val entry = HangUpQueue.find(ctx, currNumber)
+                    if (entry != null && !entry.isAnswered) {
+                        HangUpQueue.markAnswered(ctx, entry.number)
 
+                        // Mute again, in case it was reset when the call connected.
+                        muteMic(ctx)
+
+                        // Schedule a delayed hang-up task.
                         handler.postDelayed({
                             endCall(ctx)
-                        }, delay)
+                            restoreMic(ctx)
+                            HangUpQueue.remove(ctx, entry.number)
+
+                            // Another spam call may be waiting, answer it after this one ends.
+                            handler.postDelayed({
+                                answerNextQueued(ctx)
+                            }, ANSWER_NEXT_DELAY)
+                        }, entry.delaySec * 1000L)
+                    } else if (entry == null && currNumber.isNotEmpty()) {
+                        // Any other call must never stay muted.
+                        // (Android sends each broadcast twice, once without the number, that
+                        //  one can't tell which call it is.)
+                        restoreMic(ctx)
                     }
                 }
 
-                // This is triggered when any call ends
+                // This is triggered when all calls end
                 TelephonyManager.EXTRA_STATE_IDLE -> {
-//                    val currNumber = extractNumber(intent)
                     logi("IDLE")
 
                     // 1. Dismiss the Caller ID window
@@ -95,9 +105,51 @@ class CallStateReceiver : BroadcastReceiver() {
                     // 2. When the call ends before the hang-up delay, kill the hang-up task,
                     //  to prevent killing any following calls by mistake.
                     handler.removeCallbacksAndMessages(null)
+                    HangUpQueue.removeAnswered(ctx)
+
+                    // 3. Make sure the microphone is unmuted, this also covers the case that
+                    //  the process was killed during the hang-up delay.
+                    restoreMic(ctx)
                 }
             }
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun answerNextQueued(ctx: Context) {
+        if (!Permission.phoneState.isGranted)
+            return
+        val telephony = ctx.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        if (telephony.callState == TelephonyManager.CALL_STATE_RINGING && HangUpQueue.hasUnanswered(ctx)) {
+            logi("answer next queued call")
+            muteMic(ctx)
+            answerCall(ctx)
+        }
+    }
+
+    // Mute the microphone while a spam call is connected for the hang-up delay, so the caller
+    //  can't hear anything. A flag is saved to make sure it's unmuted later, even if the
+    //  process is killed in between.
+    private fun muteMic(ctx: Context) {
+        val audio = ctx.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val spf = spf.Temporary(ctx)
+        if (audio.isMicrophoneMute && !spf.micMutedByHangUp) {
+            return // muted by the user, leave it alone
+        }
+        spf.micMutedByHangUp = true
+        audio.isMicrophoneMute = true
+        logi("mute mic")
+    }
+
+    private fun restoreMic(ctx: Context) {
+        val spf = spf.Temporary(ctx)
+        if (!spf.micMutedByHangUp) {
+            return
+        }
+        spf.micMutedByHangUp = false
+        val audio = ctx.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        audio.isMicrophoneMute = false
+        logi("unmute mic")
     }
 
     @SuppressLint("MissingPermission")

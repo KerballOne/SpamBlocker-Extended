@@ -14,7 +14,6 @@ import spam.blocker.db.Notification.CHANNEL_HIGH
 import spam.blocker.db.Notification.CHANNEL_HIGH_MUTED
 import spam.blocker.db.Notification.CHANNEL_LOW
 import spam.blocker.def.Def
-import spam.blocker.def.Def.DEFAULT_HANG_UP_DELAY
 import spam.blocker.ui.setting.api.PhoneBlock
 import spam.blocker.ui.setting.quick.DefaultCallerIdBgColor
 import spam.blocker.ui.setting.quick.DefaultCallerIdTemplate
@@ -165,10 +164,10 @@ class spf { // for namespace only
     }
 
     class Temporary(ctx: Context) : SharedPref(ctx) {
-        // For answer + hang up
-        var lastCallToBlock by str("last_number_to_block")
-        var lastCallTime by long("last_called_time")
-        var hangUpDelay by int("last_number_to_block_delay", DEFAULT_HANG_UP_DELAY)
+        // For answer + hang up, managed by HangUpQueue
+        var pendingHangUps by str("pending_hang_ups")
+        // Whether the microphone was muted by "answer + hang up", so it must be unmuted
+        var micMutedByHangUp by bool("mic_muted_by_hang_up")
 
         var ringtone by str("ringtone")
     }
