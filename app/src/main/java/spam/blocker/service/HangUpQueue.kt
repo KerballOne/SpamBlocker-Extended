@@ -70,8 +70,37 @@ object HangUpQueue {
 
     @Synchronized
     fun find(ctx: Context, rawNumber: String): Entry? {
+        val entries = load(ctx)
         val number = Util.clearNumber(rawNumber)
-        return load(ctx).firstOrNull { it.number == number }
+        return entries.firstOrNull { it.number == number }
+            ?: entries.firstOrNull { isSameNumber(it.number, rawNumber) }
+    }
+
+    // The ringing broadcast may carry the number in another format than the screened call,
+    //  e.g. a SIP URI on Wi-Fi calling ("sip:+13135551234@ims.example.org;user=phone"), or
+    //  without the country code ("3135551234"). Without a match the call is never answered,
+    //  it rings silently until it goes to voicemail.
+    private const val MIN_SUFFIX_DIGITS = 7
+
+    private fun digitsOf(raw: String): String {
+        return raw.substringAfter("sip:").substringAfter("tel:")
+            .substringBefore('@').substringBefore(';')
+            .filter { it.isDigit() }
+            .trimStart('0') // national prefix, e.g. "030..." vs "+4930..."
+    }
+
+    // Same number if the digits match, or one ends with the other (country code missing).
+    fun isSameNumber(a: String, b: String): Boolean {
+        val da = digitsOf(a)
+        val db = digitsOf(b)
+        if (da.isEmpty() || db.isEmpty()) {
+            return false // private numbers only match exactly, see find()
+        }
+        if (da == db) {
+            return true
+        }
+        val (short, long) = if (da.length < db.length) da to db else db to da
+        return short.length >= MIN_SUFFIX_DIGITS && long.endsWith(short)
     }
 
     @Synchronized

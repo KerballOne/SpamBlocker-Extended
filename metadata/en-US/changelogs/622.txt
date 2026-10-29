@@ -3,6 +3,7 @@ SpamBlocker Extended 6.2.2
 Fixes:
 - Answer + Hang Up: when two spam calls arrive at once, the second one is now answered and hung up after the first, instead of being rejected and reaching voicemail.
 - Answer + Hang Up: a pending hang-up is now cancelled when the caller hangs up first, so it can't end a later call.
+- Answer + Hang Up: a blocked call is now hung up even when Android reports its number in another format (Wi-Fi calling SIP address, or without the country code). Before, such a call rang silently until it reached voicemail.
 
 Improvements:
 - Answer + Hang Up: the microphone is muted while the call is connected for the hang-up delay, so the caller can't hear you. It is unmuted when the call ends.

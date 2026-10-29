@@ -44,6 +44,10 @@ class CallStateReceiver : BroadcastReceiver() {
                     // 1. Blocked by "Answer+HangUp"?
                     // Don't block calls that are not marked to block in CallScreenService.
                     val entry = HangUpQueue.find(ctx, currNumber)
+                    if (entry == null && currNumber.isNotEmpty() && HangUpQueue.hasUnanswered(ctx)) {
+                        // For diagnosing calls that should be hung up but ring until voicemail.
+                        logi("no queued hang-up matches $currNumber")
+                    }
                     if (entry != null && !entry.isAnswered) {
                         if (HangUpQueue.hasAnswered(ctx)) {
                             // Another spam call is being hung up, answering now would put it on
