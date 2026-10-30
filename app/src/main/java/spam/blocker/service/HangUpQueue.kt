@@ -136,6 +136,11 @@ object HangUpQueue {
     }
 
     @Synchronized
+    fun isEmpty(ctx: Context): Boolean {
+        return load(ctx).isEmpty()
+    }
+
+    @Synchronized
     fun hasUnanswered(ctx: Context): Boolean {
         return load(ctx).any { !it.isAnswered }
     }

@@ -104,10 +104,14 @@ class CallScreeningService : CallScreeningService() {
 
         val ctx = this
 
+        waitForQueuedCallToConnect(ctx)
+
         // If a real call is ongoing, don't hang-up, Reject instead.
         // But if the ongoing call is another spam call being hung up, queue this one, it will be
         //  answered after that one ends. Rejecting it would send it to voicemail.
-        if (Util.isInCall(ctx) && !HangUpQueue.hasAnswered(ctx)) {
+        // (A pending entry means the ongoing call is the spam one, it may not be marked as
+        //  answered yet when the OFFHOOK broadcast is late.)
+        if (Util.isInCall(ctx) && HangUpQueue.isEmpty(ctx)) {
             // "Reject" or "Silence" makes no difference here, it just keeps ringing on the peer.
             reject(details)
             return
@@ -122,6 +126,33 @@ class CallScreeningService : CallScreeningService() {
             setSilenceCall(true)
         }
         respondToCall(details, builder.build())
+    }
+
+    // Android rejects a new call while another one is still ringing or being answered
+    //  ("maximum ringing calls", see Telecom's CallsManager.onCallFilteringComplete), and the
+    //  carrier then sends it to voicemail. If that other call is a spam call being answered for
+    //  "answer + hang up", wait until it's connected, then this one arrives as a waiting call
+    //  and can be queued. Telecom gives screening apps 5 seconds, stay well below that.
+    private fun waitForQueuedCallToConnect(ctx: Context) {
+        if (!HangUpQueue.hasUnanswered(ctx) || !Permission.phoneState.isGranted) {
+            return
+        }
+        val telephony = ctx.getSystemService(TELEPHONY_SERVICE) as TelephonyManager
+        @Suppress("DEPRECATION")
+        if (telephony.callState != TelephonyManager.CALL_STATE_RINGING) {
+            return
+        }
+        logi("another call is being answered, wait for it to connect")
+        val deadline = System.currentTimeMillis() + 3500
+        while (System.currentTimeMillis() < deadline) {
+            Thread.sleep(100)
+            // Use the call state, the OFFHOOK broadcast can arrive seconds later.
+            @Suppress("DEPRECATION")
+            if (telephony.callState != TelephonyManager.CALL_STATE_RINGING) {
+                return
+            }
+        }
+        logi("timed out waiting for the other call to connect")
     }
 
     override fun onScreenCall(details: Details) {
