@@ -1,9 +1,17 @@
 SpamBlocker Extended 6.2.2
 
+New (from upstream):
+- Backups can be encrypted with a key (AES-GCM). Importing an encrypted backup asks for the key.
+- "Database Prefix" rules support a minimum match count, e.g. `[min=2]` blocks only if at least two similar numbers are in the database.
+- The SIM picker shows the last digits of each SIM's number (needs the optional phone number permission).
+- Workflow triggers renamed: Call Event, SMS Event and Call Screened are now Pre-Call, Pre-SMS and Post-Call Screening. Existing workflows keep working.
+
 Fixes:
 - Answer + Hang Up: when two spam calls arrive at once, the second one is now answered and hung up after the first, instead of being rejected and reaching voicemail.
 - Answer + Hang Up: a pending hang-up is now cancelled when the caller hangs up first, so it can't end a later call.
 - Answer + Hang Up: a blocked call is now hung up even when Android reports its number in another format (Wi-Fi calling SIP address, or without the country code). Before, such a call rang silently until it reached voicemail.
+- SIM detection counted hardware slots instead of inserted SIM cards.
+- Long SMS auto-replies are sent in parts instead of failing.
 
 Improvements:
 - Answer + Hang Up: the microphone is muted while the call is connected for the hang-up delay, so the caller can't hear you. It is unmuted when the call ends.
