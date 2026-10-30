@@ -1,49 +1,8 @@
 <resources>
-    <string name="repeat">Ulangi</string>
-    <string name="repeat_interval_min">Interval Pengulangan (Menit)</string>
-    <string name="help_repeat">
-        <![CDATA[
-        Berulang sampai dikonfirmasi agar Anda tidak melewatkan pemberitahuan penting. <br>
-        <br>
-        <warn>Catatan</warn> <br>
-        Ini akan membangunkan ponsel secara berulang dan dapat menyebabkan konsumsi baterai yang lebih besar.
-        ]]>
-    </string>
-    <string name="schedule_alarm">Jadwalkan Alarm</string>
-    <string name="history_logs">Log Riwayat</string>
-    <string name="search_engine">Mesin Pencari</string>
-    <string name="search_online">Cari Online</string>
-    <string name="raw_number_tag">
-        <![CDATA[
-        <title><b>{raw_number}</b></title> <br>
-        &ensp; Nomor masuk
-        ]]>
-    </string>
-    <string name="sending_request">Mengirim permintaan…</string>
-<string name="description_filter">Penyaring Deskripsi</string>
-    <string name="help_auto_report_filter_by_rule_description">
-        <![CDATA[
-        Aktifkan lapor otomatis secara eksklusif untuk aturan regex tertentu dengan mencocokkan <highlight><b>deskripsi</b></highlight> aturannya. <br>
-        <br>
-        Contoh: <br>
-        &ensp; Aturan 1: <error>.*won.*claim.*</error> <br>
-        &emsp; Deskripsi: <highlight><b>scam</b></highlight> <br>
-        &ensp; Aturan 2: <error>.*balance.*bank.*</error> <br>
-        &emsp; Deskripsi: <highlight><b>reminder</b></highlight> <br>
-        <br>
-        &ensp; Menyetel filter ini ke <minor><b>scam</b></minor> memastikan hanya panggilan yang diblokir oleh aturan 1 yang dilaporkan secara otomatis. <br>
-        <br>
-        Pengaturan default <minor><b>.*</b></minor> mengaktifkan lapor otomatis untuk panggilan yang diblokir oleh aturan regex apa pun. <br>
-        <br>
-        Tips: <br>
-        Ini adalah kolom regex, cocokkan beberapa aturan menggunakan pola seperti <minor>(scam|ads|political)</minor>.
-        ]]>
-    </string>
-    <string name="last_log_only_for_schedule_trigger">
-        <![CDATA[
-        Log hanya disimpan untuk alur kerja dengan tipe pemicu <highlight>Jadwal</highlight>.
-        ]]>
-    </string>
-    <string name="api_tokens">Token API</string>
+    <string name="encryption">Enkripsi</string>
+    <string name="key">Kunci</string>
+    <string name="change">Ubah</string>
+    <string name="backup_is_encrypted">Cadangan dienkripsi. Masukkan kunci di bawah.</string>
+    <string name="decrypt_backup_fail">Kunci tidak valid atau cadangan rusak.\nRincian:\n\n %s</string>
+    <string name="perm_read_phone_number">Baca Nomor Telepon</string>
 </resources>
-

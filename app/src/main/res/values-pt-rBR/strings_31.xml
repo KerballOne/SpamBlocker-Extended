@@ -1,49 +1,8 @@
 <resources>
-    <string name="repeat">Repetir</string>
-    <string name="repeat_interval_min">Intervalo de Repetição (Min)</string>
-    <string name="help_repeat">
-        <![CDATA[
-        Repete até ser reconhecido para que você nunca perca notificações importantes. <br>
-        <br>
-        <warn>Nota</warn> <br>
-        Isso desperta o telefone repetidamente e pode causar maior consumo de bateria.
-        ]]>
-    </string>
-    <string name="schedule_alarm">Agendar Alarme</string>
-    <string name="history_logs">Logs de Histórico</string>
-    <string name="search_engine">Mecanismo de pesquisa</string>
-    <string name="search_online">Pesquisar online</string>
-    <string name="raw_number_tag">
-        <![CDATA[
-        <title><b>{raw_number}</b></title> <br>
-        &ensp; O número recebido
-        ]]>
-    </string>
-    <string name="sending_request">Enviando requisição…</string>
-<string name="description_filter">Filtro de Descrição</string>
-    <string name="help_auto_report_filter_by_rule_description">
-        <![CDATA[
-        Ative a denúncia automática exclusivamente para regras de regex específicas correspondendo às <highlight><b>descrições</b></highlight> das regras. <br>
-        <br>
-        Exemplo: <br>
-        &ensp; Regra 1: <error>.*won.*claim.*</error> <br>
-        &emsp; Descrição: <highlight><b>scam</b></highlight> <br>
-        &ensp; Regra 2: <error>.*balance.*bank.*</error> <br>
-        &emsp; Descrição: <highlight><b>reminder</b></highlight> <br>
-        <br>
-        &ensp; Definir este filtro como <minor><b>scam</b></minor> garante que apenas as chamadas bloqueadas pela regra 1 sejam denunciadas automaticamente. <br>
-        <br>
-        A configuração padrão <minor><b>.*</b></minor> ativa a denúncia automática para chamadas bloqueadas por qualquer regra de regex. <br>
-        <br>
-        Dica: <br>
-        Este é um campo regex, corresponda a várias regras usando um padrão como <minor>(scam|ads|political)</minor>.
-        ]]>
-    </string>
-    <string name="last_log_only_for_schedule_trigger">
-        <![CDATA[
-        Os logs são salvos apenas para fluxos de trabalho com o tipo de gatilho <highlight>Cronograma</highlight>.
-        ]]>
-    </string>
-    <string name="api_tokens">Tokens de API</string>
+    <string name="encryption">Cripto</string>
+    <string name="key">Chave</string>
+    <string name="change">Alterar</string>
+    <string name="backup_is_encrypted">O backup está criptografado. Insira a chave abaixo.</string>
+    <string name="decrypt_backup_fail">Chave inválida ou backup corrompido.\nDetalhes:\n\n %s</string>
+    <string name="perm_read_phone_number">Ler número de telefone</string>
 </resources>
-

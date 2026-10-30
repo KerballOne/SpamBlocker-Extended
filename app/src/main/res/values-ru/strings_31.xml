@@ -1,49 +1,8 @@
 <resources>
-    <string name="repeat">Повтор</string>
-    <string name="repeat_interval_min">Интервал повтора (мин)</string>
-    <string name="help_repeat">
-        <![CDATA[
-        Повторяется до тех пор, пока не будет подтверждено, чтобы вы никогда не пропустили важные уведомления. <br>
-        <br>
-        <warn>Примечание</warn> <br>
-        Это неоднократно пробуждает телефон и может привести к повышенному потреблению заряда батареи.
-        ]]>
-    </string>
-    <string name="schedule_alarm">Запланировать будильник</string>
-    <string name="history_logs">Журналы истории</string>
-    <string name="search_engine">Поисковая система</string>
-    <string name="search_online">Искать в Интернете</string>
-    <string name="raw_number_tag">
-        <![CDATA[
-        <title><b>{raw_number}</b></title> <br>
-        &ensp; Входящий номер
-        ]]>
-    </string>
-    <string name="sending_request">Отправка запроса…</string>
-<string name="description_filter">Фильтр описания</string>
-    <string name="help_auto_report_filter_by_rule_description">
-        <![CDATA[
-        Включить автоотчет исключительно для определенных правил регулярных выражений путем сопоставления с <highlight><b>описанием</b></highlight> правила. <br>
-        <br>
-        Пример: <br>
-        &ensp; Правило 1: <error>.*won.*claim.*</error> <br>
-        &emsp; Описание: <highlight><b>scam</b></highlight> <br>
-        &ensp; Правило 2: <error>.*balance.*bank.*</error> <br>
-        &emsp; Описание: <highlight><b>reminder</b></highlight> <br>
-        <br>
-        &ensp; Установка этого фильтра на <minor><b>scam</b></minor> гарантирует, что только вызовы, заблокированные правилом 1, будут отправляться в автоотчет. <br>
-        <br>
-        Значение по умолчанию <minor><b>.*</b></minor> включает автоотчет для вызовов, заблокированных любым правилом регулярного выражения. <br>
-        <br>
-        Совет: <br>
-        Это поле регулярного выражения, сопоставляйте несколько правил с помощью шаблона вида <minor>(scam|ads|political)</minor>.
-        ]]>
-    </string>
-    <string name="last_log_only_for_schedule_trigger">
-        <![CDATA[
-        Записи сохраняются только для рабочих процессов с типом триггера <highlight>Расписание</highlight>.
-        ]]>
-    </string>
-    <string name="api_tokens">Токены API</string>
+    <string name="encryption">Шифр.</string>
+    <string name="key">Ключ</string>
+    <string name="change">Изменить</string>
+    <string name="backup_is_encrypted">Резервная копия зашифрована. Введите ключ ниже.</string>
+    <string name="decrypt_backup_fail">Неверный ключ или повреждённая резервная копия.\nПодробности:\n\n %s</string>
+    <string name="perm_read_phone_number">Чтение номера телефона</string>
 </resources>
-

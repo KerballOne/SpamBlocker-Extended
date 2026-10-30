@@ -1,12 +1,8 @@
 <resources>
-    <string name="repeat">Repeat</string>
-    <string name="repeat_interval_min">Repeat Interval (Min)</string>
-    <string name="help_repeat">
-        <![CDATA[
-        Repeats until acknowledged so you never miss important notifications. <br>
-        <br>
-        <warn>Note</warn> <br>
-        It wakes up the phone repeatedly and can cause more battery consumption.
-        ]]>
-    </string>
+    <string name="encryption">Encryption</string>
+    <string name="key">Key</string>
+    <string name="change">Change</string>
+    <string name="backup_is_encrypted">The backup is encrypted. Enter the key below.</string>
+    <string name="decrypt_backup_fail">Invalid key or corrupted backup.\nDetails:\n\n %s</string>
+    <string name="perm_read_phone_number">Read Phone Number</string>
 </resources>

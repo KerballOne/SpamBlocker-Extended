@@ -170,6 +170,9 @@ class spf { // for namespace only
         var micMutedByHangUp by bool("mic_muted_by_hang_up")
 
         var ringtone by str("ringtone")
+
+        var encryptBackup by bool("encrypt_backup")
+        var backupKey by str("backup_key")
     }
 
     class Global(ctx: Context) : SharedPref(ctx) {

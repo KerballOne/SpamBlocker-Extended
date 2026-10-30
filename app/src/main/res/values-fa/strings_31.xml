@@ -1,49 +1,8 @@
 <resources>
-    <string name="repeat">تکرار</string>
-    <string name="repeat_interval_min">فاصله تکرار (دقیقه)</string>
-    <string name="help_repeat">
-        <![CDATA[
-        تکرار می‌شود تا زمانی که تایید شود تا هیچ‌گاه اعلان‌های مهم را از دست ندهید. <br>
-        <br>
-        <warn>نکته</warn> <br>
-        این کار باعث بیدار شدن مکرر گوشی می‌شود و می‌تواند باعث مصرف بیشتر باتری شود.
-        ]]>
-    </string>
-    <string name="schedule_alarm">زمان‌بندی هشدار</string>
-    <string name="history_logs">گزارشات تاریخچه</string>
-    <string name="search_engine">موتور جستجو</string>
-    <string name="search_online">جستجوی آنلاین</string>
-    <string name="raw_number_tag">
-        <![CDATA[
-        <title><b>{raw_number}</b></title> <br>
-        &ensp; شماره ورودی
-        ]]>
-    </string>
-    <string name="sending_request">در حال ارسال درخواست…</string>
-<string name="description_filter">فیلتر توضیحات</string>
-    <string name="help_auto_report_filter_by_rule_description">
-        <![CDATA[
-        گزارش خودکار را منحصراً برای قوانین خاص regex با تطبیق با <highlight><b>توضیحات</b></highlight> قانون فعال کنید. <br>
-        <br>
-        مثال: <br>
-        &ensp; قانون ۱: <error>.*won.*claim.*</error> <br>
-        &emsp; توضیحات: <highlight><b>scam</b></highlight> <br>
-        &ensp; قانون ۲: <error>.*balance.*bank.*</error> <br>
-        &emsp; توضیحات: <highlight><b>reminder</b></highlight> <br>
-        <br>
-        &ensp; تنظیم این فیلتر روی <minor><b>scam</b></minor> اطمینان می‌دهد که فقط تماس‌های مسدود شده توسط قانون ۱ به طور خودکار گزارش می‌شوند. <br>
-        <br>
-        تنظیم پیش‌فرض <minor><b>.*</b></minor> گزارش خودکار را برای تماس‌های مسدود شده توسط هر قانون regex فعال می‌کند. <br>
-        <br>
-        نکته: <br>
-        این یک فیلد regex است، چندین قانون را با استفاده از الگویی مانند <minor>(scam|ads|political)</minor> مطابقت دهید.
-        ]]>
-    </string>
-    <string name="last_log_only_for_schedule_trigger">
-        <![CDATA[
-        گزارش‌ها فقط برای جریان‌های کاری با نوع راه‌انداز <highlight>برنامه</highlight> ذخیره می‌شوند.
-        ]]>
-    </string>
-    <string name="api_tokens">توکن‌های API</string>
+    <string name="encryption">رمزگذاری</string>
+    <string name="key">کلید</string>
+    <string name="change">تغییر</string>
+    <string name="backup_is_encrypted">نسخه پشتیبان رمزگذاری شده است. کلید را در زیر وارد کنید.</string>
+    <string name="decrypt_backup_fail">کلید نامعتبر است یا نسخه پشتیبان خراب شده است.\nجزئیات:\n\n %s</string>
+    <string name="perm_read_phone_number">خواندن شماره تلفن</string>
 </resources>
-

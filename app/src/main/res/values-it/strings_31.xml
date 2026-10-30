@@ -1,49 +1,8 @@
 <resources>
-    <string name="repeat">Ripeti</string>
-    <string name="repeat_interval_min">Intervallo di ripetizione (min)</string>
-    <string name="help_repeat">
-        <![CDATA[
-        Si ripete fino a quando non viene riconosciuto, così non perderai mai notifiche importanti. <br>
-        <br>
-        <warn>Nota</warn> <br>
-        Sveglia il telefono ripetutamente e può causare un maggiore consumo di batteria.
-        ]]>
-    </string>
-    <string name="schedule_alarm">Programma sveglia</string>
-    <string name="history_logs">Log della cronologia</string>
-    <string name="search_engine">Motore di ricerca</string>
-    <string name="search_online">Cerca online</string>
-    <string name="raw_number_tag">
-        <![CDATA[
-        <title><b>{raw_number}</b></title> <br>
-        &ensp; Il numero in entrata
-        ]]>
-    </string>
-    <string name="sending_request">Invio della richiesta…</string>
-<string name="description_filter">Filtro Descrizione</string>
-    <string name="help_auto_report_filter_by_rule_description">
-        <![CDATA[
-        Abilita la segnalazione automatica esclusivamente per specifiche regole regex verificando le <highlight><b>descrizioni</b></highlight> delle regole. <br>
-        <br>
-        Esempio: <br>
-        &ensp; Regola 1: <error>.*won.*claim.*</error> <br>
-        &emsp; Descrizione: <highlight><b>scam</b></highlight> <br>
-        &ensp; Regola 2: <error>.*balance.*bank.*</error> <br>
-        &emsp; Descrizione: <highlight><b>reminder</b></highlight> <br>
-        <br>
-        &ensp; Impostando questo filtro su <minor><b>scam</b></minor> si assicura che solo le chiamate bloccate dalla regola 1 vengano segnalate automaticamente. <br>
-        <br>
-        L\'impostazione predefinita <minor><b>.*</b></minor> abilita la segnalazione automatica per le chiamate bloccate da qualsiasi regola regex. <br>
-        <br>
-        Suggerimento: <br>
-        Questo è un campo regex, trova la corrispondenza con più regole utilizzando un pattern come <minor>(scam|ads|political)</minor>.
-        ]]>
-    </string>
-    <string name="last_log_only_for_schedule_trigger">
-        <![CDATA[
-        I log vengono salvati solo per i workflow con il tipo di attivatore <highlight>Programmazione</highlight>.
-        ]]>
-    </string>
-    <string name="api_tokens">Token API</string>
+    <string name="encryption">Cifra</string>
+    <string name="key">Chiave</string>
+    <string name="change">Modifica</string>
+    <string name="backup_is_encrypted">Il backup è crittografato. Inserisci la chiave qui sotto.</string>
+    <string name="decrypt_backup_fail">Chiave non valida o backup danneggiato.\nDettagli:\n\n %s</string>
+    <string name="perm_read_phone_number">Leggi numero di telefono</string>
 </resources>
-

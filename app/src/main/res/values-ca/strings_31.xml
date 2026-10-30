@@ -1,49 +1,8 @@
 <resources>
-    <string name="repeat">Repetir</string>
-    <string name="repeat_interval_min">Interval de repetició (min)</string>
-    <string name="help_repeat">
-        <![CDATA[
-        Es repeteix fins que es reconeix perquè mai et perdis notificacions importants. <br>
-        <br>
-        <warn>Nota</warn> <br>
-        Despertarà el telèfon repetidament i pot causar un major consum de bateria.
-        ]]>
-    </string>
-    <string name="schedule_alarm">Programar alarma</string>
-    <string name="history_logs">Registres d\'historial</string>
-    <string name="search_engine">Motor de cerca</string>
-    <string name="search_online">Cercar en línia</string>
-    <string name="raw_number_tag">
-        <![CDATA[
-        <title><b>{raw_number}</b></title> <br>
-        &ensp; El número entrant
-        ]]>
-    </string>
-    <string name="sending_request">S’està enviant la sol·licitud…</string>
-<string name="description_filter">Filtre de descripció</string>
-    <string name="help_auto_report_filter_by_rule_description">
-        <![CDATA[
-        Habiliteu la denúncia automàtica exclusivament per a regles regex específiques fent-les coincidir amb les <highlight><b>descripcions</b></highlight> de les regles. <br>
-        <br>
-        Exemple: <br>
-        &ensp; Regla 1: <error>.*won.*claim.*</error> <br>
-        &emsp; Descripció: <highlight><b>scam</b></highlight> <br>
-        &ensp; Regla 2: <error>.*balance.*bank.*</error> <br>
-        &emsp; Descripció: <highlight><b>reminder</b></highlight> <br>
-        <br>
-        &ensp; Establir aquest filtre a <minor><b>scam</b></minor> assegura que només les trucades bloquejades per la regla 1 es denunciïn automàticament. <br>
-        <br>
-        La configuració predeterminada <minor><b>.*</b></minor> habilita la denúncia automàtica per a les trucades bloquejades per qualsevol regla regex. <br>
-        <br>
-        Consell: <br>
-        Aquest és un camp regex, feu coincidir múltiples regles utilitzant un patró com <minor>(scam|ads|political)</minor>.
-        ]]>
-    </string>
-    <string name="last_log_only_for_schedule_trigger">
-        <![CDATA[
-        Els registres només es desen per als fluxos de treball amb el tipus d\'activador <highlight>Programació</highlight>.
-        ]]>
-    </string>
-    <string name="api_tokens">Testimonis de l\'API</string>
+    <string name="encryption">Xifrat</string>
+    <string name="key">Clau</string>
+    <string name="change">Canvia</string>
+    <string name="backup_is_encrypted">La còpia de seguretat està xifrada. Introduïu la clau a continuació.</string>
+    <string name="decrypt_backup_fail">Clau no vàlida o còpia de seguretat danyada.\nDetalls:\n\n %s</string>
+    <string name="perm_read_phone_number">Llegir el número de telèfon</string>
 </resources>
-

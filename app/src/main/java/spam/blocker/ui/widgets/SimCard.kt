@@ -93,11 +93,17 @@ fun SimPicker(
             ret += allCards.map { sim ->
                 LabelItem(
                     leadingIcon = { SimCardIcon(sim.slotIndex) },
-                    label = ctx.getString(R.string.sim_slot_template).format("${sim.slotIndex + 1}")
+                    label = if(sim.number.isNullOrEmpty())
+                        ctx.getString(R.string.sim_slot_template).format("${sim.slotIndex + 1}")
+                    else
+                        sim.number.takeLast(4)
                 ) {
                     G.permissionChain.ask(
                         ctx,
-                        listOf(PermissionWrapper(Permission.phoneState))
+                        listOf(
+                            PermissionWrapper(Permission.phoneState),
+
+                        )
                     ) { granted ->
                         if (granted) {
                             simSlot.value = sim.slotIndex
@@ -115,7 +121,10 @@ fun SimPicker(
             expander = { dropdownExpanded ->
                 G.permissionChain.ask(
                     ctx,
-                    listOf(PermissionWrapper(Permission.phoneState))
+                    listOf(
+                        PermissionWrapper(Permission.phoneState),
+                        PermissionWrapper(Permission.readPhoneNumber, isOptional = true)
+                    )
                 ) { granted ->
                     if (granted) {
                         allCards = SimUtils.listSimCards(ctx)

@@ -1,44 +1,8 @@
 <resources>
-    <string name="repeat">Répéter</string>
-    <string name="repeat_interval_min">Intervalle de répétition (min)</string>
-    <string name="help_repeat">
-        <![CDATA[
-        Se répète jusqu\'à ce qu\'il soit reconnu pour que vous ne manquiez jamais de notifications importantes. <br>
-        <br>
-        <warn>Note</warn> <br>
-        Cela réveille le téléphone à plusieurs reprises et peut entraîner une consommation accrue de la batterie.
-        ]]>
-    </string>
-    <string name="schedule_alarm">Programmer l\'alarme</string>
-    <string name="history_logs">Journaux d\'historique</string>
-    <string name="search_engine">Moteur de recherche</string>
-    <string name="search_online">Rechercher en ligne</string>
-    <string name="raw_number_tag">
-        <![CDATA[
-        <title><b>{raw_number}</b></title> <br>
-        &ensp; Le numéro entrant
-        ]]>
-    </string>
-    <string name="sending_request">Envoi de la requête…</string>
-<string name="description_filter">Filtre de description</string>
-    <string name="help_auto_report_filter_by_rule_description">
-        <![CDATA[
-        Activez le rapport automatique exclusivement pour des règles regex spécifiques en fonction de leurs <highlight><b>descriptions</b></highlight>. <br>
-        <br>
-        Exemple : <br>
-        &ensp; Règle 1 : <error>.*won.*claim.*</error> <br>
-        &emsp; Description : <highlight><b>scam</b></highlight> <br>
-        &ensp; Règle 2 : <error>.*balance.*bank.*</error> <br>
-        &emsp; Description : <highlight><b>reminder</b></highlight> <br>
-        <br>
-        &ensp; Définir ce filtre sur <minor><b>scam</b></minor> garantit que seuls les appels bloqués par la règle 1 sont automatiquement rapportés. <br>
-        <br>
-        La valeur par défaut <minor><b>.*</b></minor> active le rapport automatique pour les appels bloqués par n\'importe quelle règle regex. <br>
-        <br>
-        Conseil : <br>
-        C\'est un champ regex, faites correspondre plusieurs règles à l\'aide d\'un motif comme <minor>(scam|ads|political)</minor>.
-        ]]>
-    </string>
-    <string name="api_tokens">Jetons API</string>
+    <string name="encryption">Chiffr.</string>
+    <string name="key">Clé</string>
+    <string name="change">Modifier</string>
+    <string name="backup_is_encrypted">La sauvegarde est chiffrée. Saisissez la clé ci-dessous.</string>
+    <string name="decrypt_backup_fail">Clé non valide ou sauvegarde corrompue.\nDétails :\n\n %s</string>
+    <string name="perm_read_phone_number">Lire le numéro de téléphone</string>
 </resources>
-

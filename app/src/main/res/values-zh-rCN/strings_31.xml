@@ -1,49 +1,8 @@
 <resources>
-    <string name="repeat">重复</string>
-    <string name="repeat_interval_min">重复间隔 (分)</string>
-    <string name="help_repeat">
-        <![CDATA[
-        重复直到确认，因此您绝不会错过重要通知。 <br>
-        <br>
-        <warn>注意</warn> <br>
-        它会反复唤醒手机，可能会导致更多的电池消耗。
-        ]]>
-    </string>
-    <string name="schedule_alarm">计划闹钟</string>
-    <string name="history_logs">历史日志</string>
-    <string name="search_engine">搜索引擎</string>
-    <string name="search_online">在线搜索</string>
-    <string name="raw_number_tag">
-        <![CDATA[
-        <title><b>{raw_number}</b></title> <br>
-        &ensp; 来电号码
-        ]]>
-    </string>
-    <string name="sending_request">正在发送请求…</string>
-<string name="description_filter">描述过滤器</string>
-    <string name="help_auto_report_filter_by_rule_description">
-        <![CDATA[
-        通过匹配规则的<highlight><b>描述</b></highlight>，专门为特定的正则表达式规则启用自动举报。<br>
-        <br>
-        例如：<br>
-        &ensp; 规则 1：<error>.*won.*claim.*</error> <br>
-        &emsp; 描述：<highlight><b>scam</b></highlight> <br>
-        &ensp; 规则 2：<error>.*balance.*bank.*</error> <br>
-        &emsp; 描述：<highlight><b>reminder</b></highlight> <br>
-        <br>
-        &ensp; 将此过滤器设置为 <minor><b>scam</b></minor> 可确保仅自动举报被规则 1 拦截的来电。<br>
-        <br>
-        默认设置 <minor><b>.*</b></minor> 会为被任何正则表达式规则拦截的来电启用自动举报。<br>
-        <br>
-        提示：<br>
-        这是一个正则表达式字段，可以使用类似于 <minor>(scam|ads|political)</minor> 的模式匹配多条规则。
-        ]]>
-    </string>
-    <string name="last_log_only_for_schedule_trigger">
-        <![CDATA[
-        仅为触发器类型为<highlight>时间安排</highlight>的工作流程保存日志。
-        ]]>
-    </string>
-    <string name="api_tokens">API 令牌</string>
+    <string name="encryption">加密</string>
+    <string name="key">密钥</string>
+    <string name="change">更改</string>
+    <string name="backup_is_encrypted">备份已加密。请在下方输入密钥。</string>
+    <string name="decrypt_backup_fail">密钥无效或备份已损坏。\n详情：\n\n %s</string>
+    <string name="perm_read_phone_number">读取电话号码</string>
 </resources>
-

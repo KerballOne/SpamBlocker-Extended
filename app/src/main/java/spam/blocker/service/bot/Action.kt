@@ -27,17 +27,19 @@ import spam.blocker.util.PermissionWrapper
 //  - add to  `botTriggers` / `botActions` / `apiActions` below
 //  - add to  `botModule` in SerializersModule.kt
 
+val LocalCloseActionOptions = compositionLocalOf<(() -> Unit)?> { null }
+
 val botTriggers = listOf(
     Manual(),
     Schedule(),
-    CallEvent(),
-    SmsEvent(),
+    PreCallScreening(),
+    PostCallScreening(),
+    PreSmsScreening(),
     CallThrottling(),
     SmsThrottling(),
     CalendarEvent(),
     Ringtone(),
     QuickTile(),
-    CallScreened()
 )
 val botActions = listOf(
     HttpRequest(),

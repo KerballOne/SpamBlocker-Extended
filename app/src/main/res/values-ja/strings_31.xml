@@ -1,49 +1,8 @@
 <resources>
-    <string name="repeat">繰り返し</string>
-    <string name="repeat_interval_min">繰り返し間隔 (分)</string>
-    <string name="help_repeat">
-        <![CDATA[
-        確認されるまで繰り返し通知されるため、重要な通知を見逃しません。 <br>
-        <br>
-        <warn>注意</warn> <br>
-        電話が繰り返し起動するため、バッテリー消費が増加する可能性があります。
-        ]]>
-    </string>
-    <string name="schedule_alarm">アラームをスケジュール</string>
-    <string name="history_logs">履歴ログ</string>
-    <string name="search_engine">検索エンジン</string>
-    <string name="search_online">オンラインで検索</string>
-    <string name="raw_number_tag">
-        <![CDATA[
-        <title><b>{raw_number}</b></title> <br>
-        &ensp; 着信番号
-        ]]>
-    </string>
-    <string name="sending_request">リクエストを送信中…</string>
-<string name="description_filter">説明フィルター</string>
-    <string name="help_auto_report_filter_by_rule_description">
-        <![CDATA[
-        ルールの<highlight><b>説明</b></highlight>と一致させることで、特定の正規表現ルールに対してのみ自動報告を有効にします。<br>
-        <br>
-        例：<br>
-        &ensp; ルール 1: <error>.*won.*claim.*</error> <br>
-        &emsp; 説明: <highlight><b>scam</b></highlight> <br>
-        &ensp; ルール 2: <error>.*balance.*bank.*</error> <br>
-        &emsp; 説明: <highlight><b>reminder</b></highlight> <br>
-        <br>
-        &ensp; このフィルターを <minor><b>scam</b></minor> に設定すると、ルール 1 でブロックされた通話のみが自動報告されます。<br>
-        <br>
-        デフォルト設定の <minor><b>.*</b></minor> は、任意の正規表現ルールによってブロックされた通話に対して自動報告を有効にします。<br>
-        <br>
-        ヒント：<br>
-        これは正規表現フィールドです。<minor>(scam|ads|political)</minor> のようなパターンを使用して複数のルールに一致させます。
-        ]]>
-    </string>
-    <string name="last_log_only_for_schedule_trigger">
-        <![CDATA[
-        ログはトリガータイプが<highlight>スケジュール</highlight>のワークフローでのみ保存されます。
-        ]]>
-    </string>
-    <string name="api_tokens">API トークン</string>
+    <string name="encryption">暗号化</string>
+    <string name="key">キー</string>
+    <string name="change">変更</string>
+    <string name="backup_is_encrypted">バックアップは暗号化されています。以下にキーを入力してください。</string>
+    <string name="decrypt_backup_fail">キーが無効か、バックアップが壊れています。\n詳細:\n\n %s</string>
+    <string name="perm_read_phone_number">電話番号の読み取り</string>
 </resources>
-

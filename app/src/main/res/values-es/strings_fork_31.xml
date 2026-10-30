@@ -1,0 +1,49 @@
+<resources>
+    <string name="repeat">Repetir</string>
+    <string name="repeat_interval_min">Intervalo de repetición (min)</string>
+    <string name="help_repeat">
+        <![CDATA[
+        Se repite hasta que se reconoce para que nunca te pierdas notificaciones importantes. <br>
+        <br>
+        <warn>Nota</warn> <br>
+        Despierta el teléfono repetidamente y puede causar un mayor consumo de batería.
+        ]]>
+    </string>
+    <string name="schedule_alarm">Programar alarma</string>
+    <string name="history_logs">Registros de historial</string>
+    <string name="search_engine">Motor de búsqueda</string>
+    <string name="search_online">Buscar en línea</string>
+    <string name="raw_number_tag">
+        <![CDATA[
+        <title><b>{raw_number}</b></title> <br>
+        &ensp; El número entrante
+        ]]>
+    </string>
+    <string name="sending_request">Enviando solicitud…</string>
+<string name="description_filter">Filtro de Descripción</string>
+    <string name="help_auto_report_filter_by_rule_description">
+        <![CDATA[
+        Habilita el informe automático exclusivamente para reglas regex específicas haciéndolas coincidir con las <highlight><b>descripciones</b></highlight> de las reglas. <br>
+        <br>
+        Ejemplo: <br>
+        &ensp; Regla 1: <error>.*won.*claim.*</error> <br>
+        &emsp; Descripción: <highlight><b>scam</b></highlight> <br>
+        &ensp; Regla 2: <error>.*balance.*bank.*</error> <br>
+        &emsp; Descripción: <highlight><b>reminder</b></highlight> <br>
+        <br>
+        &ensp; Configurar este filtro en <minor><b>scam</b></minor> garantiza que solo las llamadas bloqueadas por la regla 1 se informen automáticamente. <br>
+        <br>
+        La configuración predeterminada <minor><b>.*</b></minor> habilita el informe automático para las llamadas bloqueadas por cualquier regla regex. <br>
+        <br>
+        Consejo: <br>
+        Este es un campo de regex, haz coincidir varias reglas usando un patrón como <minor>(scam|ads|political)</minor>.
+        ]]>
+    </string>
+    <string name="last_log_only_for_schedule_trigger">
+        <![CDATA[
+        Los registros solo se guardan para flujos de trabajo con el tipo de activador <highlight>Horario</highlight>.
+        ]]>
+    </string>
+    <string name="api_tokens">Tokens de API</string>
+</resources>
+
