@@ -151,6 +151,54 @@ fun HistoryContextMenuWrapper(
                     testTrigger.value = true
                 },
 
+                // Multi select
+                LabelItem(
+                    label = ctx.getString(R.string.multi_select),
+                    leadingIcon = { GreyIcon20(R.drawable.ic_select) }
+                ) {
+                    vm.multiSelect.value = true
+                    vm.selectedIds.clear()
+                    vm.selectedIds.add(record.id)
+                },
+
+                // Add/Delete in spam database
+                LabelItem(
+                    label = ctx.getString(if (numberInDb) R.string.remove_from_db else R.string.add_to_db),
+                    leadingIcon = {
+                        ResIcon(
+                            if (numberInDb) R.drawable.ic_db_delete else R.drawable.ic_db_add,
+                            modifier = M.size(20.dp),
+                            color = if (numberInDb) C.error else C.textGrey
+                        )
+                    }
+                ) {
+                    if (numberInDb) {
+                        val spamRecord = SpamTable.findByNumber(ctx, record.peer)
+                        if (spamRecord != null)
+                            SpamTable.deleteById(ctx, spamRecord.id)
+                    } else {
+                        SpamTable.add(ctx, record.peer)
+                    }
+                    Events.spamDbUpdated.fire()
+                },
+
+                // Add/Edit regex rule
+                LabelItem(
+                    label = ctx.getString(if (existingRule != null) R.string.edit_regex_rule else R.string.add_to_regex_rule),
+                    leadingIcon = {
+                        ResIcon(
+                            R.drawable.ic_regex,
+                            modifier = M.size(20.dp),
+                            color = if (existingRule != null)
+                                if (existingRule!!.isBlacklist) C.error else C.success
+                            else
+                                C.textGrey
+                        )
+                    }
+                ) {
+                    editRuleTrigger.value = true
+                },
+
                 // Copy
                 LabelItem(
                     label = ctx.getString(R.string.copy_number),
@@ -180,44 +228,6 @@ fun HistoryContextMenuWrapper(
                             }
                         )
                     }
-                },
-
-                // Add/Edit regex rule
-                LabelItem(
-                    label = ctx.getString(if (existingRule != null) R.string.edit_regex_rule else R.string.add_to_regex_rule),
-                    leadingIcon = {
-                        ResIcon(
-                            R.drawable.ic_regex,
-                            modifier = M.size(20.dp),
-                            color = if (existingRule != null)
-                                if (existingRule!!.isBlacklist) C.error else C.success
-                            else
-                                C.textGrey
-                        )
-                    }
-                ) {
-                    editRuleTrigger.value = true
-                },
-
-                // Add/Delete in spam database
-                LabelItem(
-                    label = ctx.getString(if (numberInDb) R.string.remove_from_db else R.string.add_to_db),
-                    leadingIcon = {
-                        ResIcon(
-                            if (numberInDb) R.drawable.ic_db_delete else R.drawable.ic_db_add,
-                            modifier = M.size(20.dp),
-                            color = if (numberInDb) C.error else C.textGrey
-                        )
-                    }
-                ) {
-                    if (numberInDb) {
-                        val spamRecord = SpamTable.findByNumber(ctx, record.peer)
-                        if (spamRecord != null)
-                            SpamTable.deleteById(ctx, spamRecord.id)
-                    } else {
-                        SpamTable.add(ctx, record.peer)
-                    }
-                    Events.spamDbUpdated.fire()
                 },
 
                 // Filter

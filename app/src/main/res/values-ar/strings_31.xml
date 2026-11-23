@@ -5,4 +5,33 @@
     <string name="backup_is_encrypted">النسخة الاحتياطية مشفّرة. أدخل المفتاح أدناه.</string>
     <string name="decrypt_backup_fail">مفتاح غير صالح أو نسخة احتياطية تالفة.\nالتفاصيل:\n\n %s</string>
     <string name="perm_read_phone_number">قراءة رقم الهاتف</string>
+    <string name="multi_select">تحديد متعدد</string>
+    <string name="history_selected_count">%d محدد</string>
+    <string name="confirm_delete_selected_records">حذف %d من السجلات المحددة؟</string>
+    <string name="n_succeeded">%d نجح</string>
+    <string name="n_failed">%d فشل</string>
+    <string name="all_finished">اكتمل الكل</string>
+    <string name="reporting">جارٍ الإبلاغ…</string>
+    <string name="cookie">ملف تعريف الارتباط: %s</string>
+    <string name="cookie_jar">Cookie Jar</string>
+    <string name="help_cookie_jar">
+        <![CDATA[
+        يدير ملفات تعريف الارتباط تلقائيًا عبر طلبات HTTP متعددة. <br>
+        <br>
+        لا يلزم أي تكوين، فقط ضعه في أي مكان في سير العمل.
+        ]]>
+    </string>
+    <string name="success_status_code">رمز حالة النجاح</string>
+    <string name="help_success_status_code">
+        <![CDATA[
+        رموز حالة HTTP الناجحة. يتم التعامل مع الرموز غير المدرجة كأخطاء وستؤدي إلى إيقاف سير العمل. <br>
+        <br>
+        يمكن فصل رموز أو نطاقات متعددة بفواصل. <br>
+        مثال: <sample><b>200-299, 404</b></sample> <br>
+        <br>
+        <sample><b>حالة الاستخدام</b></sample> <br>
+        &ensp; تعيد بعض المواقع <error>404</error> عند عدم العثور على الرقم المستعلم عنه، مما يعني أنه نظيف.
+        تشير علامة <warn><b>!</b></warn> في سجل السجل إلى فشل الطلب، أضف <error>404</error> هنا لتجنب ذلك.
+        ]]>
+    </string>
 </resources>

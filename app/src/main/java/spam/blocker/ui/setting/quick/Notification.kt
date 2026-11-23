@@ -738,7 +738,7 @@ fun Alerts() {
                     AppAlertConfigRow(pkgName)
 
                     if (index < screenedPkgs.lastIndex) {
-                        HorizontalDivider(thickness = 1.dp, color = C.dialogBg.slightDiff())
+                        HorizontalDivider(thickness = 1.dp, color = C.background.slightDiff())
                     }
                 }
             }

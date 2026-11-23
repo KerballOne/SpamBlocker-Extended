@@ -5,4 +5,33 @@
     <string name="backup_is_encrypted">Резервная копия зашифрована. Введите ключ ниже.</string>
     <string name="decrypt_backup_fail">Неверный ключ или повреждённая резервная копия.\nПодробности:\n\n %s</string>
     <string name="perm_read_phone_number">Чтение номера телефона</string>
+    <string name="multi_select">Множ. выбор</string>
+    <string name="history_selected_count">Выбрано: %d</string>
+    <string name="confirm_delete_selected_records">Удалить выбранные записи (%d)?</string>
+    <string name="n_succeeded">Успешно: %d</string>
+    <string name="n_failed">Сбоев: %d</string>
+    <string name="all_finished">Готово</string>
+    <string name="reporting">Отправка…</string>
+    <string name="cookie">Cookie: %s</string>
+    <string name="cookie_jar">Cookie Jar</string>
+    <string name="help_cookie_jar">
+        <![CDATA[
+        Автоматически управляет cookie в нескольких HTTP-запросах. <br>
+        <br>
+        Настройка не требуется, просто добавьте в любое место рабочего процесса.
+        ]]>
+    </string>
+    <string name="success_status_code">Код успешного статуса</string>
+    <string name="help_success_status_code">
+        <![CDATA[
+        Успешные HTTP-коды состояния. Неуказанные коды считаются сбоем и остановят рабочий процесс. <br>
+        <br>
+        Несколько кодов или диапазонов можно разделить запятыми. <br>
+        Напр.: <sample><b>200-299, 404</b></sample> <br>
+        <br>
+        <sample><b>Пример использования</b></sample> <br>
+        &ensp; Некоторые сайты возвращают <error>404</error>, если запрашиваемый номер не найден, что означает, что он чист.
+        Символ <warn><b>!</b></warn> в истории указывает на ошибку запроса, добавьте сюда <error>404</error>, чтобы избежать этого.
+        ]]>
+    </string>
 </resources>

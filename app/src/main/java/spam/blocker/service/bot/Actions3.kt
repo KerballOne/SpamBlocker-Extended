@@ -30,6 +30,8 @@ import spam.blocker.db.CallTable
 import spam.blocker.db.RegexRule
 import spam.blocker.db.reScheduleBot
 import spam.blocker.def.Def
+import spam.blocker.service.bot.stream.ByteStream
+import spam.blocker.service.bot.stream.ListRuleStream
 import spam.blocker.service.checker.ICheckResult
 import spam.blocker.service.reporting.listReportableCallAPIs
 import spam.blocker.service.reporting.updateRecordReportLog
@@ -637,10 +639,9 @@ class ParseQueryResult(
         }
     }
     override fun execute(ctx: Context, aCtx: ActionContext): Boolean {
-        val input = if (aCtx.lastOutput is ByteArray) {
-            aCtx.lastOutput as ByteArray
-        } else {
-            aCtx.lastParsedQueryData!!
+        val input = when (val last = aCtx.lastOutput) {
+            is ByteStream -> last.openStream(ctx).use { it.readBytes() }
+            else -> aCtx.lastParsedQueryData!!
         }
         aCtx.lastParsedQueryData = input // Save for following `ParseQueryResult` actions
 
@@ -741,7 +742,7 @@ class ParseQueryResult(
     }
 
     override fun inputParamType(): List<ParamType> {
-        return listOf(ParamType.ByteArray, ParamType.InstantQueryResult)
+        return listOf(ParamType.ByteStream, ParamType.InstantQueryResult)
     }
 
     override fun outputParamType(): List<ParamType> {
@@ -928,26 +929,31 @@ class FilterSpamResult() : IPermissiveAction {
         if (aCtx.lastOutput is ApiQueryResult) { // In an api query workflow
             val input = aCtx.lastOutput as ApiQueryResult
 
-            aCtx.lastOutput = if (input.determined && input.isSpam) {
-                listOf(
-                    RegexRule(
-                        pattern = aCtx.rawNumber!!,
-                        isBlacklist = true,
+            aCtx.lastOutput = ListRuleStream(
+                if (input.determined && input.isSpam) {
+                    listOf(
+                        RegexRule(
+                            pattern = aCtx.rawNumber!!,
+                            isBlacklist = true,
+                        )
                     )
-                )
-            } else
-                listOf()
+                } else {
+                    listOf()
+                }
+            )
         } else { // This is an api report workflow
-            aCtx.lastOutput = if (aCtx.tagCategoryValue == tagValid) {
-                listOf()
-            } else {
-                listOf(
-                    RegexRule(
-                        pattern = aCtx.rawNumber!!,
-                        isBlacklist = true,
+            aCtx.lastOutput = ListRuleStream(
+                if (aCtx.tagCategoryValue == tagValid) {
+                    listOf()
+                } else {
+                    listOf(
+                        RegexRule(
+                            pattern = aCtx.rawNumber!!,
+                            isBlacklist = true,
+                        )
                     )
-                )
-            }
+                }
+            )
         }
 
         return true
@@ -969,12 +975,12 @@ class FilterSpamResult() : IPermissiveAction {
         return listOf(
             ParamType.None,
 //            ParamType.InstantQueryResult, // for api query
-//            ParamType.ByteArray, // for reporting, making it chainable after an HttpRequest
+//            ParamType.ByteStream, // for reporting, making it chainable after an HttpRequest
         )
     }
 
     override fun outputParamType(): List<ParamType> {
-        return listOf(ParamType.RuleList)
+        return listOf(ParamType.RuleStream)
     }
 
     @Composable
@@ -1275,10 +1281,10 @@ class GenerateTag(
     override fun execute(ctx: Context, aCtx: ActionContext): Boolean {
         val C = G.palette
 
-        val text = if(aCtx.lastOutput is ByteArray)
-            (aCtx.lastOutput as ByteArray).toString(Charsets.UTF_8)
-        else
-            aCtx.lastOutput as String
+        val text = when (val last = aCtx.lastOutput) {
+            is ByteStream -> last.openStream(ctx).use { String(it.readBytes(), Charsets.UTF_8) }
+            else -> aCtx.lastOutput as String
+        }
 
         var tagValue: String? = null
         try {
@@ -1330,11 +1336,11 @@ class GenerateTag(
     }
 
     override fun inputParamType(): List<ParamType> {
-        return listOf(ParamType.ByteArray, ParamType.String)
+        return listOf(ParamType.ByteStream, ParamType.String)
     }
 
     override fun outputParamType(): List<ParamType> {
-        return listOf(ParamType.None, ParamType.ByteArray)
+        return listOf(ParamType.None, ParamType.ByteStream)
     }
 
     @Composable

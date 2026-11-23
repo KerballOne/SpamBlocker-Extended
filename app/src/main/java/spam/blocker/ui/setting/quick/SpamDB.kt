@@ -2,8 +2,6 @@ package spam.blocker.ui.setting.quick
 
 import android.content.Context
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,6 +14,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -24,6 +23,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import spam.blocker.Events
 import spam.blocker.G
 import spam.blocker.R
@@ -50,11 +52,13 @@ import spam.blocker.ui.widgets.PriorityBox
 import spam.blocker.ui.widgets.PriorityLabel
 import spam.blocker.ui.widgets.RowVCenter
 import spam.blocker.ui.widgets.RowVCenterSpaced
+import spam.blocker.ui.widgets.SearchBox
 import spam.blocker.ui.widgets.Str
 import spam.blocker.ui.widgets.StrInputBox
 import spam.blocker.ui.widgets.StrokeButton
 import spam.blocker.ui.widgets.SwipeInfo
 import spam.blocker.ui.widgets.SwitchBox
+import spam.blocker.util.LockedDebouncer
 import spam.blocker.util.TimeUtils.formatTime
 import spam.blocker.util.spf
 import java.text.NumberFormat
@@ -92,7 +96,7 @@ fun SpamNumCard(
     val ctx = LocalContext.current
 
     OutlineCard(
-        containerBg = C.dialogBg
+        containerBg = C.background
     ) {
         RowVCenter(
             modifier = modifier
@@ -122,6 +126,9 @@ fun SpamNumCard(
 fun SpamDB() {
     val C = G.palette
     val ctx = LocalContext.current
+
+    val coroutine = rememberCoroutineScope()
+
     val spf = spf.SpamDB(ctx)
 
     var isEnabled by remember { mutableStateOf(spf.isEnabled) }
@@ -148,9 +155,13 @@ fun SpamDB() {
         trigger = deleteConfirm,
         buttons = {
             StrokeButton(label = Str(R.string.clear), color = C.error) {
-                deleteConfirm.value = false
-                SpamTable.clearAll(ctx)
-                total = SpamTable.count(ctx)
+                coroutine.launch { // avoid ANR, deleting 6m numbers can take > 5s
+                    deleteConfirm.value = false
+                    total = withContext(IO) {
+                        SpamTable.clearAll(ctx)
+                        SpamTable.count(ctx)
+                    }
+                }
             }
         }
     ) {
@@ -230,19 +241,30 @@ fun SpamDB() {
             var keyword by remember { mutableStateOf("") }
             val listState = remember { mutableStateListOf<SpamNumber>() }
 
+            fun refresh() {
+                listState.clear()
+                listState.addAll(SpamTable.search(ctx, keyword, MAX_LIST_SIZE))
+            }
+
+            val debouncer = remember { LockedDebouncer(waitMs = 400) }
+
             StrInputBox(
                 label = { GreyLabel(text = Str(strId = R.string.search_number)) },
                 text = keyword,
                 leadingIconId = R.drawable.ic_find,
                 onValueChange = {
                     keyword = it
-                    listState.clear()
-                    listState.addAll(SpamTable.search(ctx, keyword, MAX_LIST_SIZE))
+                    debouncer.debounce {
+                        coroutine.launch(IO) {
+                            refresh()
+                        }
+                    }
                 },
                 trailingIcon = {
                     GreyIcon18(R.drawable.ic_refresh, modifier = M.clickable {
-                        listState.clear()
-                        listState.addAll(SpamTable.search(ctx, keyword, MAX_LIST_SIZE))
+                        coroutine.launch(IO) {
+                            refresh()
+                        }
                     })
                 }
             )

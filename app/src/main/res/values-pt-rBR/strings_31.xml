@@ -5,4 +5,33 @@
     <string name="backup_is_encrypted">O backup está criptografado. Insira a chave abaixo.</string>
     <string name="decrypt_backup_fail">Chave inválida ou backup corrompido.\nDetalhes:\n\n %s</string>
     <string name="perm_read_phone_number">Ler número de telefone</string>
+    <string name="multi_select">Seleção múltipla</string>
+    <string name="history_selected_count">%d selecionados</string>
+    <string name="confirm_delete_selected_records">Excluir %d registros selecionados?</string>
+    <string name="n_succeeded">%d com êxito</string>
+    <string name="n_failed">%d falharam</string>
+    <string name="all_finished">Concluído</string>
+    <string name="reporting">Relatando…</string>
+    <string name="cookie">Cookie: %s</string>
+    <string name="cookie_jar">Cookie Jar</string>
+    <string name="help_cookie_jar">
+        <![CDATA[
+        Gerencia cookies automaticamente em várias requisições HTTP. <br>
+        <br>
+        Nenhuma configuração necessária, basta colocá-lo em qualquer lugar do fluxo de trabalho.
+        ]]>
+    </string>
+    <string name="success_status_code">Código de status de sucesso</string>
+    <string name="help_success_status_code">
+        <![CDATA[
+        Códigos de status HTTP bem-sucedidos. Códigos não listados são tratados como falhas e interromperão o fluxo de trabalho. <br>
+        <br>
+        Vários códigos ou intervalos podem ser separados por vírgulas. <br>
+        Ex.: <sample><b>200-299, 404</b></sample> <br>
+        <br>
+        <sample><b>Caso de uso</b></sample> <br>
+        &ensp; Alguns sites retornam <error>404</error> quando um número consultado não é encontrado, o que significa que ele é limpo.
+        Um <warn><b>!</b></warn> no registro do histórico indica que a requisição falhou, adicione <error>404</error> aqui para evitar isso.
+        ]]>
+    </string>
 </resources>

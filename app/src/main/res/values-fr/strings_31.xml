@@ -5,4 +5,33 @@
     <string name="backup_is_encrypted">La sauvegarde est chiffrée. Saisissez la clé ci-dessous.</string>
     <string name="decrypt_backup_fail">Clé non valide ou sauvegarde corrompue.\nDétails :\n\n %s</string>
     <string name="perm_read_phone_number">Lire le numéro de téléphone</string>
+    <string name="multi_select">Sélection multiple</string>
+    <string name="history_selected_count">%d sélectionné(s)</string>
+    <string name="confirm_delete_selected_records">Supprimer %d enregistrement(s) sélectionné(s) ?</string>
+    <string name="n_succeeded">%d réussi(s)</string>
+    <string name="n_failed">%d échoué(s)</string>
+    <string name="all_finished">Terminé</string>
+    <string name="reporting">Signalement…</string>
+    <string name="cookie">Cookie : %s</string>
+    <string name="cookie_jar">Cookie Jar</string>
+    <string name="help_cookie_jar">
+        <![CDATA[
+        Gère automatiquement les cookies sur plusieurs requêtes HTTP. <br>
+        <br>
+        Aucune configuration requise, placez-le n’importe où dans le flux de travail.
+        ]]>
+    </string>
+    <string name="success_status_code">Code d\'état de succès</string>
+    <string name="help_success_status_code">
+        <![CDATA[
+        Codes d\'état HTTP réussis. Les codes non répertoriés sont traités comme des échecs et arrêteront le flux de travail. <br>
+        <br>
+        Plusieurs codes ou plages peuvent être séparés par des virgules. <br>
+        Ex. : <sample><b>200-299, 404</b></sample> <br>
+        <br>
+        <sample><b>Cas d’utilisation</b></sample> <br>
+        &ensp; Certains sites renvoient <error>404</error> lorsqu’un numéro recherché n’est pas trouvé, ce qui signifie qu’il est propre.
+        Un <warn><b>!</b></warn> dans l’historique indique que la requête a échoué ; ajoutez <error>404</error> ici pour éviter cela.
+        ]]>
+    </string>
 </resources>

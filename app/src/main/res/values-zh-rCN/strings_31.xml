@@ -5,4 +5,33 @@
     <string name="backup_is_encrypted">备份已加密。请在下方输入密钥。</string>
     <string name="decrypt_backup_fail">密钥无效或备份已损坏。\n详情：\n\n %s</string>
     <string name="perm_read_phone_number">读取电话号码</string>
+    <string name="multi_select">多选</string>
+    <string name="history_selected_count">已选择 %d 项</string>
+    <string name="confirm_delete_selected_records">确定删除选中的 %d 条记录？</string>
+    <string name="n_succeeded">%d 成功</string>
+    <string name="n_failed">%d 失败</string>
+    <string name="all_finished">完成</string>
+    <string name="reporting">上报中…</string>
+    <string name="cookie">Cookie：%s</string>
+    <string name="cookie_jar">Cookie Jar</string>
+    <string name="help_cookie_jar">
+        <![CDATA[
+        跨多个 HTTP 请求自动管理 Cookie。<br>
+        <br>
+        无需配置，只需将其放在工作流中的任意位置即可。
+        ]]>
+    </string>
+    <string name="success_status_code">成功状态码</string>
+    <string name="help_success_status_code">
+        <![CDATA[
+        成功的 HTTP 状态码。未列出的状态码将被视为失败并终止工作流。<br>
+        <br>
+        多个状态码或范围可用逗号分隔。<br>
+        例如：<sample><b>200-299, 404</b></sample><br>
+        <br>
+        <sample><b>使用场景</b></sample><br>
+        &ensp; 查询号码未找到时，部分网站会返回 <error>404</error>，这意味着该号码是干净的。
+        历史记录中的 <warn><b>!</b></warn> 表示请求失败，在此处添加 <error>404</error> 可避免该情况。
+        ]]>
+    </string>
 </resources>

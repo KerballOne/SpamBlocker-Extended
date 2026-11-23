@@ -5,4 +5,33 @@
     <string name="backup_is_encrypted">The backup is encrypted. Enter the key below.</string>
     <string name="decrypt_backup_fail">Invalid key or corrupted backup.\nDetails:\n\n %s</string>
     <string name="perm_read_phone_number">Read Phone Number</string>
+    <string name="multi_select">Multi Select</string>
+    <string name="history_selected_count">%d selected</string>
+    <string name="confirm_delete_selected_records">Delete %d selected records?</string>
+    <string name="n_succeeded">%d succeeded</string>
+    <string name="n_failed">%d failed</string>
+    <string name="all_finished">All finished</string>
+    <string name="reporting">Reporting…</string>
+    <string name="cookie">Cookie: %s</string>
+    <string name="cookie_jar">Cookie Jar</string>
+    <string name="help_cookie_jar">
+        <![CDATA[
+        Manages cookies automatically across multiple HTTP requests. <br>
+        <br>
+        No configuration needed, just put it anywhere in the workflow.
+        ]]>
+    </string>
+    <string name="success_status_code">Success Status Code</string>
+    <string name="help_success_status_code">
+        <![CDATA[
+        Successful HTTP status codes. Unlisted codes are treated as failures and will stop the workflow. <br>
+        <br>
+        Multiple codes or ranges can be comma separated. <br>
+        E.g.: <sample><b>200-299, 404</b></sample> <br>
+        <br>
+        <sample><b>Use case</b></sample> <br>
+        &ensp; Some sites return <error>404</error> when a queried number isn\'t found, which means it\'s clean.
+         A <warn><b>!</b></warn> in the history record indicates that the request failed, add <error>404</error> here to avoid that.
+        ]]>
+    </string>
 </resources>

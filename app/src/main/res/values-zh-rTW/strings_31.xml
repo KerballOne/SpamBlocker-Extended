@@ -5,4 +5,33 @@
     <string name="backup_is_encrypted">備份已加密。請在下方輸入金鑰。</string>
     <string name="decrypt_backup_fail">金鑰無效或備份已損壞。\n詳細資料：\n\n %s</string>
     <string name="perm_read_phone_number">讀取電話號碼</string>
+    <string name="multi_select">複選</string>
+    <string name="history_selected_count">已選擇 %d 項</string>
+    <string name="confirm_delete_selected_records">確定刪除選取的 %d 條記錄？</string>
+    <string name="n_succeeded">%d 成功</string>
+    <string name="n_failed">%d 失敗</string>
+    <string name="all_finished">完成</string>
+    <string name="reporting">回報中…</string>
+    <string name="cookie">Cookie：%s</string>
+    <string name="cookie_jar">Cookie Jar</string>
+    <string name="help_cookie_jar">
+        <![CDATA[
+        跨多個 HTTP 請求自動管理 Cookie。<br>
+        <br>
+        無需設定，只需將其放置在工作流程中的任何位置即可。
+        ]]>
+    </string>
+    <string name="success_status_code">成功狀態碼</string>
+    <string name="help_success_status_code">
+        <![CDATA[
+        成功的 HTTP 狀態碼。未列出的狀態碼將視為失敗並停止工作流程。<br>
+        <br>
+        多個狀態碼或範圍可用逗號分隔。<br>
+        例如：<sample><b>200-299, 404</b></sample><br>
+        <br>
+        <sample><b>使用場景</b></sample><br>
+        &ensp; 查詢號碼未找到時，部分網站會傳回 <error>404</error>，這意味著該號碼是乾淨的。
+        歷史記錄中的 <warn><b>!</b></warn> 表示請求失敗，在此新增 <error>404</error> 可避免該情況。
+        ]]>
+    </string>
 </resources>

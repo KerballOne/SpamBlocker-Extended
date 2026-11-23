@@ -366,8 +366,8 @@ fun ExportButton() {
                 rememberDirTag = Backup_Last_Dir_Tag,
             ),
             onResult = { uri ->
+                if (includeSpamDB) progressTrigger.value = false
                 if (uri != null) {
-                    if (includeSpamDB) progressTrigger.value = false
                     errorStr = writeDataToUri(ctx, uri, data)
                     succeeded = errorStr == null
                     resultTrigger.value = true

@@ -5,4 +5,33 @@
     <string name="backup_is_encrypted">Yedek şifrelenmiş. Anahtarı aşağıya girin.</string>
     <string name="decrypt_backup_fail">Geçersiz anahtar veya bozuk yedek.\nAyrıntılar:\n\n %s</string>
     <string name="perm_read_phone_number">Telefon Numarasını Oku</string>
+    <string name="multi_select">Çoklu Seçim</string>
+    <string name="history_selected_count">%d seçildi</string>
+    <string name="confirm_delete_selected_records">Seçilen %d kayıt silinsin mi?</string>
+    <string name="n_succeeded">%d başarılı</string>
+    <string name="n_failed">%d başarısız</string>
+    <string name="all_finished">Bitti</string>
+    <string name="reporting">Bildiriliyor…</string>
+    <string name="cookie">Çerez: %s</string>
+    <string name="cookie_jar">Cookie Jar</string>
+    <string name="help_cookie_jar">
+        <![CDATA[
+        Birden fazla HTTP isteğinde çerezleri otomatik olarak yönetir. <br>
+        <br>
+        Yapılandırma gerekmez, iş akışında herhangi bir yere koymanız yeterlidir.
+        ]]>
+    </string>
+    <string name="success_status_code">Başarılı Durum Kodu</string>
+    <string name="help_success_status_code">
+        <![CDATA[
+        Başarılı HTTP durum kodları. Listelenmeyen kodlar başarısız sayılır ve iş akışını durdurur. <br>
+        <br>
+        Birden fazla kod veya aralık virgülle ayrılabilir. <br>
+        Örn: <sample><b>200-299, 404</b></sample> <br>
+        <br>
+        <sample><b>Kullanım senaryosu</b></sample> <br>
+        &ensp; Bazı siteler sorgulanan numara bulunamadığında <error>404</error> döndürür, bu da numaranın temiz olduğu anlamına gelir.
+        Geçmiş kaydındaki <warn><b>!</b></warn> isteğin başarısız olduğunu gösterir, bunu önlemek için buraya <error>404</error> ekleyin.
+        ]]>
+    </string>
 </resources>

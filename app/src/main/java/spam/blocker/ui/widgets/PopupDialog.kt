@@ -17,6 +17,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -99,56 +100,56 @@ fun PopupDialog(
                         max = popupSize?.maxWidth(screenWidthDp())?.dp ?: Dp.Unspecified,
                     )
                     .imePadding(), // preserve padding for IME, show the scroll bar when IME appears
-                border = BorderStroke(1.dp, color = C.dialogBg.lighten(0.1f)),
+                border = BorderStroke(1.dp, color = C.background.lighten(0.1f)),
                 colors = CardDefaults.cardColors(
-                    containerColor = G.palette.dialogBg,
+                    containerColor = G.palette.background,
                 ),
                 shape = RoundedCornerShape(4.dp)
             ) {
                 Column(
-                    modifier = M
-                        .padding(
-                            vertical = PopupScrollVPadding.dp
-                        )
-                        .then(
-                            if (!scrollEnabled) M else {
-                                M
-                                    .verticalScroll(scrollState)
-                                    .simpleVerticalScrollbar(
-                                        scrollState,
-                                        offsetX = -8,
-                                        persistent = true
-                                    )
-                            }
-                        )
-                        .padding(
-                            horizontal = PopupPaddingHorizontal.dp,
-                            vertical = (PopupPaddingVertical- PopupScrollVPadding).dp
-                        )
-                    ,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                    modifier = M.padding(
+                        horizontal = PopupPaddingHorizontal.dp,
+                        vertical = (PopupPaddingVertical - PopupScrollVPadding).dp
+                    )
                 ) {
-                    // Icon
-                    icon?.let {
-                        icon()
-                    }
+                    ColumnCenterSpaced(
+                        space = 10,
+                        modifier = M
+                            .weight(1f, fill = false)
+                            .padding(
+                                vertical = PopupScrollVPadding.dp
+                            )
+                            .then(
+                                if (!scrollEnabled) M else {
+                                    M
+                                        .verticalScroll(scrollState)
+                                        .simpleVerticalScrollbar(
+                                            scrollState,
+                                            offsetX = 32,
+                                            persistent = true
+                                        )
+                                }
+                            )
+                    ) {
+                        // Icon
+                        icon?.let {
+                            icon()
+                        }
 
-                    // Title
-                    title?.let {
-                        title()
-                    }
+                        // Title
+                        title?.let {
+                            title()
+                        }
 
-                    // Content
-                    content()
+                        // Content
+                        content()
+                    }
 
                     // Button Row
                     buttons?.let {
                         RowVCenter(
                             horizontalArrangement = Arrangement.End,
-                            modifier = M
-                                .padding(top = 16.dp)
-                                .align(Alignment.End)
+                            modifier = M.align(Alignment.End).padding(top = 6.dp)
                         ) {
                             buttons()
                         }

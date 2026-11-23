@@ -65,7 +65,7 @@ fun Contacts() {
             Column {
                 Section(
                     title = Str(R.string.contacts),
-                    bgColor = C.dialogBg,
+                    bgColor = C.background,
                     compact = true,
                 ) {
                     Column {
@@ -98,7 +98,7 @@ fun Contacts() {
                 AnimatedVisibleV(isEnabled) {
                     Section(
                         title = Str(R.string.non_contacts),
-                        bgColor = C.dialogBg,
+                        bgColor = C.background,
                         compact = true,
                     ) {
                         Column {

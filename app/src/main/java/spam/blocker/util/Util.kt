@@ -664,8 +664,12 @@ object Util {
     }
 
     fun isEmergencyNumber(ctx: Context, rawNumber: String) : Boolean {
-        val telephonyManager = ctx.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-        return telephonyManager.isEmergencyNumber(rawNumber)
+        return try { // try catch here is necessary: https://github.com/aj3423/SpamBlocker/issues/708
+            val telephonyManager = ctx.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            telephonyManager.isEmergencyNumber(rawNumber)
+        } catch (_: Exception) {
+            false
+        }
     }
     fun setLocale(ctx: Context, languageCode: String) {
         if (Build.VERSION.SDK_INT >= ANDROID_13) {
@@ -1091,9 +1095,14 @@ object Util {
             return false
         }
 
-        val manager = ctx.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        return try {
+            val manager = ctx.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
-        return manager.callState == TelephonyManager.CALL_STATE_OFFHOOK
+            manager.callState == TelephonyManager.CALL_STATE_OFFHOOK
+        } catch (_: Exception) {
+            loge("isInCall(): no telephony service")
+            false
+        }
     }
 
     // Scale icons 6m -> 100kb, for use in notification channels
