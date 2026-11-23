@@ -1,0 +1,17 @@
+SpamBlocker Extended 6.2.3
+
+New (from upstream):
+- History: Multi Select (long-press a record) to report, add to the database, or delete several records at once.
+- Import very large CSV files, e.g. millions of numbers.
+- Workflows: HTTP requests keep cookies between steps, and any 2xx response counts as success.
+
+Fixes:
+- The app could freeze at startup with many rules or a long history.
+- Clearing or searching a large spam database could freeze the app.
+- A crash on devices without a phone service.
+- Cancelling the backup export file picker left the progress dialog open.
+- "Import as Regex Rule" in replace mode no longer resets the rule's other settings, such as its Alert.
+
+Changes:
+- App and dialog backgrounds are now one theme color, with a slightly lighter default.
+- Popup buttons stay visible while the content scrolls.
